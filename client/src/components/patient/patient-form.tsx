@@ -46,13 +46,17 @@ interface PatientFormProps {
 export function PatientForm({ patient, form, showCodes }: PatientFormProps) {
   const { toast } = useToast();
 
+  console.log("PatientForm - patient:", patient);
+  console.log("PatientForm - form:", form);
+  console.log("PatientForm - showCodes:", showCodes);
+
   const reactForm = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      patientName: form?.patientName || patient.name,
-      medicalRecordNumber: form?.medicalRecordNumber || patient.mrn,
-      dateOfBirth: form?.dateOfBirth || patient.dateOfBirth,
-      sex: form?.sex || patient.sex,
+      patientName: form?.patientName || patient?.name || "",
+      medicalRecordNumber: form?.medicalRecordNumber || patient?.mrn || "",
+      dateOfBirth: form?.dateOfBirth || patient?.dateOfBirth || "",
+      sex: form?.sex || patient?.sex || "",
       primarySite: form?.primarySite || "",
       primarySiteCode: form?.primarySiteCode || "",
       histology: form?.histology || "",
@@ -68,6 +72,16 @@ export function PatientForm({ patient, form, showCodes }: PatientFormProps) {
       surgeryPerformed: form?.surgeryPerformed || "",
     },
   });
+
+  if (!patient) {
+    return (
+      <div className="flex-1 flex items-center justify-center p-4">
+        <div className="text-center">
+          <p className="text-gray-500">Patient data not available</p>
+        </div>
+      </div>
+    );
+  }
 
   const saveMutation = useMutation({
     mutationFn: (data: FormData) =>
