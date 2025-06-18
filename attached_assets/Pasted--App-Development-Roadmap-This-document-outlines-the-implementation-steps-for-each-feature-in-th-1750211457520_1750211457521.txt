@@ -1,0 +1,116 @@
+# 📋 App Development Roadmap
+
+This document outlines the implementation steps for each feature in the tumor registry app. It assumes OCR and WindSurf are working on the backend, and development is continuing on Replit with front-end and integration features.
+
+---
+
+## ✅ 1. Easy and Intuitive UI
+
+**Goal**: Create a clean, minimal, and intuitive layout for clinical workflow.
+
+**Steps**:
+- [ ] Choose a component framework (Tailwind CSS + Alpine.js or React + ShadCN if using React).
+- [ ] Set up base layout: navbar, sidebar (if needed), and content panel.
+- [ ] Add color scheme for visual clarity (white background, blue/green CTA buttons).
+- [ ] Responsive design: test on mobile and desktop.
+- [ ] Add a consistent font and spacing system for legibility (use Tailwind’s `text-base`, `p-4`, `rounded-xl`).
+
+---
+
+## 👤 2. Patient Profile Viewer
+
+**Goal**: View and switch between patient records.
+
+**Steps**:
+- [ ] Add a left sidebar with a searchable list of patient names (can store JSON data locally for now).
+- [ ] On click, load patient profile into the main viewer panel.
+- [ ] Show basic demographics: Name, DOB, MRN, Diagnosis.
+- [ ] Optional: Add tabs for "Documents", "Form", "Coded View".
+
+---
+
+## 🔗 3. EHR Integration (Document Ingestion)
+
+**Goal**: Import clinical documents like PDFs, imaging notes.
+
+**Steps**:
+- [ ] Set up file upload with drag & drop (use `<input type="file">` or Replit’s file UI).
+- [ ] For EHR integration (future): plan API endpoints (e.g., `GET /ehr/patient/{id}/notes`).
+- [ ] Display parsed PDF content in a readable format.
+- [ ] Store parsed results in `localStorage` or an in-memory object for now.
+
+---
+
+## 📝 4. Tumor Registry Field Form
+
+**Goal**: Create a registry form UI with all required fields.
+
+**Steps**:
+- [ ] Create a JSON schema of all SEER/NPCR required fields.
+- [ ] Dynamically render form fields with field name, input type, and tooltips.
+- [ ] Add validation (e.g., required fields, correct formats).
+- [ ] Save progress locally (or to a Replit DB if needed).
+
+---
+
+## ⚡ 5. Pre-populated Fields (97%+ Confidence)
+
+**Goal**: Auto-fill fields with high-confidence OCR/WindSurf output.
+
+**Steps**:
+- [ ] Modify backend to return confidence scores per field.
+- [ ] On form render, check if confidence > 0.97 → pre-fill with suggested value.
+- [ ] Highlight pre-filled fields in light green with tooltip "Auto-filled with 97%+ confidence".
+
+---
+
+## 🪟 6. Two-Column View (Optional)
+
+**Goal**: View form and document side-by-side for easier entry.
+
+**Steps**:
+- [ ] Add a toggle button for 2-column layout.
+- [ ] Left: document viewer (PDF preview using `pdf.js` or text extracted).
+- [ ] Right: registry form scrollable area.
+- [ ] Ensure both panes scroll independently.
+
+---
+
+## 🧩 7. Coded View Toggle
+
+**Goal**: Show side-by-side display of codes and form fields.
+
+**Steps**:
+- [ ] Add toggle switch for “Enable Coded View”.
+- [ ] On toggle, display a read-only code column next to each field (e.g., ICD-O-3).
+- [ ] Add edit buttons to override auto-coded values.
+
+---
+
+## 📚 8. Full Table of Code Rules Viewer
+
+**Goal**: Help users reference all coding rules easily.
+
+**Steps**:
+- [ ] Create a modal or side panel with searchable code list.
+- [ ] Load code-table from a static JSON file or embed a link to CDC’s official table.
+- [ ] Allow search by code, description, or site.
+
+---
+
+## 📦 Future Improvements
+
+- [ ] Add user authentication (Google OAuth or email login).
+- [ ] Real-time collaboration for registrars.
+- [ ] PDF export of completed registry report.
+- [ ] API submission to central registry system.
+
+---
+
+## 🛠 Dev Notes
+
+- Store form data in `localStorage` or Replit’s DB for MVP.
+- Use `pdf.js` for in-browser PDF rendering.
+- Use WindSurf/OpenAI backend to populate fields and return JSON.
+- Prefer Tailwind + Vanilla JS for faster Replit development (React optional).
+

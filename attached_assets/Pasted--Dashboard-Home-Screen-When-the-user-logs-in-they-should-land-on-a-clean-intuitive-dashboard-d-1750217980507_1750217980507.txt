@@ -1,0 +1,69 @@
+📊 Dashboard (Home Screen)
+When the user logs in, they should land on a clean, intuitive dashboard designed for immediate orientation and workflow awareness.
+
+Left Pane: Patient Overview
+
+A vertical pane displaying a scrollable list of patient names, each with a visual status indicator (e.g., color-coded dots for In Progress, Completed, Pending Review).
+An "Expand" button at the bottom or top that redirects the user to the full Patients List Page.
+Optional: Add a search or filter bar at the top of this panel for quick access.
+Main Pane: Dashboard Metrics
+
+Occupies the majority of screen space.
+Displays real-time analytics cards, such as:
+Total Patients
+Completed Reports
+Pending Reviews
+Error Flags
+Submitted to Registry
+Consider using simple visualizations (bar charts, donut charts) for quick insights.
+Top Navigation Bar
+
+Two navigation tabs clearly visible at the top right:
+Patients – links to the full Patients List view.
+References – links to the editable ICD-O-3 coding reference table.
+👥 Patients Page
+A centralized view to manage all patient records and perform batch operations.
+
+Main Features
+
+Displays patient cards or rows, each showing:
+Patient Name
+MRN
+Status badge
+Last updated date
+Bulk selection checkbox on each card, and a “Select/Deselect All” toggle.
+Real-time filters: by status, date range, etc.
+Top Right Buttons
+
+Submit to Cancer Registry – triggers API call or validation modal.
+Download as XML – bulk export of selected records into XML format.
+🧾 Individual Patient Page
+The primary working screen for data abstraction and form entry.
+
+Split-Pane Layout
+
+Left Pane: Document Viewer
+Displays uploaded clinical documents.
+Click to open a document in a scrollable, paginated viewer.
+Filter documents by type (e.g., Notes, Pathology, Imaging).
+Right Pane: Tumor Registry Form
+Includes all required fields for a compliant registry submission.
+Fields should include tooltips or hover descriptions for guidance.
+Controls
+
+Pane Expanders – Each pane should have a button to go full-screen.
+Toggle: “Show Codes”
+When enabled, an additional column appears adjacent to each field.
+Each code box is prefilled (if available) and editable by the user.
+Codes are mapped from ICD-O-3, SEER, or relevant classification.
+📚 References Page
+Designed for registry coders and clinical reviewers to consult or update code references.
+
+Editable ICD-O-3 Table
+
+A searchable, sortable table with the following columns:
+Code (e.g., C50.9)
+Description (e.g., Breast, NOS)
+Category or grouping (optional)
+Inline editing functionality.
+Changes are stored locally or pushed to the backend for team-wide consistency.
