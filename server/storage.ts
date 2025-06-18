@@ -1,4 +1,5 @@
 import type { User, InsertUser, Patient, InsertPatient, Document, InsertDocument, TumorRegistryForm, InsertTumorRegistryForm, IcdCode, InsertIcdCode } from "../shared/schema";
+import { DocumentGenerator } from "./document-generator";
 
 export interface IStorage {
   // User methods
@@ -49,6 +50,7 @@ export class MemStorage implements IStorage {
   private tumorRegistryForms: Map<number, TumorRegistryForm>;
   private icdCodes: Map<number, IcdCode>;
   private currentId: number;
+  private documentGenerator: DocumentGenerator;
 
   constructor() {
     this.users = new Map();
@@ -57,6 +59,7 @@ export class MemStorage implements IStorage {
     this.tumorRegistryForms = new Map();
     this.icdCodes = new Map();
     this.currentId = 1;
+    this.documentGenerator = new DocumentGenerator();
     this.initializeDefaultData();
   }
 
