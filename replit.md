@@ -24,6 +24,9 @@ An ultra-clean, simple oncology tumor registry with intuitive navigation, promin
 - Improved form layout with proper scrolling and padding
 - Added upload endpoint to handle document uploads
 - Fixed patient detail page layout issues
+- Resolved React hook error preventing application startup
+- Fixed ICD category mismatch in References page
+- Fixed main layout overflow preventing vertical scrolling
 
 ## Key Features Implementation Plan
 

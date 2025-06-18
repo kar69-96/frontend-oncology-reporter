@@ -14,7 +14,7 @@ function Router() {
   return (
     <div className="h-screen flex flex-col">
       <Navigation />
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-y-auto">
         <Switch>
           <Route path="/" component={Dashboard} />
           <Route path="/patients" component={Patients} />
