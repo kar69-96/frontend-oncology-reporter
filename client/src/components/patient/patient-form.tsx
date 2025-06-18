@@ -112,7 +112,7 @@ export function PatientForm({ patient, form, showCodes }: PatientFormProps) {
   return (
     <div className="flex-1 overflow-y-auto p-4">
       <Form {...reactForm}>
-        <form onSubmit={reactForm.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={reactForm.handleSubmit(onSubmit)} className="space-y-6 pb-8">
           {/* Patient Demographics */}
           <Card>
             <CardHeader>
@@ -168,7 +168,7 @@ export function PatientForm({ patient, form, showCodes }: PatientFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Sex</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select sex" />
@@ -281,7 +281,7 @@ export function PatientForm({ patient, form, showCodes }: PatientFormProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Grade</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select Grade" />
@@ -326,7 +326,7 @@ export function PatientForm({ patient, form, showCodes }: PatientFormProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Behavior</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select" />
@@ -360,7 +360,7 @@ export function PatientForm({ patient, form, showCodes }: PatientFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Clinical T</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select" />
@@ -473,9 +473,9 @@ export function PatientForm({ patient, form, showCodes }: PatientFormProps) {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="Lumpectomy">Lumpectomy</SelectItem>
-                          <SelectItem value="Mastectomy">Mastectomy</SelectItem>
-                          <SelectItem value="None">None</SelectItem>
+                          <SelectItem value="Yes">Yes</SelectItem>
+                          <SelectItem value="No">No</SelectItem>
+                          <SelectItem value="Unknown">Unknown</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
