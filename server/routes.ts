@@ -227,21 +227,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Serve generated medical documents
+  // Serve generated medical documents content
   app.get("/api/documents/:filename", (req, res) => {
     try {
       const filename = req.params.filename;
-      const filePath = `./public/documents/${filename}`;
+      const htmlFilename = filename.replace('.pdf', '.html');
+      const filePath = `./public/documents/${htmlFilename}`;
       
-      // Serve HTML files with proper content type
-      if (filename.endsWith('.html')) {
-        res.setHeader('Content-Type', 'text/html');
-      }
-      
-      res.sendFile(filePath, { root: process.cwd() }, (err) => {
-        if (err) {
-          res.status(404).json({ message: "Document not found" });
-        }
+      // Read and return HTML content as JSON for inline display
+      import('fs').then(fs => {
+        fs.readFile(filePath, 'utf8', (err, data) => {
+          if (err) {
+            res.status(404).json({ message: "Document not found" });
+          } else {
+            res.json({ content: data, type: 'html' });
+          }
+        });
+      }).catch(() => {
+        res.status(500).json({ message: "Failed to read document" });
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to serve document" });

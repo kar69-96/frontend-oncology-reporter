@@ -243,7 +243,7 @@ export class MemStorage implements IStorage {
       
       for (let i = 0; i < numDocs; i++) {
         const docType = docTypes[i % docTypes.length];
-        const filename = `${docType}_${patient.mrn}_${i + 1}.html`;
+        const filename = `${docType}_${patient.mrn}_${i + 1}.pdf`;
         
         // Generate actual medical document content
         const documentContent = {
@@ -254,13 +254,14 @@ export class MemStorage implements IStorage {
           type: docType
         };
         
-        // Create the actual document file
+        // Create the actual document file with .html extension for serving
+        const htmlFilename = filename.replace('.pdf', '.html');
         if (docType === 'pathology') {
-          this.documentGenerator.generatePathologyReport(documentContent, filename);
+          this.documentGenerator.generatePathologyReport(documentContent, htmlFilename);
         } else if (docType === 'clinical_notes') {
-          this.documentGenerator.generateClinicalNotes(documentContent, filename);
+          this.documentGenerator.generateClinicalNotes(documentContent, htmlFilename);
         } else if (docType === 'imaging') {
-          this.documentGenerator.generateImagingReport(documentContent, filename);
+          this.documentGenerator.generateImagingReport(documentContent, htmlFilename);
         }
         
         const document: Document = {

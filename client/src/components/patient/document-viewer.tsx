@@ -13,6 +13,8 @@ interface DocumentViewerProps {
 export function DocumentViewer({ documents }: DocumentViewerProps) {
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const [activeFilter, setActiveFilter] = useState<string>("all");
+  const [documentContent, setDocumentContent] = useState<string | null>(null);
+  const [loadingContent, setLoadingContent] = useState<boolean>(false);
 
   const filteredDocuments = documents.filter(doc => 
     activeFilter === "all" || doc.type === activeFilter
@@ -38,6 +40,26 @@ export function DocumentViewer({ documents }: DocumentViewerProps) {
   const formatFileSize = (bytes: number) => {
     const mb = bytes / (1024 * 1024);
     return `${mb.toFixed(1)} MB`;
+  };
+
+  const loadDocumentContent = async (document: Document) => {
+    setLoadingContent(true);
+    try {
+      const response = await fetch(`/api/documents/${document.filename}`);
+      if (response.ok) {
+        const data = await response.json();
+        setDocumentContent(data.content);
+        setSelectedDocument(document);
+      } else {
+        console.error('Failed to load document content');
+        setDocumentContent('<p>Failed to load document content</p>');
+      }
+    } catch (error) {
+      console.error('Error loading document:', error);
+      setDocumentContent('<p>Error loading document</p>');
+    } finally {
+      setLoadingContent(false);
+    }
   };
 
   return (
@@ -88,7 +110,7 @@ export function DocumentViewer({ documents }: DocumentViewerProps) {
             className={`border hover:bg-gray-50 cursor-pointer transition-colors ${
               selectedDocument?.id === document.id ? "ring-2 ring-primary" : ""
             }`}
-            onClick={() => setSelectedDocument(document)}
+            onClick={() => loadDocumentContent(document)}
           >
             <CardContent className="p-3">
               <div className="flex items-center justify-between">
@@ -99,7 +121,7 @@ export function DocumentViewer({ documents }: DocumentViewerProps) {
                       className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline text-left"
                       onClick={(e) => {
                         e.stopPropagation();
-                        window.open(`/api/documents/${document.filename}`, '_blank');
+                        loadDocumentContent(document);
                       }}
                     >
                       {document.filename}
@@ -124,28 +146,33 @@ export function DocumentViewer({ documents }: DocumentViewerProps) {
 
       {/* Document Content Area */}
       <div className="border-t border-gray-200 p-4">
-        <div className="bg-gray-50 rounded-lg p-4 min-h-96">
-          {selectedDocument ? (
-            <div>
-              <div className="mb-4">
+        <div className="bg-white rounded-lg border min-h-96">
+          {loadingContent ? (
+            <div className="text-center text-gray-400 py-8">
+              <FileText className="w-12 h-12 mx-auto mb-4 animate-pulse" />
+              <p>Loading document...</p>
+            </div>
+          ) : selectedDocument ? (
+            <div className="h-full">
+              <div className="border-b border-gray-200 p-4">
                 <h3 className="font-medium text-gray-900">{selectedDocument.filename}</h3>
                 <Badge variant="secondary" className="mt-1">
                   {DOCUMENT_TYPES[selectedDocument.type as keyof typeof DOCUMENT_TYPES]?.label || selectedDocument.type}
                 </Badge>
               </div>
-              {selectedDocument.content ? (
-                <div className="prose prose-sm max-w-none">
-                  <pre className="whitespace-pre-wrap text-sm text-gray-700">
-                    {selectedDocument.content}
-                  </pre>
-                </div>
-              ) : (
-                <div className="text-center text-gray-400 py-8">
-                  <FileText className="w-12 h-12 mx-auto mb-4" />
-                  <p>Document content not available</p>
-                  <p className="text-xs">PDF rendering would be implemented here using PDF.js</p>
-                </div>
-              )}
+              <div className="p-4 overflow-y-auto max-h-96">
+                {documentContent ? (
+                  <div 
+                    className="prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{ __html: documentContent }}
+                  />
+                ) : (
+                  <div className="text-center text-gray-400 py-8">
+                    <FileText className="w-12 h-12 mx-auto mb-4" />
+                    <p>Failed to load document content</p>
+                  </div>
+                )}
+              </div>
             </div>
           ) : (
             <div className="text-center text-gray-400 py-8">
