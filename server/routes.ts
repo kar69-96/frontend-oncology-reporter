@@ -207,6 +207,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Upload endpoint for documents
+  app.post("/api/upload", async (req, res) => {
+    try {
+      // Simple upload simulation - in a real app, you'd handle multipart/form-data
+      const { patientId, filename, type, size, content } = req.body;
+      
+      const document = await storage.createDocument({
+        patientId: parseInt(patientId),
+        filename: filename || "uploaded_document.pdf",
+        type: type || "pathology",
+        size: size || 1024000,
+        content: content || "Uploaded document content"
+      });
+      
+      res.status(201).json(document);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to upload document" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

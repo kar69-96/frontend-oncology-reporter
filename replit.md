@@ -18,8 +18,12 @@ An ultra-clean, simple oncology tumor registry with intuitive navigation, promin
 - Sidebar should hide when focusing on individual patients
 
 ## Recent Changes
-- Initial project setup and roadmap creation
-- Data schema design for patients, documents, and registry fields
+- Fixed patient form rendering issues with Select components
+- Added drag-and-drop upload dialog with file preview
+- Generated sample documents for all patients (2-4 per patient)
+- Improved form layout with proper scrolling and padding
+- Added upload endpoint to handle document uploads
+- Fixed patient detail page layout issues
 
 ## Key Features Implementation Plan
 

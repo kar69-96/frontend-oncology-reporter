@@ -110,9 +110,9 @@ export function PatientForm({ patient, form, showCodes }: PatientFormProps) {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-4">
+    <div className="flex-1 overflow-y-auto p-4 h-full">
       <Form {...reactForm}>
-        <form onSubmit={reactForm.handleSubmit(onSubmit)} className="space-y-6 pb-8">
+        <form onSubmit={reactForm.handleSubmit(onSubmit)} className="space-y-6 pb-20">
           {/* Patient Demographics */}
           <Card>
             <CardHeader>

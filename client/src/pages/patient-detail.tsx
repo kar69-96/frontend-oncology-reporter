@@ -99,9 +99,11 @@ export default function PatientDetail() {
               >
                 {documentPaneExpanded ? <Combine className="w-4 h-4" /> : <Expand className="w-4 h-4" />}
               </Button>
-              <Button variant="ghost" size="sm" className="text-primary hover:text-blue-700">
-                Upload
-              </Button>
+              <UploadDialog onUpload={(files) => uploadMutation.mutate(files)}>
+                <Button variant="ghost" size="sm" className="text-primary hover:text-blue-700">
+                  Upload
+                </Button>
+              </UploadDialog>
             </div>
           </div>
         </div>
