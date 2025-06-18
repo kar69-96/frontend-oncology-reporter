@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useParams } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { UploadDialog } from "@/components/ui/upload-dialog";
 import { ArrowLeft, Expand, Combine } from "lucide-react";
 import { Link } from "wouter";
 import { DocumentViewer } from "@/components/patient/document-viewer";
 import { PatientForm } from "@/components/patient/patient-form";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { Patient, Document, TumorRegistryForm } from "@/lib/types";
 
 export default function PatientDetail() {
@@ -30,6 +32,30 @@ export default function PatientDetail() {
   const { data: form } = useQuery<TumorRegistryForm>({
     queryKey: [`/api/patients/${patientId}/form`],
     enabled: !!patientId,
+  });
+
+  const uploadMutation = useMutation({
+    mutationFn: async (files: File[]) => {
+      const formData = new FormData();
+      files.forEach((file, index) => {
+        formData.append(`file${index}`, file);
+      });
+      formData.append('patientId', patientId.toString());
+      
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/patients/${patientId}/documents`] });
+    }
   });
 
   if (isLoading) {

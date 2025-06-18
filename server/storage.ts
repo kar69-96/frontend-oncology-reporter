@@ -75,7 +75,8 @@ export class MemStorage implements IStorage {
         id: this.currentId++,
         code: data.code,
         description: data.description,
-        category: data.category
+        category: data.category,
+        lastUpdated: new Date()
       };
       this.icdCodes.set(icdCode.id, icdCode);
     });
