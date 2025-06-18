@@ -63,7 +63,7 @@ export const icdCodes = pgTable("icd_codes", {
   id: serial("id").primaryKey(),
   code: text("code").notNull().unique(),
   description: text("description").notNull(),
-  category: text("category").notNull(), // topography, morphology
+  category: text("category").notNull(), // Breast, Lung, Prostate, Colorectal, Pancreas
   lastUpdated: timestamp("last_updated").defaultNow().notNull(),
 });
 

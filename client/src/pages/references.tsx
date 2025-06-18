@@ -21,7 +21,7 @@ import { ICD_CATEGORIES } from "@/lib/constants";
 const icdCodeSchema = z.object({
   code: z.string().min(1, "Code is required"),
   description: z.string().min(1, "Description is required"),
-  category: z.enum(["topography", "morphology"]),
+  category: z.enum(["Breast", "Lung", "Prostate", "Colorectal", "Pancreas"]),
 });
 
 type IcdCodeForm = z.infer<typeof icdCodeSchema>;
@@ -42,7 +42,7 @@ export default function References() {
     defaultValues: {
       code: "",
       description: "",
-      category: "topography",
+      category: "Breast",
     },
   });
 
@@ -100,7 +100,7 @@ export default function References() {
     form.reset({
       code: code.code,
       description: code.description,
-      category: code.category as "topography" | "morphology",
+      category: code.category as "Breast" | "Lung" | "Prostate" | "Colorectal" | "Pancreas",
     });
     setIsDialogOpen(true);
   };
@@ -205,8 +205,11 @@ export default function References() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="topography">Topography</SelectItem>
-                            <SelectItem value="morphology">Morphology</SelectItem>
+                            <SelectItem value="Breast">Breast</SelectItem>
+                            <SelectItem value="Lung">Lung</SelectItem>
+                            <SelectItem value="Prostate">Prostate</SelectItem>
+                            <SelectItem value="Colorectal">Colorectal</SelectItem>
+                            <SelectItem value="Pancreas">Pancreas</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />

@@ -40,12 +40,24 @@ export const DOCUMENT_TYPES = {
 } as const;
 
 export const ICD_CATEGORIES = {
-  topography: {
-    label: "Topography",
+  Breast: {
+    label: "Breast",
+    color: "bg-pink-100 text-pink-800",
+  },
+  Lung: {
+    label: "Lung",
     color: "bg-blue-100 text-blue-800",
   },
-  morphology: {
-    label: "Morphology",
+  Prostate: {
+    label: "Prostate",
     color: "bg-green-100 text-green-800",
+  },
+  Colorectal: {
+    label: "Colorectal",
+    color: "bg-orange-100 text-orange-800",
+  },
+  Pancreas: {
+    label: "Pancreas",
+    color: "bg-purple-100 text-purple-800",
   },
 } as const;
