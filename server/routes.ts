@@ -227,6 +227,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Serve generated medical documents
+  app.get("/api/documents/:filename", (req, res) => {
+    try {
+      const filename = req.params.filename;
+      const filePath = `./public/documents/${filename}`;
+      
+      // Serve HTML files with proper content type
+      if (filename.endsWith('.html')) {
+        res.setHeader('Content-Type', 'text/html');
+      }
+      
+      res.sendFile(filePath, { root: process.cwd() }, (err) => {
+        if (err) {
+          res.status(404).json({ message: "Document not found" });
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to serve document" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

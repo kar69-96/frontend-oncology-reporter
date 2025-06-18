@@ -95,9 +95,15 @@ export function DocumentViewer({ documents }: DocumentViewerProps) {
                 <div className="flex items-center space-x-3">
                   {getDocumentIcon(document.type)}
                   <div>
-                    <p className="text-sm font-medium text-gray-900">
+                    <button
+                      className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline text-left"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.open(`/api/documents/${document.filename}`, '_blank');
+                      }}
+                    >
                       {document.filename}
-                    </p>
+                    </button>
                     <p className="text-xs text-gray-500">
                       {new Date(document.uploadDate).toLocaleDateString()} • {formatFileSize(document.size)}
                     </p>

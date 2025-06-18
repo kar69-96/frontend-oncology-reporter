@@ -238,19 +238,39 @@ export class MemStorage implements IStorage {
       this.patients.set(patient.id, patient);
 
       // Add sample documents for each patient
-      const docTypes = ["pathology", "clinical_notes", "imaging"];
+      const docTypes: Array<'pathology' | 'clinical_notes' | 'imaging'> = ["pathology", "clinical_notes", "imaging"];
       const numDocs = Math.floor(Math.random() * 3) + 2;
       
       for (let i = 0; i < numDocs; i++) {
         const docType = docTypes[i % docTypes.length];
+        const filename = `${docType}_${patient.mrn}_${i + 1}.html`;
+        
+        // Generate actual medical document content
+        const documentContent = {
+          patientName: patient.name,
+          mrn: patient.mrn,
+          dateOfBirth: patient.dateOfBirth,
+          diagnosis: patient.diagnosis || "Unknown diagnosis",
+          type: docType
+        };
+        
+        // Create the actual document file
+        if (docType === 'pathology') {
+          this.documentGenerator.generatePathologyReport(documentContent, filename);
+        } else if (docType === 'clinical_notes') {
+          this.documentGenerator.generateClinicalNotes(documentContent, filename);
+        } else if (docType === 'imaging') {
+          this.documentGenerator.generateImagingReport(documentContent, filename);
+        }
+        
         const document: Document = {
           id: this.currentId++,
           patientId: patient.id,
-          filename: `${docType}_${patient.mrn}_${i + 1}.pdf`,
+          filename: filename,
           type: docType,
           uploadDate: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
           size: Math.floor(Math.random() * 5000000) + 500000,
-          content: `Sample ${docType} content for ${patient.name}. This would contain the actual extracted text from the PDF document in a real implementation.`
+          content: `Medical ${docType} document for ${patient.name}. Document content viewable by clicking the filename.`
         };
         this.documents.set(document.id, document);
       }
