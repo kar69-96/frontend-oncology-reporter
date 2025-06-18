@@ -56,7 +56,7 @@ export default function PatientDetail() {
   const formPaneWidth = formPaneExpanded ? "w-full" : documentPaneExpanded ? "hidden" : "w-1/2";
 
   return (
-    <div className="flex-1 flex overflow-hidden">
+    <div className="flex-1 flex overflow-hidden h-screen">
       {/* Document Viewer */}
       <div className={`${documentPaneWidth} bg-white border-r border-gray-200 flex flex-col transition-all duration-300`}>
         <div className="p-4 border-b border-gray-200">
@@ -84,7 +84,7 @@ export default function PatientDetail() {
       </div>
 
       {/* Registry Form */}
-      <div className={`${formPaneWidth} bg-gray-50 flex flex-col transition-all duration-300`}>
+      <div className={`${formPaneWidth} bg-gray-50 flex flex-col transition-all duration-300 min-h-0`}>
         <div className="p-4 bg-white border-b border-gray-200">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-semibold text-gray-900">
