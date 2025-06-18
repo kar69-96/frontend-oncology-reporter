@@ -21,7 +21,7 @@ import { ICD_CATEGORIES } from "@/lib/constants";
 const icdCodeSchema = z.object({
   code: z.string().min(1, "Code is required"),
   description: z.string().min(1, "Description is required"),
-  category: z.enum(["Breast", "Lung", "Prostate", "Colorectal", "Pancreas"]),
+  category: z.enum(["Breast", "Lung", "Prostate", "Colorectal", "Pancreas", "Endocrine", "Urological", "Gynecological", "Skin", "Hepatobiliary", "Gastrointestinal", "Head and Neck"]),
 });
 
 type IcdCodeForm = z.infer<typeof icdCodeSchema>;
@@ -100,7 +100,7 @@ export default function References() {
     form.reset({
       code: code.code,
       description: code.description,
-      category: code.category as "Breast" | "Lung" | "Prostate" | "Colorectal" | "Pancreas",
+      category: code.category as "Breast" | "Lung" | "Prostate" | "Colorectal" | "Pancreas" | "Endocrine" | "Urological" | "Gynecological" | "Skin" | "Hepatobiliary" | "Gastrointestinal" | "Head and Neck",
     });
     setIsDialogOpen(true);
   };
@@ -210,6 +210,13 @@ export default function References() {
                             <SelectItem value="Prostate">Prostate</SelectItem>
                             <SelectItem value="Colorectal">Colorectal</SelectItem>
                             <SelectItem value="Pancreas">Pancreas</SelectItem>
+                            <SelectItem value="Endocrine">Endocrine</SelectItem>
+                            <SelectItem value="Urological">Urological</SelectItem>
+                            <SelectItem value="Gynecological">Gynecological</SelectItem>
+                            <SelectItem value="Skin">Skin</SelectItem>
+                            <SelectItem value="Hepatobiliary">Hepatobiliary</SelectItem>
+                            <SelectItem value="Gastrointestinal">Gastrointestinal</SelectItem>
+                            <SelectItem value="Head and Neck">Head and Neck</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />

@@ -27,6 +27,8 @@ An ultra-clean, simple oncology tumor registry with intuitive navigation, promin
 - Resolved React hook error preventing application startup
 - Fixed ICD category mismatch in References page
 - Fixed main layout overflow preventing vertical scrolling
+- Updated progress bars to show only blue color (removed green fill)
+- Expanded ICD-O-3 references from 5 to 47 comprehensive cancer codes
 
 ## Key Features Implementation Plan
 

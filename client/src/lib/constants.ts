@@ -60,4 +60,32 @@ export const ICD_CATEGORIES = {
     label: "Pancreas",
     color: "bg-purple-100 text-purple-800",
   },
+  Endocrine: {
+    label: "Endocrine",
+    color: "bg-teal-100 text-teal-800",
+  },
+  Urological: {
+    label: "Urological",
+    color: "bg-cyan-100 text-cyan-800",
+  },
+  Gynecological: {
+    label: "Gynecological",
+    color: "bg-rose-100 text-rose-800",
+  },
+  Skin: {
+    label: "Skin",
+    color: "bg-amber-100 text-amber-800",
+  },
+  Hepatobiliary: {
+    label: "Hepatobiliary",
+    color: "bg-emerald-100 text-emerald-800",
+  },
+  Gastrointestinal: {
+    label: "Gastrointestinal",
+    color: "bg-lime-100 text-lime-800",
+  },
+  "Head and Neck": {
+    label: "Head and Neck",
+    color: "bg-indigo-100 text-indigo-800",
+  },
 } as const;

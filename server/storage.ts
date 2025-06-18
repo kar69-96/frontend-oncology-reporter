@@ -63,11 +63,67 @@ export class MemStorage implements IStorage {
   private initializeDefaultData() {
     // Initialize ICD codes
     const icdData = [
+      // Breast
       { code: "C50.9", description: "Malignant neoplasm of breast, unspecified", category: "Breast" },
+      { code: "C50.1", description: "Malignant neoplasm of central portion of breast", category: "Breast" },
+      { code: "C50.2", description: "Malignant neoplasm of upper-inner quadrant of breast", category: "Breast" },
+      { code: "C50.3", description: "Malignant neoplasm of lower-inner quadrant of breast", category: "Breast" },
+      { code: "C50.4", description: "Malignant neoplasm of upper-outer quadrant of breast", category: "Breast" },
+      { code: "C50.5", description: "Malignant neoplasm of lower-outer quadrant of breast", category: "Breast" },
+      { code: "C50.8", description: "Malignant neoplasm of overlapping sites of breast", category: "Breast" },
+      
+      // Lung
       { code: "C78.1", description: "Secondary malignant neoplasm of lung", category: "Lung" },
+      { code: "C34.1", description: "Malignant neoplasm of upper lobe, bronchus or lung", category: "Lung" },
+      { code: "C34.2", description: "Malignant neoplasm of middle lobe, bronchus or lung", category: "Lung" },
+      { code: "C34.3", description: "Malignant neoplasm of lower lobe, bronchus or lung", category: "Lung" },
+      { code: "C34.8", description: "Malignant neoplasm of overlapping sites of bronchus and lung", category: "Lung" },
+      { code: "C34.9", description: "Malignant neoplasm of unspecified part of bronchus or lung", category: "Lung" },
+      
+      // Prostate
       { code: "C61", description: "Malignant neoplasm of prostate", category: "Prostate" },
+      
+      // Colorectal
       { code: "C18.9", description: "Malignant neoplasm of colon, unspecified", category: "Colorectal" },
-      { code: "C25.9", description: "Malignant neoplasm of pancreas, unspecified", category: "Pancreas" }
+      { code: "C18.0", description: "Malignant neoplasm of cecum", category: "Colorectal" },
+      { code: "C18.1", description: "Malignant neoplasm of appendix", category: "Colorectal" },
+      { code: "C18.2", description: "Malignant neoplasm of ascending colon", category: "Colorectal" },
+      { code: "C18.3", description: "Malignant neoplasm of hepatic flexure", category: "Colorectal" },
+      { code: "C18.4", description: "Malignant neoplasm of transverse colon", category: "Colorectal" },
+      { code: "C18.5", description: "Malignant neoplasm of splenic flexure", category: "Colorectal" },
+      { code: "C18.6", description: "Malignant neoplasm of descending colon", category: "Colorectal" },
+      { code: "C18.7", description: "Malignant neoplasm of sigmoid colon", category: "Colorectal" },
+      { code: "C19", description: "Malignant neoplasm of rectosigmoid junction", category: "Colorectal" },
+      { code: "C20", description: "Malignant neoplasm of rectum", category: "Colorectal" },
+      { code: "C21.0", description: "Malignant neoplasm of anus, unspecified", category: "Colorectal" },
+      
+      // Pancreas
+      { code: "C25.9", description: "Malignant neoplasm of pancreas, unspecified", category: "Pancreas" },
+      { code: "C25.0", description: "Malignant neoplasm of head of pancreas", category: "Pancreas" },
+      { code: "C25.1", description: "Malignant neoplasm of body of pancreas", category: "Pancreas" },
+      { code: "C25.2", description: "Malignant neoplasm of tail of pancreas", category: "Pancreas" },
+      { code: "C25.3", description: "Malignant neoplasm of pancreatic duct", category: "Pancreas" },
+      { code: "C25.4", description: "Malignant neoplasm of endocrine pancreas", category: "Pancreas" },
+      { code: "C25.7", description: "Malignant neoplasm of other parts of pancreas", category: "Pancreas" },
+      { code: "C25.8", description: "Malignant neoplasm of overlapping sites of pancreas", category: "Pancreas" },
+      
+      // Additional common cancer sites
+      { code: "C73", description: "Malignant neoplasm of thyroid gland", category: "Endocrine" },
+      { code: "C67.9", description: "Malignant neoplasm of bladder, unspecified", category: "Urological" },
+      { code: "C64.9", description: "Malignant neoplasm of kidney, except renal pelvis, unspecified", category: "Urological" },
+      { code: "C56.9", description: "Malignant neoplasm of ovary, unspecified", category: "Gynecological" },
+      { code: "C53.9", description: "Malignant neoplasm of cervix uteri, unspecified", category: "Gynecological" },
+      { code: "C54.1", description: "Malignant neoplasm of endometrium", category: "Gynecological" },
+      { code: "C43.9", description: "Malignant melanoma of skin, unspecified", category: "Skin" },
+      { code: "C44.9", description: "Other and unspecified malignant neoplasm of skin, unspecified", category: "Skin" },
+      { code: "C22.0", description: "Liver cell carcinoma", category: "Hepatobiliary" },
+      { code: "C22.1", description: "Intrahepatic bile duct carcinoma", category: "Hepatobiliary" },
+      { code: "C24.0", description: "Malignant neoplasm of extrahepatic bile duct", category: "Hepatobiliary" },
+      { code: "C16.9", description: "Malignant neoplasm of stomach, unspecified", category: "Gastrointestinal" },
+      { code: "C15.9", description: "Malignant neoplasm of esophagus, unspecified", category: "Gastrointestinal" },
+      { code: "C32.9", description: "Malignant neoplasm of larynx, unspecified", category: "Head and Neck" },
+      { code: "C02.9", description: "Malignant neoplasm of tongue, unspecified", category: "Head and Neck" },
+      { code: "C06.9", description: "Malignant neoplasm of mouth, unspecified", category: "Head and Neck" }
     ];
 
     icdData.forEach(data => {
