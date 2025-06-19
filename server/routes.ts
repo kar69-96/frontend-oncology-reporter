@@ -126,22 +126,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/patients/:patientId/form", async (req, res) => {
     try {
       const patientId = parseInt(req.params.patientId);
-      console.log("Form save request for patient:", patientId);
-      console.log("Form data received:", JSON.stringify(req.body, null, 2));
-      
       const validatedData = insertTumorRegistryFormSchema.parse({
         ...req.body,
         patientId,
       });
-      console.log("Validated data:", JSON.stringify(validatedData, null, 2));
-      
       const form = await storage.createOrUpdateForm(validatedData);
-      console.log("Form saved successfully:", form.id);
       res.json(form);
     } catch (error) {
-      console.error("Form save error:", error);
       if (error instanceof z.ZodError) {
-        console.error("Validation errors:", error.errors);
         res.status(400).json({ message: "Invalid form data", errors: error.errors });
       } else {
         res.status(500).json({ message: "Failed to save registry form" });
