@@ -273,6 +273,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes }: Comprehen
 
   const onSaveDraft = () => {
     const data = reactForm.getValues();
+    console.log("Draft data being saved:", data);
     draftMutation.mutate(data);
   };
 
