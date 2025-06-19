@@ -167,8 +167,8 @@ export function DocumentViewer({ documents }: DocumentViewerProps) {
       )}
 
       {/* Document Content Area */}
-      <div className={`flex-1 flex flex-col ${!isCollapsed ? 'border-t border-gray-200' : ''}`}>
-        <div className="flex-1 bg-white rounded-lg border m-4 flex flex-col">
+      <div className={`flex-1 flex flex-col overflow-hidden ${!isCollapsed ? 'border-t border-gray-200' : ''}`}>
+        <div className="flex-1 bg-white rounded-lg border m-4 flex flex-col overflow-hidden">
           {loadingContent ? (
             <div className="flex-1 flex items-center justify-center text-gray-400">
               <div className="text-center">
@@ -177,8 +177,8 @@ export function DocumentViewer({ documents }: DocumentViewerProps) {
               </div>
             </div>
           ) : selectedDocument ? (
-            <div className="flex-1 flex flex-col">
-              <div className="border-b border-gray-200 p-4 flex items-center justify-between">
+            <div className="flex-1 flex flex-col overflow-hidden">
+              <div className="border-b border-gray-200 p-4 flex items-center justify-between flex-shrink-0">
                 <div>
                   <h3 className="font-medium text-gray-900">{selectedDocument.filename}</h3>
                   <Badge variant="secondary" className="mt-1">

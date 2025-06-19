@@ -15,6 +15,46 @@ import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { Patient, TumorRegistryForm } from "@/lib/types";
 
+// Utility function to get field confidence level and corresponding border class
+const getFieldConfidence = (fieldName: string, form?: TumorRegistryForm) => {
+  // Simulate confidence levels based on field type and data source
+  const confidenceLevels: Record<string, 'high' | 'medium' | 'low'> = {
+    // Demographics from patient records (high confidence)
+    patientName: 'high',
+    dateOfBirth: 'high',
+    sex: 'high',
+    
+    // Data extracted from documents (varying confidence)
+    primarySite: 'medium', // OCR extracted
+    histologicType: 'low', // Complex medical terminology
+    behaviorCode: 'medium',
+    gradeDifferentiation: 'low',
+    clinicalT: 'medium',
+    clinicalN: 'medium', 
+    clinicalM: 'low',
+    pathologicT: 'medium',
+    pathologicN: 'low',
+    surgeryOfPrimarySite: 'medium',
+    radiationTherapy: 'low',
+    chemotherapy: 'medium',
+    
+    // Administrative fields (high confidence)
+    accessionNumber: 'high',
+    abstractorId: 'high',
+  };
+  
+  const confidence = confidenceLevels[fieldName] || 'high';
+  
+  switch (confidence) {
+    case 'medium':
+      return 'border-yellow-400 focus:border-yellow-500 focus:ring-yellow-500';
+    case 'low':
+      return 'border-red-400 focus:border-red-500 focus:ring-red-500';
+    default:
+      return '';
+  }
+};
+
 const formSchema = z.object({
   // I. PATIENT & DEMOGRAPHIC INFORMATION
   patientName: z.string().min(1, "Patient name is required"),
@@ -235,7 +275,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes }: Comprehen
                   <FormItem>
                     <FormLabel>Patient Name {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} className={getFieldConfidence("patientName", form)} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -385,7 +425,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes }: Comprehen
                   <FormItem>
                     <FormLabel>Primary Site (ICD-O-3) {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="e.g., Breast, Lung, Colon" />
+                      <Input {...field} className={getFieldConfidence("primarySite", form)} placeholder="e.g., Breast, Lung, Colon" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
