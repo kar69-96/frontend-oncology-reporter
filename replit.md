@@ -18,12 +18,12 @@ An ultra-clean, simple oncology tumor registry with intuitive navigation, promin
 - Sidebar should hide when focusing on individual patients
 
 ## Recent Changes
-- **Comprehensive Cancer Registry Fields**: Implemented complete structured list of cancer registry fields grouped into 6 logical sections with proper validation and dropdown options
-- **Advanced Patient Form**: Created comprehensive tumor registry form with 44+ fields including demographics, tumor identification, staging, treatment, follow-up, and administrative data
-- **Document Viewer Enhancement**: Added collapsible document selector with inline viewing and auto-hide functionality for focused document reading
-- **Sample Data Generation**: Enhanced storage layer with realistic sample data for all comprehensive cancer registry fields
-- **Form Validation**: Added proper Zod schema validation with required/optional field indicators and coding support
-- **UI/UX Improvements**: Organized form fields into intuitive sections with proper spacing, badges for field requirements, and code visibility toggle
+- **References Page Enhancement**: Renamed title to "References" and added ~50 NAACCR codes alongside ICD-O-3 codes with filtering by code type
+- **Document Viewer Scrolling Fix**: Fixed overflow issues to enable proper scrolling in document content area
+- **Data Uncertainty Indicators**: Implemented visual confidence indicators with yellow borders for medium confidence fields and red borders for low confidence fields
+- **NAACCR Code Integration**: Added comprehensive NAACCR codes organized into Demographics, Tumor, Staging, Treatment, Follow-up, and Administrative categories
+- **Advanced Filtering**: Enhanced References page with dual code type filtering (ICD-O-3/NAACCR) and expanded category options
+- **Form Confidence Styling**: Added dynamic border styling based on data extraction confidence levels for OCR-derived fields
 
 ## Key Features Implementation Plan
 

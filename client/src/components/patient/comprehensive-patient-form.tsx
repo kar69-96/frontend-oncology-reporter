@@ -439,7 +439,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes }: Comprehen
                   <FormItem>
                     <FormLabel>Histologic Type (ICD-O-3) {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="e.g., Adenocarcinoma, Squamous cell" />
+                      <Input {...field} className={getFieldConfidence("histologicType", form)} placeholder="e.g., Adenocarcinoma, Squamous cell" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -502,7 +502,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes }: Comprehen
                     <FormLabel>Grade / Differentiation {showCodes && <Badge variant="secondary">Optional</Badge>}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className={getFieldConfidence("gradeDifferentiation", form)}>
                           <SelectValue placeholder="Select grade" />
                         </SelectTrigger>
                       </FormControl>
@@ -609,7 +609,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes }: Comprehen
                   <FormItem>
                     <FormLabel>Clinical T {showCodes && <Badge variant="secondary">Optional</Badge>}</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="T1, T2, T3, T4, TX" />
+                      <Input {...field} className={getFieldConfidence("clinicalT", form)} placeholder="T1, T2, T3, T4, TX" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -623,7 +623,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes }: Comprehen
                   <FormItem>
                     <FormLabel>Clinical N {showCodes && <Badge variant="secondary">Optional</Badge>}</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="N0, N1, N2, N3, NX" />
+                      <Input {...field} className={getFieldConfidence("clinicalN", form)} placeholder="N0, N1, N2, N3, NX" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -637,7 +637,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes }: Comprehen
                   <FormItem>
                     <FormLabel>Clinical M {showCodes && <Badge variant="secondary">Optional</Badge>}</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="M0, M1, MX" />
+                      <Input {...field} className={getFieldConfidence("clinicalM", form)} placeholder="M0, M1, MX" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -651,7 +651,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes }: Comprehen
                   <FormItem>
                     <FormLabel>Pathologic T {showCodes && <Badge variant="secondary">Optional</Badge>}</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="pT1, pT2, pT3, pT4, pTX" />
+                      <Input {...field} className={getFieldConfidence("pathologicT", form)} placeholder="pT1, pT2, pT3, pT4, pTX" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -665,7 +665,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes }: Comprehen
                   <FormItem>
                     <FormLabel>Pathologic N {showCodes && <Badge variant="secondary">Optional</Badge>}</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="pN0, pN1, pN2, pN3, pNX" />
+                      <Input {...field} className={getFieldConfidence("pathologicN", form)} placeholder="pN0, pN1, pN2, pN3, pNX" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
