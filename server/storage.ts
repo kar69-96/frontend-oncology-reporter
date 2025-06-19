@@ -323,10 +323,10 @@ export class MemStorage implements IStorage {
         
         // II. TUMOR IDENTIFICATION
         primarySite: this.getSamplePrimarySite(patient.diagnosis || ""),
-        histologicType: this.getSampleHistology(patient.diagnosis || ""),
+        histologicType: null, // Low confidence - leave empty
         behaviorCode: "3", // Malignant
         laterality: this.getSampleLaterality(patient.diagnosis || ""),
-        gradeDifferentiation: this.getSampleGrade(),
+        gradeDifferentiation: null, // Low confidence - leave empty
         dateOfDiagnosis: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         diagnosticConfirmation: this.getSampleDiagnosticConfirmation(),
         classOfCase: this.getSampleClassOfCase(),
@@ -335,9 +335,9 @@ export class MemStorage implements IStorage {
         // III. STAGING
         clinicalT: this.getSampleTStage(),
         clinicalN: this.getSampleNStage(),
-        clinicalM: this.getSampleMStage(),
+        clinicalM: null, // Low confidence - leave empty
         pathologicT: this.getSampleTStage(),
-        pathologicN: this.getSampleNStage(),
+        pathologicN: null, // Low confidence - leave empty
         pathologicM: this.getSampleMStage(),
         ajccStageGroupClinical: this.getSampleStageGroup(),
         ajccStageGroupPathologic: this.getSampleStageGroup(),
@@ -345,12 +345,12 @@ export class MemStorage implements IStorage {
         
         // IV. FIRST COURSE OF TREATMENT
         surgeryOfPrimarySite: this.getSampleSurgery(),
-        dateOfSurgery: Math.random() > 0.5 ? new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : null,
-        radiationTherapy: Math.random() > 0.4 ? "1" : "0",
-        dateRadiationStarted: Math.random() > 0.6 ? new Date(Date.now() - Math.random() * 45 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : null,
-        chemotherapy: Math.random() > 0.3 ? "01" : "00",
-        hormoneTherapy: Math.random() > 0.7 ? "01" : "00",
-        immunotherapy: Math.random() > 0.8 ? "01" : "00",
+        dateOfSurgery: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        radiationTherapy: null, // Low confidence - leave empty
+        dateRadiationStarted: new Date(Date.now() - Math.random() * 45 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        chemotherapy: "01", // Medium confidence - provide value
+        hormoneTherapy: "01",
+        immunotherapy: "00",
         
         // V. FOLLOW-UP & OUTCOME
         dateOfLastContact: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
