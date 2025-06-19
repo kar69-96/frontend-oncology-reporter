@@ -27,6 +27,7 @@ An ultra-clean, simple oncology tumor registry with intuitive navigation, promin
 - **Confidence Level Optimization**: Reduced medium confidence field tolerance - now only clinicalN shows yellow borders, while most fields display normal styling with only truly uncertain fields (histologicType, gradeDifferentiation, clinicalM, pathologicN, radiationTherapy) showing red borders
 - **Draft Saving Functionality**: Added "Save Draft" button alongside "Complete & Save" for patient forms, allowing users to save work in progress without marking forms as completed
 - **Logo Removal**: Removed microscope logo from navigation, simplified to clean "Oncology Registry" text branding
+- **Click-to-Source Feature**: Implemented field-to-document linking system where clicking on completed form fields navigates to and highlights the original source text in documents. Includes field source mapping, document highlighting, and visual indicators for clickable fields
 
 ## Key Features Implementation Plan
 
