@@ -29,12 +29,13 @@ type IcdCodeForm = z.infer<typeof icdCodeSchema>;
 export default function References() {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [codeTypeFilter, setCodeTypeFilter] = useState<string>("all");
   const [editingCode, setEditingCode] = useState<IcdCode | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const { data: codes = [], isLoading } = useQuery<IcdCode[]>({
-    queryKey: ["/api/icd-codes", { search: searchTerm, category: categoryFilter }],
+    queryKey: ["/api/icd-codes", { search: searchTerm, category: categoryFilter, codeType: codeTypeFilter }],
   });
 
   const form = useForm<IcdCodeForm>({
@@ -123,7 +124,8 @@ export default function References() {
     const matchesSearch = code.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          code.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = categoryFilter === "all" || code.category === categoryFilter;
-    return matchesSearch && matchesCategory;
+    const matchesCodeType = codeTypeFilter === "all" || (code.codeType && code.codeType === codeTypeFilter);
+    return matchesSearch && matchesCategory && matchesCodeType;
   });
 
   if (isLoading) {
@@ -265,8 +267,27 @@ export default function References() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Categories</SelectItem>
-                  <SelectItem value="topography">Topography</SelectItem>
-                  <SelectItem value="morphology">Morphology</SelectItem>
+                  <SelectItem value="Breast">Breast</SelectItem>
+                  <SelectItem value="Lung">Lung</SelectItem>
+                  <SelectItem value="Prostate">Prostate</SelectItem>
+                  <SelectItem value="Colorectal">Colorectal</SelectItem>
+                  <SelectItem value="Pancreas">Pancreas</SelectItem>
+                  <SelectItem value="Demographics">Demographics</SelectItem>
+                  <SelectItem value="Tumor">Tumor</SelectItem>
+                  <SelectItem value="Staging">Staging</SelectItem>
+                  <SelectItem value="Treatment">Treatment</SelectItem>
+                  <SelectItem value="Follow-up">Follow-up</SelectItem>
+                  <SelectItem value="Administrative">Administrative</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={codeTypeFilter} onValueChange={setCodeTypeFilter}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="All Types" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="ICD-O-3">ICD-O-3</SelectItem>
+                  <SelectItem value="NAACCR">NAACCR</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -279,6 +300,7 @@ export default function References() {
                   <TableHead>Code</TableHead>
                   <TableHead>Description</TableHead>
                   <TableHead>Category</TableHead>
+                  <TableHead>Type</TableHead>
                   <TableHead>Last Updated</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -297,9 +319,17 @@ export default function References() {
                     <TableCell>
                       <Badge
                         variant="secondary"
-                        className={ICD_CATEGORIES[code.category as keyof typeof ICD_CATEGORIES].color}
+                        className={ICD_CATEGORIES[code.category as keyof typeof ICD_CATEGORIES]?.color || "bg-gray-100 text-gray-800"}
                       >
-                        {ICD_CATEGORIES[code.category as keyof typeof ICD_CATEGORIES].label}
+                        {ICD_CATEGORIES[code.category as keyof typeof ICD_CATEGORIES]?.label || code.category}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant="outline"
+                        className={code.codeType === "NAACCR" ? "border-blue-500 text-blue-700" : "border-green-500 text-green-700"}
+                      >
+                        {code.codeType || "ICD-O-3"}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-sm text-gray-500">
