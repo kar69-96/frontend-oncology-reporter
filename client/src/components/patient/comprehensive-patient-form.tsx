@@ -940,7 +940,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Clinical T {showCodes && <Badge variant="secondary">Optional</Badge>}
+                        Clinical T {showCodes && <Badge variant="outline">NAACCR 940</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -962,7 +962,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Clinical N {showCodes && <Badge variant="secondary">Optional</Badge>}
+                        Clinical N {showCodes && <Badge variant="outline">NAACCR 950</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -984,7 +984,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Clinical M {showCodes && <Badge variant="secondary">Optional</Badge>}
+                        Clinical M {showCodes && <Badge variant="outline">NAACCR 960</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -1006,7 +1006,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Pathologic T {showCodes && <Badge variant="secondary">Optional</Badge>}
+                        Pathologic T {showCodes && <Badge variant="outline">NAACCR 880</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -1028,7 +1028,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Pathologic N {showCodes && <Badge variant="secondary">Optional</Badge>}
+                        Pathologic N {showCodes && <Badge variant="outline">NAACCR 890</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -1050,7 +1050,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Pathologic M {showCodes && <Badge variant="secondary">Optional</Badge>}
+                        Pathologic M {showCodes && <Badge variant="outline">NAACCR 900</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -1072,7 +1072,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        AJCC Stage Group - Clinical {showCodes && <Badge variant="secondary">Optional</Badge>}
+                        AJCC Stage Group - Clinical {showCodes && <Badge variant="outline">NAACCR 970</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -1094,7 +1094,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        AJCC Stage Group - Pathologic {showCodes && <Badge variant="secondary">Optional</Badge>}
+                        AJCC Stage Group - Pathologic {showCodes && <Badge variant="outline">NAACCR 910</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
