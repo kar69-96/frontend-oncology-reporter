@@ -343,7 +343,7 @@ export class MemStorage implements IStorage {
         
         // III. STAGING
         clinicalT: this.getSampleTStage(),
-        clinicalN: this.getSampleNStage(),
+        clinicalN: "N1", // Medium confidence
         clinicalM: null, // Low confidence - leave empty
         pathologicT: this.getSampleTStage(),
         pathologicN: null, // Low confidence - leave empty

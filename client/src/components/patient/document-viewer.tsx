@@ -83,10 +83,30 @@ export function DocumentViewer({ documents, highlightText, onHighlightClear }: D
   const highlightTextInContent = (content: string, searchText: string) => {
     if (!content || !searchText) return content;
     
-    // Create a case-insensitive regex to find the text
-    const regex = new RegExp(`(${searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    // Create multiple search patterns to improve matching accuracy
+    const patterns = [
+      searchText, // Exact match
+      searchText.toLowerCase(), // Lowercase
+      searchText.toUpperCase(), // Uppercase
+      // Handle common medical abbreviations and variations
+      searchText.replace(/([A-Z])(\d+)/g, '$1 $2'), // "T2" -> "T 2"
+      searchText.replace(/([a-z])([A-Z])/g, '$1 $2'), // "adenocarcinoma" variations
+    ];
     
-    return content.replace(regex, '<mark class="bg-yellow-200 px-1 py-0.5 rounded font-medium">$1</mark>');
+    let highlightedContent = content;
+    
+    patterns.forEach(pattern => {
+      if (pattern && pattern !== searchText) {
+        const regex = new RegExp(`\\b(${pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'gi');
+        highlightedContent = highlightedContent.replace(regex, '<mark class="bg-yellow-200 px-1 py-0.5 rounded font-medium">$1</mark>');
+      }
+    });
+    
+    // Primary search with word boundaries for better accuracy
+    const mainRegex = new RegExp(`\\b(${searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'gi');
+    highlightedContent = highlightedContent.replace(mainRegex, '<mark class="bg-yellow-200 px-1 py-0.5 rounded font-medium">$1</mark>');
+    
+    return highlightedContent;
   };
 
   return (

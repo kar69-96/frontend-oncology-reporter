@@ -52,7 +52,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     ethnicity: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'Ethnicity: Not Hispanic or Latino',
+      textContent: 'Not Hispanic or Latino',
       startIndex: 11,
       endIndex: 33,
       confidence: 0.93
@@ -60,7 +60,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     addressAtDiagnosis: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'Address: 123 Main Street, San Francisco, CA 94102',
+      textContent: '123 Main Street, San Francisco, CA 94102',
       startIndex: 9,
       endIndex: 48,
       confidence: 0.89
@@ -68,7 +68,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     countyAtDiagnosis: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'County: San Francisco County',
+      textContent: 'San Francisco County',
       startIndex: 8,
       endIndex: 27,
       confidence: 0.91
@@ -76,7 +76,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     socialSecurityNumber: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'SSN: XXX-XX-1234',
+      textContent: 'XXX-XX-1234',
       startIndex: 5,
       endIndex: 16,
       confidence: 0.96
@@ -86,7 +86,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     primarySite: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: 'Primary site: Lung, upper lobe',
+      textContent: 'Right upper lobe',
       startIndex: 14,
       endIndex: 29,
       confidence: 0.92
@@ -94,7 +94,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     histologicType: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: 'Histologic type: Adenocarcinoma',
+      textContent: 'adenocarcinoma',
       startIndex: 17,
       endIndex: 31,
       confidence: 0.89
@@ -102,7 +102,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     behaviorCode: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: 'Behavior: Malignant (3)',
+      textContent: 'Malignant',
       startIndex: 10,
       endIndex: 18,
       confidence: 0.96
@@ -110,7 +110,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     gradeDifferentiation: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: 'Grade: Moderately differentiated (Grade 2)',
+      textContent: 'moderately differentiated',
       startIndex: 7,
       endIndex: 42,
       confidence: 0.87
@@ -118,7 +118,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     laterality: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: 'Laterality: Right',
+      textContent: 'right',
       startIndex: 12,
       endIndex: 17,
       confidence: 0.95
@@ -126,7 +126,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     tumorSize: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: 'Tumor size: 3.2 cm',
+      textContent: '3.2 cm',
       startIndex: 12,
       endIndex: 18,
       confidence: 0.94
@@ -134,7 +134,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     diagnosticConfirmation: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: 'Confirmation: Histology of primary tumor',
+      textContent: 'histology',
       startIndex: 14,
       endIndex: 40,
       confidence: 0.93
@@ -144,7 +144,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     clinicalT: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'Clinical T stage: T2',
+      textContent: 'T2',
       startIndex: 18,
       endIndex: 20,
       confidence: 0.91
@@ -152,7 +152,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     clinicalN: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'Clinical N stage: N1',
+      textContent: 'N1',
       startIndex: 18,
       endIndex: 20,
       confidence: 0.88
@@ -160,7 +160,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     clinicalM: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'Clinical M stage: M0',
+      textContent: 'M0',
       startIndex: 18,
       endIndex: 20,
       confidence: 0.85
@@ -168,7 +168,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     pathologicT: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: 'Pathologic T: pT2',
+      textContent: 'pT2',
       startIndex: 14,
       endIndex: 17,
       confidence: 0.92
@@ -176,7 +176,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     pathologicN: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: 'Pathologic N: pN1',
+      textContent: 'pN1',
       startIndex: 14,
       endIndex: 17,
       confidence: 0.86
@@ -184,7 +184,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     pathologicM: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: 'Pathologic M: pM0',
+      textContent: 'pM0',
       startIndex: 14,
       endIndex: 17,
       confidence: 0.90
