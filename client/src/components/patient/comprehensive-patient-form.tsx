@@ -706,7 +706,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Histologic Type (ICD-O-3) {showCodes && <Badge variant="outline">Required</Badge>}
+                        Histologic Type (ICD-O-3) {showCodes && <Badge variant="outline">NAACCR 522</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -728,7 +728,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Behavior Code {showCodes && <Badge variant="outline">Required</Badge>}
+                        Behavior Code {showCodes && <Badge variant="outline">NAACCR 523</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -760,7 +760,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Laterality {showCodes && <Badge variant="outline">Required</Badge>}
+                        Laterality {showCodes && <Badge variant="outline">NAACCR 410</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -792,7 +792,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Grade / Differentiation {showCodes && <Badge variant="secondary">Optional</Badge>}
+                        Grade / Differentiation {showCodes && <Badge variant="outline">NAACCR 440</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -824,7 +824,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Date of Diagnosis {showCodes && <Badge variant="outline">Required</Badge>}
+                        Date of Diagnosis {showCodes && <Badge variant="outline">NAACCR 390</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -1353,7 +1353,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Date of Last Contact {showCodes && <Badge variant="outline">Required</Badge>}
+                        Date of Last Contact {showCodes && <Badge variant="outline">NAACCR 1750</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -1375,7 +1375,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Vital Status {showCodes && <Badge variant="outline">Required</Badge>}
+                        Vital Status {showCodes && <Badge variant="outline">NAACCR 1760</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
