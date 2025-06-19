@@ -963,7 +963,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Clinical N {showCodes && <Badge variant="outline">NAACCR 950</Badge>}
+                        Clinical N {showCodes && <EditableCodeBadge code="NAACCR 950" />}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -985,7 +985,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Clinical M {showCodes && <Badge variant="outline">NAACCR 960</Badge>}
+                        Clinical M {showCodes && <EditableCodeBadge code="NAACCR 960" />}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -1007,7 +1007,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Pathologic T {showCodes && <Badge variant="outline">NAACCR 880</Badge>}
+                        Pathologic T {showCodes && <EditableCodeBadge code="NAACCR 880" />}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -1029,7 +1029,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Pathologic N {showCodes && <Badge variant="outline">NAACCR 890</Badge>}
+                        Pathologic N {showCodes && <EditableCodeBadge code="NAACCR 890" />}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -1051,7 +1051,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Pathologic M {showCodes && <Badge variant="outline">NAACCR 900</Badge>}
+                        Pathologic M {showCodes && <EditableCodeBadge code="NAACCR 900" />}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -1073,7 +1073,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        AJCC Stage Group - Clinical {showCodes && <Badge variant="outline">NAACCR 970</Badge>}
+                        AJCC Stage Group - Clinical {showCodes && <EditableCodeBadge code="NAACCR 970" />}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -1095,7 +1095,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        AJCC Stage Group - Pathologic {showCodes && <Badge variant="outline">NAACCR 910</Badge>}
+                        AJCC Stage Group - Pathologic {showCodes && <EditableCodeBadge code="NAACCR 910" />}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -1117,7 +1117,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        SEER Summary Stage 2018 {showCodes && <Badge variant="outline">NAACCR 759</Badge>}
+                        SEER Summary Stage 2018 {showCodes && <EditableCodeBadge code="NAACCR 759" />}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -1158,7 +1158,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Surgery of Primary Site {showCodes && <Badge variant="outline">NAACCR 1290</Badge>}
+                        Surgery of Primary Site {showCodes && <EditableCodeBadge code="NAACCR 1290" />}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
