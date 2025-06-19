@@ -1180,7 +1180,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Date of Surgery {showCodes && <Badge variant="outline">NAACCR 3170</Badge>}
+                        Date of Surgery {showCodes && <EditableCodeBadge code="NAACCR 3170" />}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -1202,7 +1202,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Radiation Therapy {showCodes && <Badge variant="outline">NAACCR 1360</Badge>}
+                        Radiation Therapy {showCodes && <EditableCodeBadge code="NAACCR 1360" />}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
