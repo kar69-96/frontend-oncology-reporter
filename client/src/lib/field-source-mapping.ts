@@ -20,7 +20,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     patientName: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'Patient Name: Michael Chen',
+      textContent: 'Michael Chen',
       startIndex: 60,
       endIndex: 72,
       confidence: 0.98
@@ -28,7 +28,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     dateOfBirth: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'DOB: 1985-03-15',
+      textContent: '1985-03-15',
       startIndex: 113,
       endIndex: 123,
       confidence: 0.95
@@ -36,7 +36,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     sex: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'Gender: Male',
+      textContent: 'Male',
       startIndex: 132,
       endIndex: 136,
       confidence: 0.97
@@ -44,7 +44,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     race: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'Race: Asian',
+      textContent: 'Asian',
       startIndex: 142,
       endIndex: 147,
       confidence: 0.94
