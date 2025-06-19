@@ -324,18 +324,18 @@ export class MemStorage implements IStorage {
         patientName: patient.name,
         dateOfBirth: patient.dateOfBirth,
         sex: patient.sex === "Male" ? "1" : patient.sex === "Female" ? "2" : "9",
-        race: this.getSampleRace(),
-        ethnicity: this.getSampleEthnicity(),
-        addressAtDiagnosis: this.getSampleAddress(),
-        countyAtDiagnosis: this.getSampleCounty(),
+        race: this.getConsistentRace(patient.id),
+        ethnicity: this.getConsistentEthnicity(patient.id),
+        addressAtDiagnosis: this.getConsistentAddress(patient.id),
+        countyAtDiagnosis: this.getConsistentCounty(patient.id),
         socialSecurityNumber: `${Math.floor(Math.random() * 900 + 100)}-${Math.floor(Math.random() * 90 + 10)}-${Math.floor(Math.random() * 9000 + 1000)}`,
         
         // II. TUMOR IDENTIFICATION
         primarySite: this.getSamplePrimarySite(patient.diagnosis || ""),
-        histologicType: this.getSampleHistology(patient.diagnosis || ""),
+        histologicType: null, // Low confidence - leave empty
         behaviorCode: "3", // Malignant - high confidence
         laterality: this.getSampleLaterality(patient.diagnosis || ""),
-        gradeDifferentiation: this.getSampleGrade(),
+        gradeDifferentiation: null, // Low confidence - leave empty
         dateOfDiagnosis: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         diagnosticConfirmation: this.getSampleDiagnosticConfirmation(),
         classOfCase: this.getSampleClassOfCase(),
@@ -454,6 +454,32 @@ export class MemStorage implements IStorage {
   private getSampleCounty(): string {
     const counties = ["Cook County", "Los Angeles County", "Harris County", "Maricopa County", "Orange County"];
     return counties[Math.floor(Math.random() * counties.length)];
+  }
+
+  // Consistent demographic data methods based on patient ID
+  private getConsistentRace(patientId: number): string {
+    const races = ["01", "02", "96", "03"];
+    return races[patientId % races.length];
+  }
+
+  private getConsistentEthnicity(patientId: number): string {
+    const ethnicities = ["0", "1", "2", "3"];
+    return ethnicities[patientId % ethnicities.length];
+  }
+
+  private getConsistentAddress(patientId: number): string {
+    const addresses = [
+      "123 Main St, Anytown, ST 12345",
+      "456 Oak Ave, Somewhere, ST 67890", 
+      "789 Pine Rd, Elsewhere, ST 54321",
+      "321 Elm Dr, Nowhere, ST 98765"
+    ];
+    return addresses[patientId % addresses.length];
+  }
+
+  private getConsistentCounty(patientId: number): string {
+    const counties = ["Cook County", "Los Angeles County", "Harris County", "Maricopa County", "Orange County"];
+    return counties[patientId % counties.length];
   }
 
   private getSampleLaterality(diagnosis: string): string {
