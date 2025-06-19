@@ -79,25 +79,25 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     primarySite: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: patientData.diagnosis,
-      startIndex: 14,
-      endIndex: 29,
+      textContent: patientData.diagnosis === 'lung' ? 'Adenocarcinoma of lung' : patientData.diagnosis,
+      startIndex: 100,
+      endIndex: 120,
       confidence: 0.92
     },
     behaviorCode: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: 'malignant',
+      textContent: 'adenocarcinoma',
       startIndex: 45,
-      endIndex: 54,
+      endIndex: 59,
       confidence: 0.96
     },
     laterality: {
-      documentId: patientId * 10,
-      documentType: 'pathology',
-      textContent: 'left',
-      startIndex: 35,
-      endIndex: 39,
+      documentId: patientId * 10 + 1,
+      documentType: 'clinical_notes',
+      textContent: patientData.diagnosis === 'lung' ? 'right upper lobe' : 'left',
+      startIndex: 200,
+      endIndex: 215,
       confidence: 0.88
     },
     dateOfDiagnosis: {
@@ -129,17 +129,17 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     clinicalT: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: '3.2 cm',
-      startIndex: 300,
-      endIndex: 306,
+      textContent: '3.2 cm mass',
+      startIndex: 150,
+      endIndex: 162,
       confidence: 0.91
     },
     clinicalN: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'lymph node',
-      startIndex: 320,
-      endIndex: 330,
+      textContent: 'lymphadenopathy',
+      startIndex: 180,
+      endIndex: 195,
       confidence: 0.88
     },
 
