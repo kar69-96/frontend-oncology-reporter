@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,9 +8,15 @@ import { DOCUMENT_TYPES } from "@/lib/constants";
 
 interface DocumentViewerProps {
   documents: Document[];
+  highlightText?: {
+    documentId: number;
+    startIndex: number;
+    endIndex: number;
+  } | null;
+  onHighlightClear?: () => void;
 }
 
-export function DocumentViewer({ documents }: DocumentViewerProps) {
+export function DocumentViewer({ documents, highlightText, onHighlightClear }: DocumentViewerProps) {
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const [documentContent, setDocumentContent] = useState<string | null>(null);
@@ -62,6 +68,27 @@ export function DocumentViewer({ documents }: DocumentViewerProps) {
     } finally {
       setLoadingContent(false);
     }
+  };
+
+  // Effect to handle highlighting when field is clicked
+  useEffect(() => {
+    if (highlightText && documents.length > 0) {
+      const targetDocument = documents.find(doc => doc.id === highlightText.documentId);
+      if (targetDocument && (!selectedDocument || selectedDocument.id !== targetDocument.id)) {
+        loadDocumentContent(targetDocument);
+      }
+    }
+  }, [highlightText, documents, selectedDocument]);
+
+  // Function to highlight text in document content
+  const highlightTextInContent = (content: string, startIndex: number, endIndex: number) => {
+    if (!content || startIndex < 0 || endIndex > content.length) return content;
+    
+    const before = content.substring(0, startIndex);
+    const highlighted = content.substring(startIndex, endIndex);
+    const after = content.substring(endIndex);
+    
+    return `${before}<mark class="bg-yellow-200 px-1 py-0.5 rounded font-medium">${highlighted}</mark>${after}`;
   };
 
   return (
@@ -201,7 +228,11 @@ export function DocumentViewer({ documents }: DocumentViewerProps) {
                 {documentContent ? (
                   <div 
                     className="prose prose-sm max-w-none"
-                    dangerouslySetInnerHTML={{ __html: documentContent }}
+                    dangerouslySetInnerHTML={{ 
+                      __html: highlightText && selectedDocument?.id === highlightText.documentId
+                        ? highlightTextInContent(documentContent, highlightText.startIndex, highlightText.endIndex)
+                        : documentContent 
+                    }}
                   />
                 ) : (
                   <div className="flex-1 flex items-center justify-center text-gray-400">
@@ -209,6 +240,18 @@ export function DocumentViewer({ documents }: DocumentViewerProps) {
                       <FileText className="w-12 h-12 mx-auto mb-4" />
                       <p>Failed to load document content</p>
                     </div>
+                  </div>
+                )}
+                {highlightText && onHighlightClear && (
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={onHighlightClear}
+                      className="text-gray-600"
+                    >
+                      Clear Highlight
+                    </Button>
                   </div>
                 )}
               </div>
