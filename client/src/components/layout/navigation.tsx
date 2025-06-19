@@ -33,8 +33,7 @@ export function Navigation() {
     <nav className="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
       <div className="flex items-center space-x-4">
         <div className="flex items-center space-x-2">
-          <Microscope className="text-primary text-xl" />
-          <h1 className="text-xl font-semibold text-gray-900">Tumor Registry</h1>
+          <h1 className="text-xl font-semibold text-gray-900">Oncology Registry</h1>
         </div>
       </div>
       

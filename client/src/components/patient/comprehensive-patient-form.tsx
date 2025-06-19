@@ -220,7 +220,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes }: Comprehen
       fetch(`/api/patients/${patient.id}/form`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, status: "completed" }),
       }).then(res => {
         if (!res.ok) throw new Error("Failed to save form");
         return res.json();
@@ -228,7 +228,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes }: Comprehen
     onSuccess: () => {
       toast({
         title: "Form saved successfully",
-        description: "The tumor registry form has been updated.",
+        description: "The tumor registry form has been completed and saved.",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/patients", patient.id, "form"] });
     },
@@ -241,8 +241,39 @@ export function ComprehensivePatientForm({ patient, form, showCodes }: Comprehen
     },
   });
 
+  const draftMutation = useMutation({
+    mutationFn: (data: FormData) =>
+      fetch(`/api/patients/${patient.id}/form`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...data, status: "draft" }),
+      }).then(res => {
+        if (!res.ok) throw new Error("Failed to save draft");
+        return res.json();
+      }),
+    onSuccess: () => {
+      toast({
+        title: "Draft saved",
+        description: "Your progress has been saved as a draft.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/patients", patient.id, "form"] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error saving draft",
+        description: "There was an error saving the draft.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const onSubmit = (data: FormData) => {
     mutation.mutate(data);
+  };
+
+  const onSaveDraft = () => {
+    const data = reactForm.getValues();
+    draftMutation.mutate(data);
   };
 
   if (!patient) {
@@ -1114,15 +1145,24 @@ export function ComprehensivePatientForm({ patient, form, showCodes }: Comprehen
             </CardContent>
           </Card>
 
-          {/* Save Button */}
-          <div className="flex justify-end">
+          {/* Save Buttons */}
+          <div className="flex justify-end space-x-3">
+            <Button 
+              type="button"
+              onClick={onSaveDraft}
+              disabled={draftMutation.isPending}
+              variant="outline"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              {draftMutation.isPending ? "Saving..." : "Save Draft"}
+            </Button>
             <Button 
               type="submit" 
               disabled={mutation.isPending}
               className="bg-blue-600 hover:bg-blue-700"
             >
               <Save className="w-4 h-4 mr-2" />
-              {mutation.isPending ? "Saving..." : "Save Tumor Registry Form"}
+              {mutation.isPending ? "Saving..." : "Complete & Save"}
             </Button>
           </div>
         </form>
