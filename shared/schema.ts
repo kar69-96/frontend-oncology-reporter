@@ -100,6 +100,7 @@ export const icdCodes = pgTable("icd_codes", {
   code: text("code").notNull().unique(),
   description: text("description").notNull(),
   category: text("category").notNull(), // Breast, Lung, Prostate, Colorectal, Pancreas
+  codeType: text("code_type").notNull().default("ICD-O-3"), // ICD-O-3 or NAACCR
   lastUpdated: timestamp("last_updated").defaultNow().notNull(),
 });
 

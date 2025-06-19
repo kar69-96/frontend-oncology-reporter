@@ -64,69 +64,98 @@ export class MemStorage implements IStorage {
   }
 
   private initializeDefaultData() {
-    // Initialize ICD codes
+    // Initialize ICD codes and NAACCR codes
     const icdData = [
-      // Breast
-      { code: "C50.9", description: "Malignant neoplasm of breast, unspecified", category: "Breast" },
-      { code: "C50.1", description: "Malignant neoplasm of central portion of breast", category: "Breast" },
-      { code: "C50.2", description: "Malignant neoplasm of upper-inner quadrant of breast", category: "Breast" },
-      { code: "C50.3", description: "Malignant neoplasm of lower-inner quadrant of breast", category: "Breast" },
-      { code: "C50.4", description: "Malignant neoplasm of upper-outer quadrant of breast", category: "Breast" },
-      { code: "C50.5", description: "Malignant neoplasm of lower-outer quadrant of breast", category: "Breast" },
-      { code: "C50.8", description: "Malignant neoplasm of overlapping sites of breast", category: "Breast" },
+      // ICD-O-3 Codes - Breast
+      { code: "C50.9", description: "Malignant neoplasm of breast, unspecified", category: "Breast", codeType: "ICD-O-3" },
+      { code: "C50.1", description: "Malignant neoplasm of central portion of breast", category: "Breast", codeType: "ICD-O-3" },
+      { code: "C50.2", description: "Malignant neoplasm of upper-inner quadrant of breast", category: "Breast", codeType: "ICD-O-3" },
+      { code: "C50.3", description: "Malignant neoplasm of lower-inner quadrant of breast", category: "Breast", codeType: "ICD-O-3" },
+      { code: "C50.4", description: "Malignant neoplasm of upper-outer quadrant of breast", category: "Breast", codeType: "ICD-O-3" },
+      { code: "C50.5", description: "Malignant neoplasm of lower-outer quadrant of breast", category: "Breast", codeType: "ICD-O-3" },
+      { code: "C50.8", description: "Malignant neoplasm of overlapping sites of breast", category: "Breast", codeType: "ICD-O-3" },
       
-      // Lung
-      { code: "C78.1", description: "Secondary malignant neoplasm of lung", category: "Lung" },
-      { code: "C34.1", description: "Malignant neoplasm of upper lobe, bronchus or lung", category: "Lung" },
-      { code: "C34.2", description: "Malignant neoplasm of middle lobe, bronchus or lung", category: "Lung" },
-      { code: "C34.3", description: "Malignant neoplasm of lower lobe, bronchus or lung", category: "Lung" },
-      { code: "C34.8", description: "Malignant neoplasm of overlapping sites of bronchus and lung", category: "Lung" },
-      { code: "C34.9", description: "Malignant neoplasm of unspecified part of bronchus or lung", category: "Lung" },
+      // ICD-O-3 Codes - Lung
+      { code: "C78.1", description: "Secondary malignant neoplasm of lung", category: "Lung", codeType: "ICD-O-3" },
+      { code: "C34.1", description: "Malignant neoplasm of upper lobe, bronchus or lung", category: "Lung", codeType: "ICD-O-3" },
+      { code: "C34.2", description: "Malignant neoplasm of middle lobe, bronchus or lung", category: "Lung", codeType: "ICD-O-3" },
+      { code: "C34.3", description: "Malignant neoplasm of lower lobe, bronchus or lung", category: "Lung", codeType: "ICD-O-3" },
+      { code: "C34.8", description: "Malignant neoplasm of overlapping sites of bronchus and lung", category: "Lung", codeType: "ICD-O-3" },
+      { code: "C34.9", description: "Malignant neoplasm of unspecified part of bronchus or lung", category: "Lung", codeType: "ICD-O-3" },
       
-      // Prostate
-      { code: "C61", description: "Malignant neoplasm of prostate", category: "Prostate" },
+      // ICD-O-3 Codes - Prostate  
+      { code: "C61", description: "Malignant neoplasm of prostate", category: "Prostate", codeType: "ICD-O-3" },
       
-      // Colorectal
-      { code: "C18.9", description: "Malignant neoplasm of colon, unspecified", category: "Colorectal" },
-      { code: "C18.0", description: "Malignant neoplasm of cecum", category: "Colorectal" },
-      { code: "C18.1", description: "Malignant neoplasm of appendix", category: "Colorectal" },
-      { code: "C18.2", description: "Malignant neoplasm of ascending colon", category: "Colorectal" },
-      { code: "C18.3", description: "Malignant neoplasm of hepatic flexure", category: "Colorectal" },
-      { code: "C18.4", description: "Malignant neoplasm of transverse colon", category: "Colorectal" },
-      { code: "C18.5", description: "Malignant neoplasm of splenic flexure", category: "Colorectal" },
-      { code: "C18.6", description: "Malignant neoplasm of descending colon", category: "Colorectal" },
-      { code: "C18.7", description: "Malignant neoplasm of sigmoid colon", category: "Colorectal" },
-      { code: "C19", description: "Malignant neoplasm of rectosigmoid junction", category: "Colorectal" },
-      { code: "C20", description: "Malignant neoplasm of rectum", category: "Colorectal" },
-      { code: "C21.0", description: "Malignant neoplasm of anus, unspecified", category: "Colorectal" },
+      // ICD-O-3 Codes - Colorectal
+      { code: "C18.9", description: "Malignant neoplasm of colon, unspecified", category: "Colorectal", codeType: "ICD-O-3" },
+      { code: "C18.0", description: "Malignant neoplasm of cecum", category: "Colorectal", codeType: "ICD-O-3" },
+      { code: "C19", description: "Malignant neoplasm of rectosigmoid junction", category: "Colorectal", codeType: "ICD-O-3" },
+      { code: "C20", description: "Malignant neoplasm of rectum", category: "Colorectal", codeType: "ICD-O-3" },
       
-      // Pancreas
-      { code: "C25.9", description: "Malignant neoplasm of pancreas, unspecified", category: "Pancreas" },
-      { code: "C25.0", description: "Malignant neoplasm of head of pancreas", category: "Pancreas" },
-      { code: "C25.1", description: "Malignant neoplasm of body of pancreas", category: "Pancreas" },
-      { code: "C25.2", description: "Malignant neoplasm of tail of pancreas", category: "Pancreas" },
-      { code: "C25.3", description: "Malignant neoplasm of pancreatic duct", category: "Pancreas" },
-      { code: "C25.4", description: "Malignant neoplasm of endocrine pancreas", category: "Pancreas" },
-      { code: "C25.7", description: "Malignant neoplasm of other parts of pancreas", category: "Pancreas" },
-      { code: "C25.8", description: "Malignant neoplasm of overlapping sites of pancreas", category: "Pancreas" },
+      // ICD-O-3 Codes - Pancreas
+      { code: "C25.9", description: "Malignant neoplasm of pancreas, unspecified", category: "Pancreas", codeType: "ICD-O-3" },
+      { code: "C25.0", description: "Malignant neoplasm of head of pancreas", category: "Pancreas", codeType: "ICD-O-3" },
       
-      // Additional common cancer sites
-      { code: "C73", description: "Malignant neoplasm of thyroid gland", category: "Endocrine" },
-      { code: "C67.9", description: "Malignant neoplasm of bladder, unspecified", category: "Urological" },
-      { code: "C64.9", description: "Malignant neoplasm of kidney, except renal pelvis, unspecified", category: "Urological" },
-      { code: "C56.9", description: "Malignant neoplasm of ovary, unspecified", category: "Gynecological" },
-      { code: "C53.9", description: "Malignant neoplasm of cervix uteri, unspecified", category: "Gynecological" },
-      { code: "C54.1", description: "Malignant neoplasm of endometrium", category: "Gynecological" },
-      { code: "C43.9", description: "Malignant melanoma of skin, unspecified", category: "Skin" },
-      { code: "C44.9", description: "Other and unspecified malignant neoplasm of skin, unspecified", category: "Skin" },
-      { code: "C22.0", description: "Liver cell carcinoma", category: "Hepatobiliary" },
-      { code: "C22.1", description: "Intrahepatic bile duct carcinoma", category: "Hepatobiliary" },
-      { code: "C24.0", description: "Malignant neoplasm of extrahepatic bile duct", category: "Hepatobiliary" },
-      { code: "C16.9", description: "Malignant neoplasm of stomach, unspecified", category: "Gastrointestinal" },
-      { code: "C15.9", description: "Malignant neoplasm of esophagus, unspecified", category: "Gastrointestinal" },
-      { code: "C32.9", description: "Malignant neoplasm of larynx, unspecified", category: "Head and Neck" },
-      { code: "C02.9", description: "Malignant neoplasm of tongue, unspecified", category: "Head and Neck" },
-      { code: "C06.9", description: "Malignant neoplasm of mouth, unspecified", category: "Head and Neck" }
+      // NAACCR Codes - Demographics
+      { code: "0040", description: "Patient ID Number", category: "Demographics", codeType: "NAACCR" },
+      { code: "0160", description: "Patient Name - Last", category: "Demographics", codeType: "NAACCR" },
+      { code: "0210", description: "Patient Name - First", category: "Demographics", codeType: "NAACCR" },
+      { code: "0220", description: "Patient Name - Middle", category: "Demographics", codeType: "NAACCR" },
+      { code: "0240", description: "Date of Birth", category: "Demographics", codeType: "NAACCR" },
+      { code: "0220", description: "Sex", category: "Demographics", codeType: "NAACCR" },
+      { code: "0160", description: "Race 1", category: "Demographics", codeType: "NAACCR" },
+      { code: "0170", description: "Race 2", category: "Demographics", codeType: "NAACCR" },
+      { code: "0190", description: "Spanish/Hispanic Origin", category: "Demographics", codeType: "NAACCR" },
+      { code: "0070", description: "Address at Diagnosis - No & Street", category: "Demographics", codeType: "NAACCR" },
+      
+      // NAACCR Codes - Tumor Identification
+      { code: "0400", description: "Primary Site", category: "Tumor", codeType: "NAACCR" },
+      { code: "0420", description: "Laterality", category: "Tumor", codeType: "NAACCR" },
+      { code: "0521", description: "Histologic Type ICD-O-3", category: "Tumor", codeType: "NAACCR" },
+      { code: "0522", description: "Behavior Code ICD-O-3", category: "Tumor", codeType: "NAACCR" },
+      { code: "0440", description: "Date of Diagnosis", category: "Tumor", codeType: "NAACCR" },
+      { code: "0490", description: "Grade", category: "Tumor", codeType: "NAACCR" },
+      { code: "0430", description: "Diagnostic Confirmation", category: "Tumor", codeType: "NAACCR" },
+      { code: "0610", description: "Class of Case", category: "Tumor", codeType: "NAACCR" },
+      
+      // NAACCR Codes - Staging
+      { code: "0940", description: "TNM Clin T", category: "Staging", codeType: "NAACCR" },
+      { code: "0950", description: "TNM Clin N", category: "Staging", codeType: "NAACCR" },
+      { code: "0960", description: "TNM Clin M", category: "Staging", codeType: "NAACCR" },
+      { code: "0970", description: "TNM Clin Stage Group", category: "Staging", codeType: "NAACCR" },
+      { code: "1000", description: "TNM Path T", category: "Staging", codeType: "NAACCR" },
+      { code: "1010", description: "TNM Path N", category: "Staging", codeType: "NAACCR" },
+      { code: "1020", description: "TNM Path M", category: "Staging", codeType: "NAACCR" },
+      { code: "1030", description: "TNM Path Stage Group", category: "Staging", codeType: "NAACCR" },
+      { code: "0759", description: "SEER Summary Stage 2000", category: "Staging", codeType: "NAACCR" },
+      
+      // NAACCR Codes - Treatment
+      { code: "1290", description: "Date of 1st Course Treatment", category: "Treatment", codeType: "NAACCR" },
+      { code: "1340", description: "RX Summ--Surgery Primary Site", category: "Treatment", codeType: "NAACCR" },
+      { code: "1350", description: "RX Summ--Scope Reg LN Sur", category: "Treatment", codeType: "NAACCR" },
+      { code: "1360", description: "RX Summ--Surg Oth Reg/Dis", category: "Treatment", codeType: "NAACCR" },
+      { code: "1380", description: "RX Summ--Radiation", category: "Treatment", codeType: "NAACCR" },
+      { code: "1390", description: "RX Summ--Chemo", category: "Treatment", codeType: "NAACCR" },
+      { code: "1400", description: "RX Summ--Hormone", category: "Treatment", codeType: "NAACCR" },
+      { code: "1410", description: "RX Summ--BRM", category: "Treatment", codeType: "NAACCR" },
+      { code: "1420", description: "RX Summ--Other", category: "Treatment", codeType: "NAACCR" },
+      
+      // NAACCR Codes - Follow-up
+      { code: "1750", description: "Date of Last Contact", category: "Follow-up", codeType: "NAACCR" },
+      { code: "1760", description: "Vital Status", category: "Follow-up", codeType: "NAACCR" },
+      { code: "1850", description: "Date of Death", category: "Follow-up", codeType: "NAACCR" },
+      { code: "1860", description: "Cause of Death", category: "Follow-up", codeType: "NAACCR" },
+      { code: "1870", description: "Cancer Status", category: "Follow-up", codeType: "NAACCR" },
+      
+      // NAACCR Codes - Administrative
+      { code: "0540", description: "Sequence Number--Central", category: "Administrative", codeType: "NAACCR" },
+      { code: "0570", description: "Text--Usual Occupation", category: "Administrative", codeType: "NAACCR" },
+      { code: "0580", description: "Text--Usual Industry", category: "Administrative", codeType: "NAACCR" },
+      { code: "2300", description: "Abstractor ID", category: "Administrative", codeType: "NAACCR" },
+      { code: "2310", description: "Date of 1st Contact", category: "Administrative", codeType: "NAACCR" },
+      { code: "2320", description: "Date Case Initiated", category: "Administrative", codeType: "NAACCR" },
+      { code: "2330", description: "Date Case Completed", category: "Administrative", codeType: "NAACCR" },
+      { code: "2340", description: "Date Case Last Changed", category: "Administrative", codeType: "NAACCR" }
     ];
 
     icdData.forEach(data => {
@@ -135,6 +164,7 @@ export class MemStorage implements IStorage {
         code: data.code,
         description: data.description,
         category: data.category,
+        codeType: data.codeType,
         lastUpdated: new Date()
       };
       this.icdCodes.set(icdCode.id, icdCode);
