@@ -6,7 +6,7 @@ interface ClickableFieldProps {
   fieldName: string;
   patientId: number;
   children: ReactNode;
-  onFieldSourceClick?: (documentId: number, startIndex: number, endIndex: number) => void;
+  onFieldSourceClick?: (documentId: number, textContent: string) => void;
   className?: string;
   showIcon?: boolean;
 }
@@ -30,7 +30,7 @@ export function ClickableField({
     e.stopPropagation();
     const fieldSource = getFieldSource(fieldName, patientId);
     if (fieldSource && onFieldSourceClick) {
-      onFieldSourceClick(fieldSource.documentId, fieldSource.startIndex, fieldSource.endIndex);
+      onFieldSourceClick(fieldSource.documentId, fieldSource.textContent);
     }
   };
 
@@ -61,7 +61,7 @@ export function ClickableFieldLabel({
   fieldName: string;
   patientId: number;
   children: ReactNode;
-  onFieldSourceClick?: (documentId: number, startIndex: number, endIndex: number) => void;
+  onFieldSourceClick?: (documentId: number, textContent: string) => void;
 }) {
   const hasSource = hasFieldSource(fieldName, patientId);
 
@@ -70,7 +70,7 @@ export function ClickableFieldLabel({
     e.stopPropagation();
     const fieldSource = getFieldSource(fieldName, patientId);
     if (fieldSource && onFieldSourceClick) {
-      onFieldSourceClick(fieldSource.documentId, fieldSource.startIndex, fieldSource.endIndex);
+      onFieldSourceClick(fieldSource.documentId, fieldSource.textContent);
     }
   };
 

@@ -151,7 +151,7 @@ interface ComprehensivePatientFormProps {
   patient: Patient;
   form?: TumorRegistryForm;
   showCodes: boolean;
-  onFieldSourceClick?: (documentId: number, startIndex: number, endIndex: number) => void;
+  onFieldSourceClick?: (documentId: number, textContent: string) => void;
 }
 
 export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSourceClick }: ComprehensivePatientFormProps) {
