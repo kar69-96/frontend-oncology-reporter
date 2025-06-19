@@ -218,6 +218,69 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
     },
   });
 
+  // Update form values when form prop changes (for draft persistence)
+  useEffect(() => {
+    if (form) {
+      reactForm.reset({
+        // I. PATIENT & DEMOGRAPHIC INFORMATION
+        patientName: form.patientName || patient?.name || "",
+        dateOfBirth: form.dateOfBirth || patient?.dateOfBirth || "",
+        sex: form.sex || "",
+        race: form.race || "",
+        ethnicity: form.ethnicity || "",
+        addressAtDiagnosis: form.addressAtDiagnosis || "",
+        countyAtDiagnosis: form.countyAtDiagnosis || "",
+        socialSecurityNumber: form.socialSecurityNumber || "",
+        
+        // II. TUMOR IDENTIFICATION
+        primarySite: form.primarySite || "",
+        histologicType: form.histologicType || "",
+        behaviorCode: form.behaviorCode || "",
+        laterality: form.laterality || "",
+        gradeDifferentiation: form.gradeDifferentiation || "",
+        dateOfDiagnosis: form.dateOfDiagnosis || "",
+        diagnosticConfirmation: form.diagnosticConfirmation || "",
+        classOfCase: form.classOfCase || "",
+        sequenceNumber: form.sequenceNumber || "",
+        
+        // III. STAGING
+        clinicalT: form.clinicalT || "",
+        clinicalN: form.clinicalN || "",
+        clinicalM: form.clinicalM || "",
+        pathologicT: form.pathologicT || "",
+        pathologicN: form.pathologicN || "",
+        pathologicM: form.pathologicM || "",
+        ajccStageGroupClinical: form.ajccStageGroupClinical || "",
+        ajccStageGroupPathologic: form.ajccStageGroupPathologic || "",
+        seerSummaryStage2018: form.seerSummaryStage2018 || "",
+        
+        // IV. FIRST COURSE OF TREATMENT
+        surgeryOfPrimarySite: form.surgeryOfPrimarySite || "",
+        dateOfSurgery: form.dateOfSurgery || "",
+        radiationTherapy: form.radiationTherapy || "",
+        dateRadiationStarted: form.dateRadiationStarted || "",
+        chemotherapy: form.chemotherapy || "",
+        hormoneTherapy: form.hormoneTherapy || "",
+        immunotherapy: form.immunotherapy || "",
+        
+        // V. FOLLOW-UP & OUTCOME
+        dateOfLastContact: form.dateOfLastContact || "",
+        vitalStatus: form.vitalStatus || "",
+        dateOfDeath: form.dateOfDeath || "",
+        causeOfDeath: form.causeOfDeath || "",
+        cancerStatus: form.cancerStatus || "",
+        
+        // VI. ADMINISTRATIVE & QUALITY
+        accessionNumber: form.accessionNumber || "",
+        reportingFacilityId: form.reportingFacilityId || "",
+        abstractorId: form.abstractorId || "",
+        dateCaseAbstracted: form.dateCaseAbstracted || "",
+        editChecksPassed: form.editChecksPassed || "",
+        recordType: form.recordType || "",
+      });
+    }
+  }, [form, patient, reactForm]);
+
   const mutation = useMutation({
     mutationFn: (data: FormData) =>
       fetch(`/api/patients/${patient.id}/form`, {
@@ -233,7 +296,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
         title: "Form saved successfully",
         description: "The tumor registry form has been completed and saved.",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/patients", patient.id, "form"] });
+      queryClient.invalidateQueries({ queryKey: [`/api/patients/${patient.id}/form`] });
     },
     onError: (error) => {
       toast({
@@ -259,7 +322,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
         title: "Draft saved",
         description: "Your progress has been saved as a draft.",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/patients", patient.id, "form"] });
+      queryClient.invalidateQueries({ queryKey: [`/api/patients/${patient.id}/form`] });
     },
     onError: (error) => {
       toast({
