@@ -1163,7 +1163,15 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="dateRadiationStarted"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Date Radiation Started {showCodes && <Badge variant="secondary">Optional</Badge>}</FormLabel>
+                    <FormLabel>
+                      <ClickableFieldLabel
+                        fieldName="dateRadiationStarted"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        Date Radiation Started {showCodes && <Badge variant="secondary">Optional</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
                     </FormControl>
@@ -1177,7 +1185,15 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="chemotherapy"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Chemotherapy {showCodes && <Badge variant="secondary">Optional</Badge>}</FormLabel>
+                    <FormLabel>
+                      <ClickableFieldLabel
+                        fieldName="chemotherapy"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        Chemotherapy {showCodes && <Badge variant="secondary">Optional</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger className={getFieldConfidence("chemotherapy", form)}>
@@ -1200,7 +1216,15 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="hormoneTherapy"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Hormone Therapy {showCodes && <Badge variant="secondary">Optional</Badge>}</FormLabel>
+                    <FormLabel>
+                      <ClickableFieldLabel
+                        fieldName="hormoneTherapy"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        Hormone Therapy {showCodes && <Badge variant="secondary">Optional</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -1222,7 +1246,15 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="immunotherapy"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Immunotherapy {showCodes && <Badge variant="secondary">Optional</Badge>}</FormLabel>
+                    <FormLabel>
+                      <ClickableFieldLabel
+                        fieldName="immunotherapy"  
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        Immunotherapy {showCodes && <Badge variant="secondary">Optional</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -1252,7 +1284,15 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="dateOfLastContact"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Date of Last Contact {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
+                    <FormLabel>
+                      <ClickableFieldLabel
+                        fieldName="dateOfLastContact"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        Date of Last Contact {showCodes && <Badge variant="outline">Required</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
                     </FormControl>
@@ -1266,7 +1306,15 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="vitalStatus"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Vital Status {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
+                    <FormLabel>
+                      <ClickableFieldLabel
+                        fieldName="vitalStatus"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        Vital Status {showCodes && <Badge variant="outline">Required</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -1302,7 +1350,15 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="causeOfDeath"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Cause of Death {showCodes && <Badge variant="secondary">Optional</Badge>}</FormLabel>
+                    <FormLabel>
+                      <ClickableFieldLabel
+                        fieldName="causeOfDeath"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        Cause of Death {showCodes && <Badge variant="secondary">Optional</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="ICD-10 code or description" />
                     </FormControl>
@@ -1316,7 +1372,15 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="cancerStatus"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Cancer Status {showCodes && <Badge variant="secondary">Optional</Badge>}</FormLabel>
+                    <FormLabel>
+                      <ClickableFieldLabel
+                        fieldName="cancerStatus"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        Cancer Status {showCodes && <Badge variant="secondary">Optional</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -1347,7 +1411,15 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="accessionNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Accession Number {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
+                    <FormLabel>
+                      <ClickableFieldLabel
+                        fieldName="accessionNumber"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        Accession Number {showCodes && <Badge variant="outline">Required</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="Unique accession number" />
                     </FormControl>
@@ -1361,7 +1433,15 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="reportingFacilityId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Reporting Facility ID {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
+                    <FormLabel>
+                      <ClickableFieldLabel
+                        fieldName="reportingFacilityId"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        Reporting Facility ID {showCodes && <Badge variant="outline">Required</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="Facility identifier" />
                     </FormControl>
