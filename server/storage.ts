@@ -280,23 +280,64 @@ export class MemStorage implements IStorage {
       const form: TumorRegistryForm = {
         id: this.currentId++,
         patientId: patient.id,
+        
+        // I. PATIENT & DEMOGRAPHIC INFORMATION
         patientName: patient.name,
-        medicalRecordNumber: patient.mrn,
         dateOfBirth: patient.dateOfBirth,
-        sex: patient.sex,
+        sex: patient.sex === "Male" ? "1" : patient.sex === "Female" ? "2" : "9",
+        race: this.getSampleRace(),
+        ethnicity: this.getSampleEthnicity(),
+        addressAtDiagnosis: this.getSampleAddress(),
+        countyAtDiagnosis: this.getSampleCounty(),
+        socialSecurityNumber: null,
+        
+        // II. TUMOR IDENTIFICATION
         primarySite: this.getSamplePrimarySite(patient.diagnosis || ""),
-        primarySiteCode: this.getSampleSiteCode(patient.diagnosis || ""),
-        histology: this.getSampleHistology(patient.diagnosis || ""),
-        histologyCode: this.getSampleHistologyCode(patient.diagnosis || ""),
-        grade: Math.random() > 0.5 ? `Grade ${Math.floor(Math.random() * 4) + 1}` : null,
-        laterality: Math.random() > 0.5 ? ["Right", "Left", "Bilateral"][Math.floor(Math.random() * 3)] : null,
-        behavior: "Malignant",
-        clinicalT: Math.random() > 0.3 ? `T${Math.floor(Math.random() * 4) + 1}` : null,
-        clinicalN: Math.random() > 0.3 ? `N${Math.floor(Math.random() * 4)}` : null,
-        clinicalM: Math.random() > 0.7 ? "M1" : "M0",
-        dateOfFirstContact: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        histologicType: this.getSampleHistology(patient.diagnosis || ""),
+        behaviorCode: "3", // Malignant
+        laterality: this.getSampleLaterality(patient.diagnosis || ""),
+        gradeDifferentiation: this.getSampleGrade(),
         dateOfDiagnosis: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        surgeryPerformed: Math.random() > 0.4 ? "Yes" : "No",
+        diagnosticConfirmation: this.getSampleDiagnosticConfirmation(),
+        classOfCase: this.getSampleClassOfCase(),
+        sequenceNumber: "00",
+        
+        // III. STAGING
+        clinicalT: this.getSampleTStage(),
+        clinicalN: this.getSampleNStage(),
+        clinicalM: this.getSampleMStage(),
+        pathologicT: this.getSampleTStage(),
+        pathologicN: this.getSampleNStage(),
+        pathologicM: this.getSampleMStage(),
+        ajccStageGroupClinical: this.getSampleStageGroup(),
+        ajccStageGroupPathologic: this.getSampleStageGroup(),
+        seerSummaryStage2018: this.getSampleSeerStage(),
+        
+        // IV. FIRST COURSE OF TREATMENT
+        surgeryOfPrimarySite: this.getSampleSurgery(),
+        dateOfSurgery: Math.random() > 0.5 ? new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : null,
+        radiationTherapy: Math.random() > 0.4 ? "1" : "0",
+        dateRadiationStarted: Math.random() > 0.6 ? new Date(Date.now() - Math.random() * 45 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : null,
+        chemotherapy: Math.random() > 0.3 ? "01" : "00",
+        hormoneTherapy: Math.random() > 0.7 ? "01" : "00",
+        immunotherapy: Math.random() > 0.8 ? "01" : "00",
+        
+        // V. FOLLOW-UP & OUTCOME
+        dateOfLastContact: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        vitalStatus: Math.random() > 0.8 ? "2" : "1", // Mostly alive
+        dateOfDeath: null,
+        causeOfDeath: null,
+        cancerStatus: this.getSampleCancerStatus(),
+        
+        // VI. ADMINISTRATIVE & QUALITY
+        accessionNumber: `ACC${patient.id.toString().padStart(6, '0')}`,
+        reportingFacilityId: "12345",
+        abstractorId: `ABS${Math.floor(Math.random() * 100).toString().padStart(3, '0')}`,
+        dateCaseAbstracted: new Date().toISOString().split('T')[0],
+        editChecksPassed: "1",
+        recordType: "A",
+        
+        // Auto-fill confidence scores
         primarySiteConfidence: Math.random() > 0.3 ? "0.98" : "0.95",
         histologyConfidence: Math.random() > 0.2 ? "0.97" : "0.94",
         lastUpdated: new Date()
@@ -348,6 +389,89 @@ export class MemStorage implements IStorage {
     if (diagnosis.includes("adenocarcinoma")) return "8140/3";
     if (diagnosis.includes("serous")) return "8441/3";
     return "8010/3";
+  }
+
+  // Helper methods for comprehensive cancer registry fields
+  private getSampleRace(): string {
+    const races = ["01", "02", "96", "03"];
+    return races[Math.floor(Math.random() * races.length)];
+  }
+
+  private getSampleEthnicity(): string {
+    const ethnicities = ["0", "1", "2", "3"];
+    return ethnicities[Math.floor(Math.random() * ethnicities.length)];
+  }
+
+  private getSampleAddress(): string {
+    const addresses = [
+      "123 Main St, Anytown, ST 12345",
+      "456 Oak Ave, Somewhere, ST 67890", 
+      "789 Pine Rd, Elsewhere, ST 54321",
+      "321 Elm Dr, Nowhere, ST 98765"
+    ];
+    return addresses[Math.floor(Math.random() * addresses.length)];
+  }
+
+  private getSampleCounty(): string {
+    const counties = ["Cook County", "Los Angeles County", "Harris County", "Maricopa County", "Orange County"];
+    return counties[Math.floor(Math.random() * counties.length)];
+  }
+
+  private getSampleLaterality(diagnosis: string): string {
+    if (diagnosis.includes("breast") || diagnosis.includes("lung") || diagnosis.includes("kidney")) {
+      return Math.random() > 0.5 ? "1" : "2"; // Right or Left
+    }
+    return "8"; // Not applicable
+  }
+
+  private getSampleGrade(): string {
+    const grades = ["1", "2", "3", "4"];
+    return grades[Math.floor(Math.random() * grades.length)];
+  }
+
+  private getSampleDiagnosticConfirmation(): string {
+    const confirmations = ["1", "2", "4", "8"];
+    return confirmations[Math.floor(Math.random() * confirmations.length)];
+  }
+
+  private getSampleClassOfCase(): string {
+    const classes = ["00", "10", "11", "13"];
+    return classes[Math.floor(Math.random() * classes.length)];
+  }
+
+  private getSampleTStage(): string {
+    const stages = ["T1", "T2", "T3", "T4", "TX"];
+    return stages[Math.floor(Math.random() * stages.length)];
+  }
+
+  private getSampleNStage(): string {
+    const stages = ["N0", "N1", "N2", "N3", "NX"];
+    return stages[Math.floor(Math.random() * stages.length)];
+  }
+
+  private getSampleMStage(): string {
+    const stages = ["M0", "M1", "MX"];
+    return stages[Math.floor(Math.random() * stages.length)];
+  }
+
+  private getSampleStageGroup(): string {
+    const stages = ["I", "IA", "IB", "II", "IIA", "IIB", "III", "IIIA", "IIIB", "IIIC", "IV", "IVA", "IVB"];
+    return stages[Math.floor(Math.random() * stages.length)];
+  }
+
+  private getSampleSeerStage(): string {
+    const stages = ["0", "1", "2", "3", "9"];
+    return stages[Math.floor(Math.random() * stages.length)];
+  }
+
+  private getSampleSurgery(): string {
+    const surgeries = ["00", "10", "20", "30", "40", "50", "60", "70", "80", "90"];
+    return surgeries[Math.floor(Math.random() * surgeries.length)];
+  }
+
+  private getSampleCancerStatus(): string {
+    const statuses = ["0", "1", "9"];
+    return statuses[Math.floor(Math.random() * statuses.length)];
   }
 
   async getUser(id: number): Promise<User | undefined> {

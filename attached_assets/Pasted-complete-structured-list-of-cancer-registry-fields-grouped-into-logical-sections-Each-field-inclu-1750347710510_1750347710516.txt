@@ -1,0 +1,122 @@
+complete, structured list of cancer registry fields, grouped into logical sections. Each field includes:
+
+(R) = Required
+(O) = Optional
+Dropdown options when available (limited to most common + “custom entry” if applicable)
+🏷️ I. PATIENT & DEMOGRAPHIC INFORMATION
+
+Patient Name (R)
+Date of Birth (R)
+Sex (R)
+1 = Male
+2 = Female
+3 = Other
+9 = Unknown
+Race (R)
+01 = White
+02 = Black
+96 = Asian
+03 = Native American
+Custom Entry
+Ethnicity (Hispanic Origin) (R)
+0 = Non-Hispanic
+1 = Mexican
+2 = Puerto Rican
+3 = Cuban
+Custom Entry
+Address at Diagnosis (R)
+County at Diagnosis (R)
+Social Security Number (O)
+📍 II. TUMOR IDENTIFICATION
+
+Primary Site (ICD-O-3) (R)
+Histologic Type (ICD-O-3) (R)
+Behavior Code (R)
+0 = Benign
+1 = Uncertain
+2 = In Situ
+3 = Malignant
+Laterality (R)
+1 = Right
+2 = Left
+3 = Only One Side
+8 = Not Applicable
+Grade / Differentiation (O)
+1 = Well Differentiated
+2 = Moderately Differentiated
+3 = Poorly Differentiated
+4 = Undifferentiated
+Custom Entry
+Date of Diagnosis (R)
+Diagnostic Confirmation (R)
+1 = Histology
+2 = Clinical
+4 = Physician Statement
+8 = Radiology
+Custom Entry
+Class of Case (R)
+00 = Dx & Tx Elsewhere
+10 = Dx Only at Your Site
+11 = Dx + Tx at Your Site
+13 = Tx Only at Your Site
+Custom Entry
+Sequence Number (R)
+🎯 III. STAGING
+
+Clinical T (O)
+Clinical N (O)
+Clinical M (O)
+Pathologic T (O)
+Pathologic N (O)
+Pathologic M (O)
+AJCC Stage Group – Clinical (O)
+AJCC Stage Group – Pathologic (O)
+SEER Summary Stage 2018 (R)
+0 = In Situ
+1 = Localized
+2 = Regional
+3 = Distant
+9 = Unknown
+💊 IV. FIRST COURSE OF TREATMENT
+
+Surgery of Primary Site (O)
+Date of Surgery (O)
+Radiation Therapy (O)
+0 = None
+1 = Yes
+9 = Unknown
+Date Radiation Started (O)
+Chemotherapy (O)
+00 = None
+01 = Yes
+99 = Unknown
+Hormone Therapy (O)
+00 = None
+01 = Yes
+Immunotherapy (O)
+00 = None
+01 = Yes
+🔁 V. FOLLOW-UP & OUTCOME
+
+Date of Last Contact (R)
+Vital Status (R)
+1 = Alive
+2 = Dead
+Date of Death (O)
+Cause of Death (O)
+Cancer Status (O)
+0 = No Evidence
+1 = Present
+9 = Unknown
+🧾 VI. ADMINISTRATIVE & QUALITY
+
+Accession Number (R)
+Reporting Facility ID (R)
+Abstractor ID (O)
+Date Case Abstracted (R)
+Edit Checks Passed (R)
+1 = Pass
+0 = Fail
+Record Type (R)
+A = Abstract
+I = Incidence

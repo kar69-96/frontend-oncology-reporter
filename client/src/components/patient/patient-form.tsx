@@ -16,23 +16,61 @@ import { useToast } from "@/hooks/use-toast";
 import type { Patient, TumorRegistryForm } from "@/lib/types";
 
 const formSchema = z.object({
+  // I. PATIENT & DEMOGRAPHIC INFORMATION
   patientName: z.string().min(1, "Patient name is required"),
-  medicalRecordNumber: z.string().min(1, "MRN is required"),
   dateOfBirth: z.string().min(1, "Date of birth is required"),
   sex: z.string().min(1, "Sex is required"),
-  primarySite: z.string().optional(),
-  primarySiteCode: z.string().optional(),
-  histology: z.string().optional(),
-  histologyCode: z.string().optional(),
-  grade: z.string().optional(),
-  laterality: z.string().optional(),
-  behavior: z.string().optional(),
+  race: z.string().min(1, "Race is required"),
+  ethnicity: z.string().min(1, "Ethnicity is required"),
+  addressAtDiagnosis: z.string().min(1, "Address at diagnosis is required"),
+  countyAtDiagnosis: z.string().min(1, "County at diagnosis is required"),
+  socialSecurityNumber: z.string().optional(),
+  
+  // II. TUMOR IDENTIFICATION
+  primarySite: z.string().min(1, "Primary site is required"),
+  histologicType: z.string().min(1, "Histologic type is required"),
+  behaviorCode: z.string().min(1, "Behavior code is required"),
+  laterality: z.string().min(1, "Laterality is required"),
+  gradeDifferentiation: z.string().optional(),
+  dateOfDiagnosis: z.string().min(1, "Date of diagnosis is required"),
+  diagnosticConfirmation: z.string().min(1, "Diagnostic confirmation is required"),
+  classOfCase: z.string().min(1, "Class of case is required"),
+  sequenceNumber: z.string().min(1, "Sequence number is required"),
+  
+  // III. STAGING
   clinicalT: z.string().optional(),
   clinicalN: z.string().optional(),
   clinicalM: z.string().optional(),
-  dateOfFirstContact: z.string().optional(),
-  dateOfDiagnosis: z.string().optional(),
-  surgeryPerformed: z.string().optional(),
+  pathologicT: z.string().optional(),
+  pathologicN: z.string().optional(),
+  pathologicM: z.string().optional(),
+  ajccStageGroupClinical: z.string().optional(),
+  ajccStageGroupPathologic: z.string().optional(),
+  seerSummaryStage2018: z.string().min(1, "SEER summary stage is required"),
+  
+  // IV. FIRST COURSE OF TREATMENT
+  surgeryOfPrimarySite: z.string().optional(),
+  dateOfSurgery: z.string().optional(),
+  radiationTherapy: z.string().optional(),
+  dateRadiationStarted: z.string().optional(),
+  chemotherapy: z.string().optional(),
+  hormoneTherapy: z.string().optional(),
+  immunotherapy: z.string().optional(),
+  
+  // V. FOLLOW-UP & OUTCOME
+  dateOfLastContact: z.string().min(1, "Date of last contact is required"),
+  vitalStatus: z.string().min(1, "Vital status is required"),
+  dateOfDeath: z.string().optional(),
+  causeOfDeath: z.string().optional(),
+  cancerStatus: z.string().optional(),
+  
+  // VI. ADMINISTRATIVE & QUALITY
+  accessionNumber: z.string().min(1, "Accession number is required"),
+  reportingFacilityId: z.string().min(1, "Reporting facility ID is required"),
+  abstractorId: z.string().optional(),
+  dateCaseAbstracted: z.string().min(1, "Date case abstracted is required"),
+  editChecksPassed: z.string().min(1, "Edit checks status is required"),
+  recordType: z.string().min(1, "Record type is required"),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -53,23 +91,61 @@ export function PatientForm({ patient, form, showCodes }: PatientFormProps) {
   const reactForm = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      // I. PATIENT & DEMOGRAPHIC INFORMATION
       patientName: form?.patientName || patient?.name || "",
-      medicalRecordNumber: form?.medicalRecordNumber || patient?.mrn || "",
       dateOfBirth: form?.dateOfBirth || patient?.dateOfBirth || "",
-      sex: form?.sex || patient?.sex || "",
+      sex: form?.sex || "",
+      race: form?.race || "",
+      ethnicity: form?.ethnicity || "",
+      addressAtDiagnosis: form?.addressAtDiagnosis || "",
+      countyAtDiagnosis: form?.countyAtDiagnosis || "",
+      socialSecurityNumber: form?.socialSecurityNumber || "",
+      
+      // II. TUMOR IDENTIFICATION
       primarySite: form?.primarySite || "",
-      primarySiteCode: form?.primarySiteCode || "",
-      histology: form?.histology || "",
-      histologyCode: form?.histologyCode || "",
-      grade: form?.grade || "",
+      histologicType: form?.histologicType || "",
+      behaviorCode: form?.behaviorCode || "",
       laterality: form?.laterality || "",
-      behavior: form?.behavior || "",
+      gradeDifferentiation: form?.gradeDifferentiation || "",
+      dateOfDiagnosis: form?.dateOfDiagnosis || "",
+      diagnosticConfirmation: form?.diagnosticConfirmation || "",
+      classOfCase: form?.classOfCase || "",
+      sequenceNumber: form?.sequenceNumber || "",
+      
+      // III. STAGING
       clinicalT: form?.clinicalT || "",
       clinicalN: form?.clinicalN || "",
       clinicalM: form?.clinicalM || "",
-      dateOfFirstContact: form?.dateOfFirstContact || "",
-      dateOfDiagnosis: form?.dateOfDiagnosis || "",
-      surgeryPerformed: form?.surgeryPerformed || "",
+      pathologicT: form?.pathologicT || "",
+      pathologicN: form?.pathologicN || "",
+      pathologicM: form?.pathologicM || "",
+      ajccStageGroupClinical: form?.ajccStageGroupClinical || "",
+      ajccStageGroupPathologic: form?.ajccStageGroupPathologic || "",
+      seerSummaryStage2018: form?.seerSummaryStage2018 || "",
+      
+      // IV. FIRST COURSE OF TREATMENT
+      surgeryOfPrimarySite: form?.surgeryOfPrimarySite || "",
+      dateOfSurgery: form?.dateOfSurgery || "",
+      radiationTherapy: form?.radiationTherapy || "",
+      dateRadiationStarted: form?.dateRadiationStarted || "",
+      chemotherapy: form?.chemotherapy || "",
+      hormoneTherapy: form?.hormoneTherapy || "",
+      immunotherapy: form?.immunotherapy || "",
+      
+      // V. FOLLOW-UP & OUTCOME
+      dateOfLastContact: form?.dateOfLastContact || "",
+      vitalStatus: form?.vitalStatus || "",
+      dateOfDeath: form?.dateOfDeath || "",
+      causeOfDeath: form?.causeOfDeath || "",
+      cancerStatus: form?.cancerStatus || "",
+      
+      // VI. ADMINISTRATIVE & QUALITY
+      accessionNumber: form?.accessionNumber || "",
+      reportingFacilityId: form?.reportingFacilityId || "",
+      abstractorId: form?.abstractorId || "",
+      dateCaseAbstracted: form?.dateCaseAbstracted || "",
+      editChecksPassed: form?.editChecksPassed || "",
+      recordType: form?.recordType || "",
     },
   });
 

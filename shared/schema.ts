@@ -32,27 +32,63 @@ export const documents = pgTable("documents", {
 export const tumorRegistryForms = pgTable("tumor_registry_forms", {
   id: serial("id").primaryKey(),
   patientId: integer("patient_id").references(() => patients.id).notNull(),
-  // Patient Demographics
+  
+  // I. PATIENT & DEMOGRAPHIC INFORMATION
   patientName: text("patient_name"),
-  medicalRecordNumber: text("medical_record_number"),
   dateOfBirth: text("date_of_birth"),
-  sex: text("sex"),
-  // Tumor Information
-  primarySite: text("primary_site"),
-  primarySiteCode: text("primary_site_code"),
-  histology: text("histology"),
-  histologyCode: text("histology_code"),
-  grade: text("grade"),
-  laterality: text("laterality"),
-  behavior: text("behavior"),
-  // Staging Information
+  sex: text("sex"), // 1=Male, 2=Female, 3=Other, 9=Unknown
+  race: text("race"), // 01=White, 02=Black, 96=Asian, 03=Native American, Custom
+  ethnicity: text("ethnicity"), // 0=Non-Hispanic, 1=Mexican, 2=Puerto Rican, 3=Cuban, Custom
+  addressAtDiagnosis: text("address_at_diagnosis"),
+  countyAtDiagnosis: text("county_at_diagnosis"),
+  socialSecurityNumber: text("social_security_number"),
+  
+  // II. TUMOR IDENTIFICATION
+  primarySite: text("primary_site"), // ICD-O-3
+  histologicType: text("histologic_type"), // ICD-O-3
+  behaviorCode: text("behavior_code"), // 0=Benign, 1=Uncertain, 2=In Situ, 3=Malignant
+  laterality: text("laterality"), // 1=Right, 2=Left, 3=Only One Side, 8=Not Applicable
+  gradeDifferentiation: text("grade_differentiation"), // 1=Well, 2=Moderate, 3=Poor, 4=Undifferentiated
+  dateOfDiagnosis: text("date_of_diagnosis"),
+  diagnosticConfirmation: text("diagnostic_confirmation"), // 1=Histology, 2=Clinical, 4=Physician, 8=Radiology
+  classOfCase: text("class_of_case"), // 00=Dx&Tx Elsewhere, 10=Dx Only, 11=Dx+Tx, 13=Tx Only
+  sequenceNumber: text("sequence_number"),
+  
+  // III. STAGING
   clinicalT: text("clinical_t"),
   clinicalN: text("clinical_n"),
   clinicalM: text("clinical_m"),
-  // Treatment Information
-  dateOfFirstContact: text("date_of_first_contact"),
-  dateOfDiagnosis: text("date_of_diagnosis"),
-  surgeryPerformed: text("surgery_performed"),
+  pathologicT: text("pathologic_t"),
+  pathologicN: text("pathologic_n"),
+  pathologicM: text("pathologic_m"),
+  ajccStageGroupClinical: text("ajcc_stage_group_clinical"),
+  ajccStageGroupPathologic: text("ajcc_stage_group_pathologic"),
+  seerSummaryStage2018: text("seer_summary_stage_2018"), // 0=In Situ, 1=Localized, 2=Regional, 3=Distant, 9=Unknown
+  
+  // IV. FIRST COURSE OF TREATMENT
+  surgeryOfPrimarySite: text("surgery_of_primary_site"),
+  dateOfSurgery: text("date_of_surgery"),
+  radiationTherapy: text("radiation_therapy"), // 0=None, 1=Yes, 9=Unknown
+  dateRadiationStarted: text("date_radiation_started"),
+  chemotherapy: text("chemotherapy"), // 00=None, 01=Yes, 99=Unknown
+  hormoneTherapy: text("hormone_therapy"), // 00=None, 01=Yes
+  immunotherapy: text("immunotherapy"), // 00=None, 01=Yes
+  
+  // V. FOLLOW-UP & OUTCOME
+  dateOfLastContact: text("date_of_last_contact"),
+  vitalStatus: text("vital_status"), // 1=Alive, 2=Dead
+  dateOfDeath: text("date_of_death"),
+  causeOfDeath: text("cause_of_death"),
+  cancerStatus: text("cancer_status"), // 0=No Evidence, 1=Present, 9=Unknown
+  
+  // VI. ADMINISTRATIVE & QUALITY
+  accessionNumber: text("accession_number"),
+  reportingFacilityId: text("reporting_facility_id"),
+  abstractorId: text("abstractor_id"),
+  dateCaseAbstracted: text("date_case_abstracted"),
+  editChecksPassed: text("edit_checks_passed"), // 1=Pass, 0=Fail
+  recordType: text("record_type"), // A=Abstract, I=Incidence
+  
   // Auto-fill confidence scores
   primarySiteConfidence: decimal("primary_site_confidence"),
   histologyConfidence: decimal("histology_confidence"),
