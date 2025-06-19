@@ -333,7 +333,7 @@ export class MemStorage implements IStorage {
         // II. TUMOR IDENTIFICATION
         primarySite: this.getSamplePrimarySite(patient.diagnosis || ""),
         histologicType: null, // Low confidence - leave empty
-        behaviorCode: "3", // Malignant
+        behaviorCode: "3", // Malignant - high confidence
         laterality: this.getSampleLaterality(patient.diagnosis || ""),
         gradeDifferentiation: null, // Low confidence - leave empty
         dateOfDiagnosis: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],

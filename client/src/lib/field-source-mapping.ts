@@ -189,18 +189,26 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
       endIndex: 17,
       confidence: 0.90
     },
-    stageGroup: {
+    ajccStageGroupClinical: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'Overall stage: Stage IIB',
+      textContent: 'Stage IIB',
       startIndex: 15,
       endIndex: 25,
       confidence: 0.89
     },
-    seerStage: {
+    ajccStageGroupPathologic: {
+      documentId: patientId * 10,
+      documentType: 'pathology',
+      textContent: 'Stage IIA',
+      startIndex: 15,
+      endIndex: 25,
+      confidence: 0.91
+    },
+    seerSummaryStage2018: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'SEER stage: Regional',
+      textContent: 'Regional',
       startIndex: 12,
       endIndex: 20,
       confidence: 0.91
@@ -210,7 +218,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     classOfCase: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'Class of case: Analytic',
+      textContent: 'Analytic',
       startIndex: 15,
       endIndex: 23,
       confidence: 0.95
@@ -218,15 +226,23 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     surgeryOfPrimarySite: {
       documentId: patientId * 10 + 2,
       documentType: 'clinical_notes',
-      textContent: 'Surgery performed: Right upper lobectomy with lymph node dissection',
+      textContent: 'lobectomy',
       startIndex: 19,
       endIndex: 66,
       confidence: 0.94
     },
+    dateOfSurgery: {
+      documentId: patientId * 10 + 2,
+      documentType: 'clinical_notes',
+      textContent: '2024-02-15',
+      startIndex: 5,
+      endIndex: 15,
+      confidence: 0.96
+    },
     scopeOfRegionalLymphNodeSurgery: {
       documentId: patientId * 10 + 2,
       documentType: 'clinical_notes',
-      textContent: 'Lymph nodes: Regional lymph node dissection performed',
+      textContent: 'lymph node dissection',
       startIndex: 13,
       endIndex: 53,
       confidence: 0.92
@@ -234,7 +250,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     numberOfLymphNodesExamined: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: 'Lymph nodes examined: 15',
+      textContent: '15',
       startIndex: 22,
       endIndex: 24,
       confidence: 0.96
@@ -242,7 +258,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     numberOfLymphNodesPositive: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: 'Positive lymph nodes: 3',
+      textContent: '3',
       startIndex: 22,
       endIndex: 23,
       confidence: 0.95
@@ -250,18 +266,18 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     radiationTherapy: {
       documentId: patientId * 10 + 2,
       documentType: 'clinical_notes',
-      textContent: 'Radiation therapy: External beam radiation completed',
+      textContent: 'radiation',
       startIndex: 19,
       endIndex: 52,
       confidence: 0.84
     },
     chemotherapy: {
-      documentId: patientId * 10 + 2,
+      documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'Chemotherapy: Carboplatin and Paclitaxel regimen administered',
+      textContent: 'Carboplatin',
       startIndex: 14,
       endIndex: 61,
-      confidence: 0.93
+      confidence: 0.89
     },
     hormoneTherapy: {
       documentId: patientId * 10 + 2,
