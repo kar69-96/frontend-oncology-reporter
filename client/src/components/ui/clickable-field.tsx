@@ -8,6 +8,7 @@ interface ClickableFieldProps {
   children: ReactNode;
   onFieldSourceClick?: (documentId: number, startIndex: number, endIndex: number) => void;
   className?: string;
+  showIcon?: boolean;
 }
 
 export function ClickableField({ 
@@ -15,7 +16,8 @@ export function ClickableField({
   patientId, 
   children, 
   onFieldSourceClick, 
-  className = "" 
+  className = "",
+  showIcon = false
 }: ClickableFieldProps) {
   const hasSource = hasFieldSource(fieldName, patientId);
 
@@ -23,7 +25,49 @@ export function ClickableField({
     return <div className={className}>{children}</div>;
   }
 
-  const handleClick = () => {
+  const handleSourceClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const fieldSource = getFieldSource(fieldName, patientId);
+    if (fieldSource && onFieldSourceClick) {
+      onFieldSourceClick(fieldSource.documentId, fieldSource.startIndex, fieldSource.endIndex);
+    }
+  };
+
+  if (showIcon) {
+    return (
+      <div className="flex items-center gap-2">
+        <div title="Click to view source in document">
+          <FileText 
+            className="w-4 h-4 text-blue-600 cursor-pointer hover:text-blue-800 transition-colors" 
+            onClick={handleSourceClick}
+          />
+        </div>
+        <div className={className}>{children}</div>
+      </div>
+    );
+  }
+
+  return <div className={className}>{children}</div>;
+}
+
+// Helper component for clickable field labels
+export function ClickableFieldLabel({ 
+  fieldName, 
+  patientId, 
+  children, 
+  onFieldSourceClick 
+}: {
+  fieldName: string;
+  patientId: number;
+  children: ReactNode;
+  onFieldSourceClick?: (documentId: number, startIndex: number, endIndex: number) => void;
+}) {
+  const hasSource = hasFieldSource(fieldName, patientId);
+
+  const handleSourceClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     const fieldSource = getFieldSource(fieldName, patientId);
     if (fieldSource && onFieldSourceClick) {
       onFieldSourceClick(fieldSource.documentId, fieldSource.startIndex, fieldSource.endIndex);
@@ -31,15 +75,16 @@ export function ClickableField({
   };
 
   return (
-    <div 
-      className={`relative group cursor-pointer hover:bg-blue-50 rounded transition-colors ${className}`}
-      onClick={handleClick}
-      title="Click to view source in document"
-    >
+    <div className="flex items-center gap-2">
       {children}
-      <FileText 
-        className="absolute top-2 right-2 w-3 h-3 text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" 
-      />
+      {hasSource && onFieldSourceClick && (
+        <div title="Click to view source in document">
+          <FileText 
+            className="w-4 h-4 text-blue-600 cursor-pointer hover:text-blue-800 transition-colors" 
+            onClick={handleSourceClick}
+          />
+        </div>
+      )}
     </div>
   );
 }

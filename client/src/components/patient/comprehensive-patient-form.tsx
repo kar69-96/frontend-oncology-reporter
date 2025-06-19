@@ -14,7 +14,7 @@ import { ArrowLeft, Clock, Save } from "lucide-react";
 import { Link } from "wouter";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { ClickableField } from "@/components/ui/clickable-field";
+import { ClickableField, ClickableFieldLabel } from "@/components/ui/clickable-field";
 import type { Patient, TumorRegistryForm } from "@/lib/types";
 
 // Utility function to get field confidence level and corresponding border class
@@ -401,15 +401,17 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="patientName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Patient Name {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
-                    <FormControl>
-                      <ClickableField
+                    <FormLabel>
+                      <ClickableFieldLabel
                         fieldName="patientName"
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        <Input {...field} className={getFieldConfidence("patientName", form)} />
-                      </ClickableField>
+                        Patient Name {showCodes && <Badge variant="outline">Required</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} className={getFieldConfidence("patientName", form)} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -421,15 +423,17 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="dateOfBirth"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Date of Birth {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
-                    <FormControl>
-                      <ClickableField
+                    <FormLabel>
+                      <ClickableFieldLabel
                         fieldName="dateOfBirth"
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        <Input type="date" {...field} />
-                      </ClickableField>
+                        Date of Birth {showCodes && <Badge variant="outline">Required</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -563,15 +567,17 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="primarySite"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Primary Site (ICD-O-3) {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
-                    <FormControl>
-                      <ClickableField
+                    <FormLabel>
+                      <ClickableFieldLabel
                         fieldName="primarySite"
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        <Input {...field} className={getFieldConfidence("primarySite", form)} placeholder="e.g., Breast, Lung, Colon" />
-                      </ClickableField>
+                        Primary Site (ICD-O-3) {showCodes && <Badge variant="outline">Required</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} className={getFieldConfidence("primarySite", form)} placeholder="e.g., Breast, Lung, Colon" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
