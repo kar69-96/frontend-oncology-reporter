@@ -267,44 +267,53 @@ export class MemStorage implements IStorage {
       };
       this.patients.set(patient.id, patient);
 
-      // Add sample documents for each patient
-      const docTypes: Array<'pathology' | 'clinical_notes' | 'imaging'> = ["pathology", "clinical_notes", "imaging"];
-      const numDocs = Math.floor(Math.random() * 3) + 2;
-      
-      for (let i = 0; i < numDocs; i++) {
-        const docType = docTypes[i % docTypes.length];
-        const filename = `${docType}_${patient.mrn}_${i + 1}.pdf`;
-        
-        // Generate actual medical document content
+      // Generate comprehensive documents with all source data for field mapping
+      const documents = [
+        {
+          type: 'pathology' as const,
+          filename: `pathology_${patient.mrn}_primary.pdf`,
+          content: this.generateComprehensivePathologyContent(patient)
+        },
+        {
+          type: 'clinical_notes' as const, 
+          filename: `clinical_notes_${patient.mrn}_initial.pdf`,
+          content: this.generateComprehensiveClinicalContent(patient)
+        },
+        {
+          type: 'clinical_notes' as const,
+          filename: `clinical_notes_${patient.mrn}_treatment.pdf`, 
+          content: this.generateTreatmentClinicalContent(patient)
+        }
+      ];
+
+      documents.forEach((docData, index) => {
+        // Create the actual document file with .html extension for serving
+        const htmlFilename = docData.filename.replace('.pdf', '.html');
         const documentContent = {
           patientName: patient.name,
           mrn: patient.mrn,
           dateOfBirth: patient.dateOfBirth,
           diagnosis: patient.diagnosis || "Unknown diagnosis",
-          type: docType
+          type: docData.type
         };
         
-        // Create the actual document file with .html extension for serving
-        const htmlFilename = filename.replace('.pdf', '.html');
-        if (docType === 'pathology') {
+        if (docData.type === 'pathology') {
           this.documentGenerator.generatePathologyReport(documentContent, htmlFilename);
-        } else if (docType === 'clinical_notes') {
+        } else {
           this.documentGenerator.generateClinicalNotes(documentContent, htmlFilename);
-        } else if (docType === 'imaging') {
-          this.documentGenerator.generateImagingReport(documentContent, htmlFilename);
         }
         
         const document: Document = {
-          id: this.currentId++,
+          id: patient.id * 10 + index, // Consistent ID pattern for field mapping
           patientId: patient.id,
-          filename: filename,
-          type: docType,
+          filename: docData.filename,
+          type: docData.type,
           uploadDate: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
           size: Math.floor(Math.random() * 5000000) + 500000,
-          content: `Medical ${docType} document for ${patient.name}. Document content viewable by clicking the filename.`
+          content: docData.content
         };
         this.documents.set(document.id, document);
-      }
+      });
 
       // Add sample tumor registry form for each patient
       const form: TumorRegistryForm = {
@@ -659,6 +668,109 @@ export class MemStorage implements IStorage {
       const matchesCategory = category ? code.category === category : true;
       return matchesQuery && matchesCategory;
     });
+  }
+
+  // Generate comprehensive pathology report content with all tumor-related source data
+  private generateComprehensivePathologyContent(patient: Patient): string {
+    const diagnosis = patient.diagnosis || "Adenocarcinoma";
+    return `PATHOLOGY REPORT
+
+Patient Name: ${patient.name}
+Medical Record Number: ${patient.mrn}
+DOB: ${patient.dateOfBirth}
+Date of diagnosis: 2022-06-15
+Age at diagnosis: 37 years
+
+SPECIMEN DESCRIPTION:
+Primary site: Lung, upper lobe
+Laterality: Right
+Tumor size: 3.2 cm
+
+MICROSCOPIC EXAMINATION:
+Histologic type: Adenocarcinoma
+Grade: Moderately differentiated (Grade 2)
+Behavior: Malignant (3)
+
+PATHOLOGIC STAGING:
+Pathologic T: pT2
+Pathologic N: pN1
+Pathologic M: pM0
+
+LYMPH NODE EXAMINATION:
+Lymph nodes examined: 15
+Positive lymph nodes: 3
+
+DIAGNOSIS:
+Confirmation: Histology of primary tumor
+Right upper lobe adenocarcinoma, moderately differentiated, with regional lymph node involvement.
+
+Dr. Sarah Peterson, MD
+Anatomic Pathology`;
+  }
+
+  // Generate comprehensive clinical notes with demographic and treatment source data
+  private generateComprehensiveClinicalContent(patient: Patient): string {
+    return `CLINICAL NOTES - INITIAL CONSULTATION
+
+Patient Name: ${patient.name}
+Medical Record Number: ${patient.mrn}
+DOB: ${patient.dateOfBirth}
+Gender: Male
+Race: Asian
+Ethnicity: Not Hispanic or Latino
+SSN: XXX-XX-1234
+
+Address: 123 Main Street, San Francisco, CA 94102
+County: San Francisco County
+
+CLINICAL STAGING:
+Clinical T stage: T2
+Clinical N stage: N1
+Clinical M stage: M0
+Overall stage: Stage IIB
+SEER stage: Regional
+
+ADMINISTRATIVE:
+Class of case: Analytic
+Reporting facility: San Francisco General Hospital
+Record type: Incidence
+Sequence number: 00
+
+ASSESSMENT & PLAN:
+Patient presents with newly diagnosed lung adenocarcinoma requiring multidisciplinary treatment approach.
+
+Dr. Michael Rodriguez, MD
+Oncology`;
+  }
+
+  // Generate treatment-focused clinical notes with therapy and follow-up source data
+  private generateTreatmentClinicalContent(patient: Patient): string {
+    return `CLINICAL NOTES - TREATMENT & FOLLOW-UP
+
+Patient Name: ${patient.name}
+Medical Record Number: ${patient.mrn}
+
+SURGICAL INTERVENTION:
+Surgery performed: Right upper lobectomy with lymph node dissection
+Lymph nodes: Regional lymph node dissection performed
+
+SYSTEMIC THERAPY:
+Chemotherapy: Carboplatin and Paclitaxel regimen administered
+Radiation therapy: External beam radiation completed
+Hormone therapy: Not applicable for lung cancer
+Immunotherapy: Pembrolizumab initiated
+
+FOLLOW-UP:
+Last contact: 2024-01-15
+Patient status: Alive with disease
+Survival: 18 months from diagnosis
+Cause of death: Not applicable - patient alive
+
+NOTES:
+Patient tolerating treatment well with good response to therapy.
+
+Dr. Jennifer Kim, MD
+Medical Oncology`;
   }
 
   async getDashboardMetrics() {

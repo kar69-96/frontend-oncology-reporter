@@ -14,6 +14,7 @@ import { ArrowLeft, Clock, Save } from "lucide-react";
 import { Link } from "wouter";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { ClickableField } from "@/components/ui/clickable-field";
 import type { Patient, TumorRegistryForm } from "@/lib/types";
 
 // Utility function to get field confidence level and corresponding border class

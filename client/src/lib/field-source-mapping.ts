@@ -12,22 +12,22 @@ export interface FieldSourceMapping {
   [fieldName: string]: FieldSource;
 }
 
-// Simulated field source mapping based on document content analysis
+// Comprehensive field source mapping for all tumor registry form fields
 export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => {
   // This simulates OCR extraction results that would map form fields to document locations
   const mappings: FieldSourceMapping = {
-    // Patient Demographics - typically from clinical notes
+    // Demographics Section - Clinical Notes & Registration Documents
     patientName: {
-      documentId: patientId * 10 + 1, // Simulate document ID pattern
+      documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'Patient Name: Sarah Johnson',
+      textContent: 'Patient Name: Michael Chen',
       startIndex: 14,
       endIndex: 26,
       confidence: 0.98
     },
     dateOfBirth: {
       documentId: patientId * 10 + 1,
-      documentType: 'clinical_notes', 
+      documentType: 'clinical_notes',
       textContent: 'DOB: 1985-03-15',
       startIndex: 5,
       endIndex: 15,
@@ -36,27 +36,67 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     sex: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'Gender: Female',
+      textContent: 'Gender: Male',
       startIndex: 8,
-      endIndex: 14,
+      endIndex: 12,
       confidence: 0.97
     },
-    
-    // Tumor Information - typically from pathology reports
+    race: {
+      documentId: patientId * 10 + 1,
+      documentType: 'clinical_notes',
+      textContent: 'Race: Asian',
+      startIndex: 6,
+      endIndex: 11,
+      confidence: 0.94
+    },
+    ethnicity: {
+      documentId: patientId * 10 + 1,
+      documentType: 'clinical_notes',
+      textContent: 'Ethnicity: Not Hispanic or Latino',
+      startIndex: 11,
+      endIndex: 33,
+      confidence: 0.93
+    },
+    addressAtDiagnosis: {
+      documentId: patientId * 10 + 1,
+      documentType: 'clinical_notes',
+      textContent: 'Address: 123 Main Street, San Francisco, CA 94102',
+      startIndex: 9,
+      endIndex: 48,
+      confidence: 0.89
+    },
+    countyAtDiagnosis: {
+      documentId: patientId * 10 + 1,
+      documentType: 'clinical_notes',
+      textContent: 'County: San Francisco County',
+      startIndex: 8,
+      endIndex: 27,
+      confidence: 0.91
+    },
+    socialSecurityNumber: {
+      documentId: patientId * 10 + 1,
+      documentType: 'clinical_notes',
+      textContent: 'SSN: XXX-XX-1234',
+      startIndex: 5,
+      endIndex: 16,
+      confidence: 0.96
+    },
+
+    // Tumor Information - Pathology Reports
     primarySite: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: 'Primary site: Breast, upper outer quadrant',
+      textContent: 'Primary site: Lung, upper lobe',
       startIndex: 14,
-      endIndex: 43,
+      endIndex: 29,
       confidence: 0.92
     },
     histologicType: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: 'Histologic type: Invasive ductal carcinoma',
+      textContent: 'Histologic type: Adenocarcinoma',
       startIndex: 17,
-      endIndex: 42,
+      endIndex: 31,
       confidence: 0.89
     },
     behaviorCode: {
@@ -67,8 +107,40 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
       endIndex: 18,
       confidence: 0.96
     },
-    
-    // Staging - from pathology and clinical notes
+    gradeDifferentiation: {
+      documentId: patientId * 10,
+      documentType: 'pathology',
+      textContent: 'Grade: Moderately differentiated (Grade 2)',
+      startIndex: 7,
+      endIndex: 42,
+      confidence: 0.87
+    },
+    laterality: {
+      documentId: patientId * 10,
+      documentType: 'pathology',
+      textContent: 'Laterality: Right',
+      startIndex: 12,
+      endIndex: 17,
+      confidence: 0.95
+    },
+    tumorSize: {
+      documentId: patientId * 10,
+      documentType: 'pathology',
+      textContent: 'Tumor size: 3.2 cm',
+      startIndex: 12,
+      endIndex: 18,
+      confidence: 0.94
+    },
+    diagnosticConfirmation: {
+      documentId: patientId * 10,
+      documentType: 'pathology',
+      textContent: 'Confirmation: Histology of primary tumor',
+      startIndex: 14,
+      endIndex: 40,
+      confidence: 0.93
+    },
+
+    // Staging Information - Clinical & Pathology
     clinicalT: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
@@ -85,33 +157,203 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
       endIndex: 20,
       confidence: 0.88
     },
-    
-    // Treatment - from clinical notes
-    surgeryOfPrimarySite: {
+    clinicalM: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'Surgery performed: Lumpectomy with sentinel lymph node biopsy',
+      textContent: 'Clinical M stage: M0',
+      startIndex: 18,
+      endIndex: 20,
+      confidence: 0.85
+    },
+    pathologicT: {
+      documentId: patientId * 10,
+      documentType: 'pathology',
+      textContent: 'Pathologic T: pT2',
+      startIndex: 14,
+      endIndex: 17,
+      confidence: 0.92
+    },
+    pathologicN: {
+      documentId: patientId * 10,
+      documentType: 'pathology',
+      textContent: 'Pathologic N: pN1',
+      startIndex: 14,
+      endIndex: 17,
+      confidence: 0.86
+    },
+    pathologicM: {
+      documentId: patientId * 10,
+      documentType: 'pathology',
+      textContent: 'Pathologic M: pM0',
+      startIndex: 14,
+      endIndex: 17,
+      confidence: 0.90
+    },
+    stageGroup: {
+      documentId: patientId * 10 + 1,
+      documentType: 'clinical_notes',
+      textContent: 'Overall stage: Stage IIB',
+      startIndex: 15,
+      endIndex: 25,
+      confidence: 0.89
+    },
+    seerStage: {
+      documentId: patientId * 10 + 1,
+      documentType: 'clinical_notes',
+      textContent: 'SEER stage: Regional',
+      startIndex: 12,
+      endIndex: 20,
+      confidence: 0.91
+    },
+
+    // Treatment Information - Clinical Notes & Surgical Reports
+    classOfCase: {
+      documentId: patientId * 10 + 1,
+      documentType: 'clinical_notes',
+      textContent: 'Class of case: Analytic',
+      startIndex: 15,
+      endIndex: 23,
+      confidence: 0.95
+    },
+    surgeryOfPrimarySite: {
+      documentId: patientId * 10 + 2,
+      documentType: 'clinical_notes',
+      textContent: 'Surgery performed: Right upper lobectomy with lymph node dissection',
       startIndex: 19,
-      endIndex: 62,
+      endIndex: 66,
       confidence: 0.94
     },
-    chemotherapy: {
-      documentId: patientId * 10 + 1,
+    scopeOfRegionalLymphNodeSurgery: {
+      documentId: patientId * 10 + 2,
       documentType: 'clinical_notes',
-      textContent: 'Chemotherapy: Adriamycin and Cyclophosphamide',
+      textContent: 'Lymph nodes: Regional lymph node dissection performed',
+      startIndex: 13,
+      endIndex: 53,
+      confidence: 0.92
+    },
+    numberOfLymphNodesExamined: {
+      documentId: patientId * 10,
+      documentType: 'pathology',
+      textContent: 'Lymph nodes examined: 15',
+      startIndex: 22,
+      endIndex: 24,
+      confidence: 0.96
+    },
+    numberOfLymphNodesPositive: {
+      documentId: patientId * 10,
+      documentType: 'pathology',
+      textContent: 'Positive lymph nodes: 3',
+      startIndex: 22,
+      endIndex: 23,
+      confidence: 0.95
+    },
+    radiationTherapy: {
+      documentId: patientId * 10 + 2,
+      documentType: 'clinical_notes',
+      textContent: 'Radiation therapy: External beam radiation completed',
+      startIndex: 19,
+      endIndex: 52,
+      confidence: 0.84
+    },
+    chemotherapy: {
+      documentId: patientId * 10 + 2,
+      documentType: 'clinical_notes',
+      textContent: 'Chemotherapy: Carboplatin and Paclitaxel regimen administered',
       startIndex: 14,
-      endIndex: 45,
+      endIndex: 61,
       confidence: 0.93
     },
-    
-    // Follow-up
+    hormoneTherapy: {
+      documentId: patientId * 10 + 2,
+      documentType: 'clinical_notes',
+      textContent: 'Hormone therapy: Not applicable for lung cancer',
+      startIndex: 17,
+      endIndex: 47,
+      confidence: 0.91
+    },
+    immunotherapy: {
+      documentId: patientId * 10 + 2,
+      documentType: 'clinical_notes',
+      textContent: 'Immunotherapy: Pembrolizumab initiated',
+      startIndex: 15,
+      endIndex: 38,
+      confidence: 0.88
+    },
+
+    // Follow-up Information - Clinical Notes
+    dateOfLastContact: {
+      documentId: patientId * 10 + 2,
+      documentType: 'clinical_notes',
+      textContent: 'Last contact: 2024-01-15',
+      startIndex: 14,
+      endIndex: 24,
+      confidence: 0.97
+    },
     vitalStatus: {
+      documentId: patientId * 10 + 2,
+      documentType: 'clinical_notes',
+      textContent: 'Patient status: Alive with disease',
+      startIndex: 16,
+      endIndex: 34,
+      confidence: 0.96
+    },
+    causeOfDeath: {
+      documentId: patientId * 10 + 2,
+      documentType: 'clinical_notes',
+      textContent: 'Cause of death: Not applicable - patient alive',
+      startIndex: 16,
+      endIndex: 46,
+      confidence: 0.98
+    },
+    survivesMonths: {
+      documentId: patientId * 10 + 2,
+      documentType: 'clinical_notes',
+      textContent: 'Survival: 18 months from diagnosis',
+      startIndex: 10,
+      endIndex: 12,
+      confidence: 0.93
+    },
+
+    // Administrative Fields - Registration & Clinical Notes
+    reportingFacility: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'Patient status: Alive with no evidence of disease',
-      startIndex: 16,
-      endIndex: 47,
+      textContent: 'Reporting facility: San Francisco General Hospital',
+      startIndex: 20,
+      endIndex: 49,
+      confidence: 0.97
+    },
+    recordType: {
+      documentId: patientId * 10 + 1,
+      documentType: 'clinical_notes',
+      textContent: 'Record type: Incidence',
+      startIndex: 13,
+      endIndex: 22,
+      confidence: 0.95
+    },
+    sequenceNumber: {
+      documentId: patientId * 10 + 1,
+      documentType: 'clinical_notes',
+      textContent: 'Sequence number: 00',
+      startIndex: 17,
+      endIndex: 19,
       confidence: 0.96
+    },
+    dateOfDiagnosis: {
+      documentId: patientId * 10,
+      documentType: 'pathology',
+      textContent: 'Date of diagnosis: 2022-06-15',
+      startIndex: 19,
+      endIndex: 29,
+      confidence: 0.98
+    },
+    ageAtDiagnosis: {
+      documentId: patientId * 10 + 1,
+      documentType: 'clinical_notes',
+      textContent: 'Age at diagnosis: 37 years',
+      startIndex: 18,
+      endIndex: 20,
+      confidence: 0.94
     }
   };
   
