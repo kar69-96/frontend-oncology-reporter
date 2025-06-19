@@ -445,7 +445,15 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="sex"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Sex {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
+                    <FormLabel>
+                      <ClickableFieldLabel
+                        fieldName="sex"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        Sex {showCodes && <Badge variant="outline">Required</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -469,7 +477,15 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="race"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Race {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
+                    <FormLabel>
+                      <ClickableFieldLabel
+                        fieldName="race"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        Race {showCodes && <Badge variant="outline">Required</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -493,7 +509,15 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="ethnicity"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Ethnicity (Hispanic Origin) {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
+                    <FormLabel>
+                      <ClickableFieldLabel
+                        fieldName="ethnicity"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        Ethnicity (Hispanic Origin) {showCodes && <Badge variant="outline">Required</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -517,7 +541,15 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="addressAtDiagnosis"
                 render={({ field }) => (
                   <FormItem className="md:col-span-2">
-                    <FormLabel>Address at Diagnosis {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
+                    <FormLabel>
+                      <ClickableFieldLabel
+                        fieldName="addressAtDiagnosis"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        Address at Diagnosis {showCodes && <Badge variant="outline">Required</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="Street, City, State, ZIP" />
                     </FormControl>
@@ -531,7 +563,15 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="countyAtDiagnosis"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>County at Diagnosis {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
+                    <FormLabel>
+                      <ClickableFieldLabel
+                        fieldName="countyAtDiagnosis"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        County at Diagnosis {showCodes && <Badge variant="outline">Required</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -545,7 +585,15 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="socialSecurityNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Social Security Number {showCodes && <Badge variant="secondary">Optional</Badge>}</FormLabel>
+                    <FormLabel>
+                      <ClickableFieldLabel
+                        fieldName="socialSecurityNumber"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        Social Security Number {showCodes && <Badge variant="secondary">Optional</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="XXX-XX-XXXX" />
                     </FormControl>
@@ -589,7 +637,15 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="histologicType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Histologic Type (ICD-O-3) {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
+                    <FormLabel>
+                      <ClickableFieldLabel
+                        fieldName="histrologicType"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        Histologic Type (ICD-O-3) {showCodes && <Badge variant="outline">Required</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
                     <FormControl>
                       <Input {...field} className={getFieldConfidence("histologicType", form)} placeholder="e.g., Adenocarcinoma, Squamous cell" />
                     </FormControl>
@@ -603,7 +659,15 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                 name="behaviorCode"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Behavior Code {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
+                    <FormLabel>
+                      <ClickableFieldLabel
+                        fieldName="behaviorCode"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        Behavior Code {showCodes && <Badge variant="outline">Required</Badge>}
+                      </ClickableFieldLabel>
+                    </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
