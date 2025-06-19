@@ -23,24 +23,54 @@ const getFieldConfidence = (fieldName: string, form?: TumorRegistryForm) => {
     patientName: 'high',
     dateOfBirth: 'high',
     sex: 'high',
+    race: 'high',
+    ethnicity: 'high',
+    addressAtDiagnosis: 'high',
+    countyAtDiagnosis: 'high',
     
-    // Data extracted from documents (varying confidence)
-    primarySite: 'medium', // OCR extracted
+    // Data extracted from documents - only truly uncertain fields are medium/low
+    primarySite: 'high', // Clear from documents
     histologicType: 'low', // Complex medical terminology
-    behaviorCode: 'medium',
+    behaviorCode: 'high',
+    laterality: 'high',
     gradeDifferentiation: 'low',
-    clinicalT: 'medium',
-    clinicalN: 'medium', 
+    dateOfDiagnosis: 'high',
+    diagnosticConfirmation: 'high',
+    classOfCase: 'high',
+    sequenceNumber: 'high',
+    
+    // Staging - only complex staging is medium confidence
+    clinicalT: 'high',
+    clinicalN: 'medium', // Can be harder to extract
     clinicalM: 'low',
-    pathologicT: 'medium',
+    pathologicT: 'high',
     pathologicN: 'low',
-    surgeryOfPrimarySite: 'medium',
+    pathologicM: 'high',
+    ajccStageGroupClinical: 'high',
+    ajccStageGroupPathologic: 'high',
+    seerSummaryStage2018: 'high',
+    
+    // Treatment fields - mostly clear from treatment notes
+    surgeryOfPrimarySite: 'high',
+    dateOfSurgery: 'high',
     radiationTherapy: 'low',
-    chemotherapy: 'medium',
+    dateRadiationStarted: 'high',
+    chemotherapy: 'high',
+    hormoneTherapy: 'high',
+    immunotherapy: 'high',
+    
+    // Follow-up (high confidence)
+    dateOfLastContact: 'high',
+    vitalStatus: 'high',
+    cancerStatus: 'high',
     
     // Administrative fields (high confidence)
     accessionNumber: 'high',
     abstractorId: 'high',
+    reportingFacilityId: 'high',
+    dateCaseAbstracted: 'high',
+    editChecksPassed: 'high',
+    recordType: 'high',
   };
   
   const confidence = confidenceLevels[fieldName] || 'high';

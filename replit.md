@@ -24,6 +24,7 @@ An ultra-clean, simple oncology tumor registry with intuitive navigation, promin
 - **NAACCR Code Integration**: Added comprehensive NAACCR codes organized into Demographics, Tumor, Staging, Treatment, Follow-up, and Administrative categories
 - **Advanced Filtering**: Enhanced References page with dual code type filtering (ICD-O-3/NAACCR) and expanded category options
 - **Form Confidence Styling**: Added dynamic border styling based on data extraction confidence levels for OCR-derived fields
+- **Confidence Level Optimization**: Reduced medium confidence field tolerance - now only clinicalN shows yellow borders, while most fields display normal styling with only truly uncertain fields (histologicType, gradeDifferentiation, clinicalM, pathologicN, radiationTherapy) showing red borders
 
 ## Key Features Implementation Plan
 
