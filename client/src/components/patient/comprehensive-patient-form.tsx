@@ -470,7 +470,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Patient Name {showCodes && <Badge variant="outline">Required</Badge>}
+                        Patient Name {showCodes && <Badge variant="outline">NAACCR 2230</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -492,7 +492,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Date of Birth {showCodes && <Badge variant="outline">Required</Badge>}
+                        Date of Birth {showCodes && <Badge variant="outline">NAACCR 240</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -514,7 +514,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Sex {showCodes && <Badge variant="outline">Required</Badge>}
+                        Sex {showCodes && <Badge variant="outline">NAACCR 220</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -546,7 +546,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Race {showCodes && <Badge variant="outline">Required</Badge>}
+                        Race {showCodes && <Badge variant="outline">NAACCR 160</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -610,7 +610,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Address at Diagnosis {showCodes && <Badge variant="outline">Required</Badge>}
+                        Address at Diagnosis {showCodes && <Badge variant="outline">NAACCR 70</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -684,7 +684,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Primary Site (ICD-O-3) {showCodes && <Badge variant="outline">Required</Badge>}
+                        Primary Site (ICD-O-3) {showCodes && <Badge variant="outline">NAACCR 400</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
