@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { EditableCodeBadge } from "@/components/ui/editable-code-badge";
 import { ArrowLeft, Clock, Save } from "lucide-react";
 import { Link } from "wouter";
 import { queryClient, apiRequest } from "@/lib/queryClient";
@@ -940,7 +941,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Clinical T {showCodes && <Badge variant="outline">NAACCR 940</Badge>}
+                        Clinical T {showCodes && <EditableCodeBadge code="NAACCR 940" />}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -1116,7 +1117,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        SEER Summary Stage 2018 {showCodes && <Badge variant="outline">Required</Badge>}
+                        SEER Summary Stage 2018 {showCodes && <Badge variant="outline">NAACCR 759</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -1157,7 +1158,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Surgery of Primary Site {showCodes && <Badge variant="secondary">Optional</Badge>}
+                        Surgery of Primary Site {showCodes && <Badge variant="outline">NAACCR 1290</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -1179,7 +1180,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Date of Surgery {showCodes && <Badge variant="secondary">Optional</Badge>}
+                        Date of Surgery {showCodes && <Badge variant="outline">NAACCR 3170</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <FormControl>
@@ -1201,7 +1202,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                         patientId={patient.id}
                         onFieldSourceClick={onFieldSourceClick}
                       >
-                        Radiation Therapy {showCodes && <Badge variant="secondary">Optional</Badge>}
+                        Radiation Therapy {showCodes && <Badge variant="outline">NAACCR 1360</Badge>}
                       </ClickableFieldLabel>
                     </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
