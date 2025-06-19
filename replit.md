@@ -18,17 +18,12 @@ An ultra-clean, simple oncology tumor registry with intuitive navigation, promin
 - Sidebar should hide when focusing on individual patients
 
 ## Recent Changes
-- Fixed patient form rendering issues with Select components
-- Added drag-and-drop upload dialog with file preview
-- Generated sample documents for all patients (2-4 per patient)
-- Improved form layout with proper scrolling and padding
-- Added upload endpoint to handle document uploads
-- Fixed patient detail page layout issues
-- Resolved React hook error preventing application startup
-- Fixed ICD category mismatch in References page
-- Fixed main layout overflow preventing vertical scrolling
-- Updated progress bars to show only blue color (removed green fill)
-- Expanded ICD-O-3 references from 5 to 47 comprehensive cancer codes
+- **Comprehensive Cancer Registry Fields**: Implemented complete structured list of cancer registry fields grouped into 6 logical sections with proper validation and dropdown options
+- **Advanced Patient Form**: Created comprehensive tumor registry form with 44+ fields including demographics, tumor identification, staging, treatment, follow-up, and administrative data
+- **Document Viewer Enhancement**: Added collapsible document selector with inline viewing and auto-hide functionality for focused document reading
+- **Sample Data Generation**: Enhanced storage layer with realistic sample data for all comprehensive cancer registry fields
+- **Form Validation**: Added proper Zod schema validation with required/optional field indicators and coding support
+- **UI/UX Improvements**: Organized form fields into intuitive sections with proper spacing, badges for field requirements, and code visibility toggle
 
 ## Key Features Implementation Plan
 

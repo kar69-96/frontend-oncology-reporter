@@ -7,7 +7,7 @@ import { UploadDialog } from "@/components/ui/upload-dialog";
 import { ArrowLeft, Expand, Combine } from "lucide-react";
 import { Link } from "wouter";
 import { DocumentViewer } from "@/components/patient/document-viewer";
-import { PatientForm } from "@/components/patient/patient-form";
+import { ComprehensivePatientForm } from "@/components/patient/comprehensive-patient-form";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { Patient, Document, TumorRegistryForm } from "@/lib/types";
 
@@ -146,7 +146,7 @@ export default function PatientDetail() {
           </div>
         </div>
         
-        <PatientForm 
+        <ComprehensivePatientForm 
           patient={patient} 
           form={form} 
           showCodes={showCodes}
