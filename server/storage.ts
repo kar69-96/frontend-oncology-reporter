@@ -328,7 +328,7 @@ export class MemStorage implements IStorage {
         ethnicity: this.getConsistentEthnicity(patient.id),
         addressAtDiagnosis: this.getConsistentAddress(patient.id),
         countyAtDiagnosis: this.getConsistentCounty(patient.id),
-        socialSecurityNumber: `${Math.floor(Math.random() * 900 + 100)}-${Math.floor(Math.random() * 90 + 10)}-${Math.floor(Math.random() * 9000 + 1000)}`,
+        socialSecurityNumber: null, // Low confidence - leave empty
         
         // II. TUMOR IDENTIFICATION
         primarySite: this.getSamplePrimarySite(patient.diagnosis || ""),
@@ -355,7 +355,7 @@ export class MemStorage implements IStorage {
         // IV. FIRST COURSE OF TREATMENT
         surgeryOfPrimarySite: this.getSampleSurgery(),
         dateOfSurgery: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        radiationTherapy: "01", // Radiation therapy given
+        radiationTherapy: null, // Low confidence - leave empty
         dateRadiationStarted: new Date(Date.now() - Math.random() * 45 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         chemotherapy: "01", // Medium confidence - provide value
         hormoneTherapy: "01",
