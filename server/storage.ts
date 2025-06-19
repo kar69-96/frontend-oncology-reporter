@@ -328,7 +328,7 @@ export class MemStorage implements IStorage {
         ethnicity: this.getSampleEthnicity(),
         addressAtDiagnosis: this.getSampleAddress(),
         countyAtDiagnosis: this.getSampleCounty(),
-        socialSecurityNumber: null,
+        socialSecurityNumber: `${Math.floor(Math.random() * 900 + 100)}-${Math.floor(Math.random() * 90 + 10)}-${Math.floor(Math.random() * 9000 + 1000)}`,
         
         // II. TUMOR IDENTIFICATION
         primarySite: this.getSamplePrimarySite(patient.diagnosis || ""),

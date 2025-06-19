@@ -15,12 +15,21 @@ export interface FieldSourceMapping {
 // Comprehensive field source mapping for all tumor registry form fields
 export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => {
   // This simulates OCR extraction results that would map form fields to document locations
+  // Get patient-specific data based on patientId
+  const getPatientData = (id: number) => {
+    if (id === 72) return { name: 'Michael Chen', dob: '8/22/1972', diagnosis: 'lung' };
+    if (id === 70) return { name: 'Sarah Johnson', dob: '5/15/1978', diagnosis: 'breast' };
+    return { name: 'Patient Name', dob: '1/1/1970', diagnosis: 'cancer' };
+  };
+  
+  const patientData = getPatientData(patientId);
+  
   const mappings: FieldSourceMapping = {
     // Demographics Section - Clinical Notes & Registration Documents
     patientName: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'Michael Chen',
+      textContent: patientData.name,
       startIndex: 60,
       endIndex: 72,
       confidence: 0.98
@@ -28,7 +37,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     dateOfBirth: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: '3/15/1985',
+      textContent: patientData.dob,
       startIndex: 113,
       endIndex: 123,
       confidence: 0.95
@@ -86,7 +95,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     primarySite: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: 'right upper lobe',
+      textContent: patientData.diagnosis,
       startIndex: 14,
       endIndex: 29,
       confidence: 0.92
