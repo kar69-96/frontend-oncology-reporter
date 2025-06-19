@@ -10,8 +10,7 @@ interface DocumentViewerProps {
   documents: Document[];
   highlightText?: {
     documentId: number;
-    startIndex: number;
-    endIndex: number;
+    textContent: string;
   } | null;
   onHighlightClear?: () => void;
 }
@@ -80,15 +79,14 @@ export function DocumentViewer({ documents, highlightText, onHighlightClear }: D
     }
   }, [highlightText, documents, selectedDocument]);
 
-  // Function to highlight text in document content
-  const highlightTextInContent = (content: string, startIndex: number, endIndex: number) => {
-    if (!content || startIndex < 0 || endIndex > content.length) return content;
+  // Function to highlight text in document content using pattern matching
+  const highlightTextInContent = (content: string, searchText: string) => {
+    if (!content || !searchText) return content;
     
-    const before = content.substring(0, startIndex);
-    const highlighted = content.substring(startIndex, endIndex);
-    const after = content.substring(endIndex);
+    // Create a case-insensitive regex to find the text
+    const regex = new RegExp(`(${searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
     
-    return `${before}<mark class="bg-yellow-200 px-1 py-0.5 rounded font-medium">${highlighted}</mark>${after}`;
+    return content.replace(regex, '<mark class="bg-yellow-200 px-1 py-0.5 rounded font-medium">$1</mark>');
   };
 
   return (
@@ -230,7 +228,7 @@ export function DocumentViewer({ documents, highlightText, onHighlightClear }: D
                     className="prose prose-sm max-w-none"
                     dangerouslySetInnerHTML={{ 
                       __html: highlightText && selectedDocument?.id === highlightText.documentId
-                        ? highlightTextInContent(documentContent, highlightText.startIndex, highlightText.endIndex)
+                        ? highlightTextInContent(documentContent, highlightText.textContent)
                         : documentContent 
                     }}
                   />

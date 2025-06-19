@@ -20,8 +20,7 @@ export default function PatientDetail() {
   const [formPaneExpanded, setFormPaneExpanded] = useState(false);
   const [highlightText, setHighlightText] = useState<{
     documentId: number;
-    startIndex: number;
-    endIndex: number;
+    textContent: string;
   } | null>(null);
 
   const { data: patient, isLoading } = useQuery<Patient>({
@@ -63,8 +62,8 @@ export default function PatientDetail() {
     }
   });
 
-  const handleFieldSourceClick = (documentId: number, startIndex: number, endIndex: number) => {
-    setHighlightText({ documentId, startIndex, endIndex });
+  const handleFieldSourceClick = (documentId: number, textContent: string) => {
+    setHighlightText({ documentId, textContent });
     // Expand document pane if it's collapsed
     if (formPaneExpanded) {
       setFormPaneExpanded(false);
