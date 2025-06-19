@@ -754,7 +754,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes }: Comprehen
                   <FormItem>
                     <FormLabel>Surgery of Primary Site {showCodes && <Badge variant="secondary">Optional</Badge>}</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="Surgery code or description" />
+                      <Input {...field} className={getFieldConfidence("surgeryOfPrimarySite", form)} placeholder="Surgery code or description" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -783,7 +783,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes }: Comprehen
                     <FormLabel>Radiation Therapy {showCodes && <Badge variant="secondary">Optional</Badge>}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className={getFieldConfidence("radiationTherapy", form)}>
                           <SelectValue placeholder="Select radiation status" />
                         </SelectTrigger>
                       </FormControl>
@@ -820,7 +820,7 @@ export function ComprehensivePatientForm({ patient, form, showCodes }: Comprehen
                     <FormLabel>Chemotherapy {showCodes && <Badge variant="secondary">Optional</Badge>}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className={getFieldConfidence("chemotherapy", form)}>
                           <SelectValue placeholder="Select chemotherapy status" />
                         </SelectTrigger>
                       </FormControl>
