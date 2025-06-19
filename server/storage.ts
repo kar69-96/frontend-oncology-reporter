@@ -332,10 +332,10 @@ export class MemStorage implements IStorage {
         
         // II. TUMOR IDENTIFICATION
         primarySite: this.getSamplePrimarySite(patient.diagnosis || ""),
-        histologicType: null, // Low confidence - leave empty
+        histologicType: this.getSampleHistology(patient.diagnosis || ""),
         behaviorCode: "3", // Malignant - high confidence
         laterality: this.getSampleLaterality(patient.diagnosis || ""),
-        gradeDifferentiation: null, // Low confidence - leave empty
+        gradeDifferentiation: this.getSampleGrade(),
         dateOfDiagnosis: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         diagnosticConfirmation: this.getSampleDiagnosticConfirmation(),
         classOfCase: this.getSampleClassOfCase(),
@@ -355,7 +355,7 @@ export class MemStorage implements IStorage {
         // IV. FIRST COURSE OF TREATMENT
         surgeryOfPrimarySite: this.getSampleSurgery(),
         dateOfSurgery: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        radiationTherapy: null, // Low confidence - leave empty
+        radiationTherapy: "01", // Radiation therapy given
         dateRadiationStarted: new Date(Date.now() - Math.random() * 45 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         chemotherapy: "01", // Medium confidence - provide value
         hormoneTherapy: "01",

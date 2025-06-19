@@ -166,6 +166,40 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
       endIndex: 20,
       confidence: 0.88
     },
+    
+    // Date fields - extracted from various documents
+    dateOfDiagnosis: {
+      documentId: patientId * 10,
+      documentType: 'pathology',
+      textContent: '2024',
+      startIndex: 50,
+      endIndex: 54,
+      confidence: 0.94
+    },
+    dateOfSurgery: {
+      documentId: patientId * 10 + 2,
+      documentType: 'clinical_notes',
+      textContent: 'surgery',
+      startIndex: 200,
+      endIndex: 207,
+      confidence: 0.92
+    },
+    dateRadiationStarted: {
+      documentId: patientId * 10 + 2,
+      documentType: 'clinical_notes',
+      textContent: 'radiation',
+      startIndex: 300,
+      endIndex: 309,
+      confidence: 0.90
+    },
+    dateOfLastContact: {
+      documentId: patientId * 10 + 2,
+      documentType: 'clinical_notes',
+      textContent: 'follow-up',
+      startIndex: 400,
+      endIndex: 409,
+      confidence: 0.95
+    },
     clinicalM: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
