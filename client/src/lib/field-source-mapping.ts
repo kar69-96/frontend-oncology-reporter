@@ -28,7 +28,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     dateOfBirth: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: '1985-03-15',
+      textContent: '3/15/1985',
       startIndex: 113,
       endIndex: 123,
       confidence: 0.95
@@ -36,7 +36,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     sex: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'Male',
+      textContent: 'male',
       startIndex: 132,
       endIndex: 136,
       confidence: 0.97
@@ -82,11 +82,11 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
       confidence: 0.96
     },
 
-    // Tumor Information - Pathology Reports
+    // Tumor Information - Pathology Reports  
     primarySite: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: 'Right upper lobe',
+      textContent: 'right upper lobe',
       startIndex: 14,
       endIndex: 29,
       confidence: 0.92
@@ -94,7 +94,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     histologicType: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: 'adenocarcinoma',
+      textContent: 'Adenocarcinoma',
       startIndex: 17,
       endIndex: 31,
       confidence: 0.89
@@ -102,7 +102,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     behaviorCode: {
       documentId: patientId * 10,
       documentType: 'pathology',
-      textContent: 'Malignant',
+      textContent: 'malignant',
       startIndex: 10,
       endIndex: 18,
       confidence: 0.96
@@ -144,7 +144,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     clinicalT: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'T2',
+      textContent: '3.2 cm',
       startIndex: 18,
       endIndex: 20,
       confidence: 0.91
@@ -152,7 +152,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
     clinicalN: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: 'N1',
+      textContent: 'lymph',
       startIndex: 18,
       endIndex: 20,
       confidence: 0.88
@@ -232,12 +232,20 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
       confidence: 0.94
     },
     dateOfSurgery: {
-      documentId: patientId * 10 + 2,
+      documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
-      textContent: '2024-02-15',
+      textContent: new Date().toLocaleDateString(),
       startIndex: 5,
       endIndex: 15,
       confidence: 0.96
+    },
+    dateOfDiagnosis: {
+      documentId: patientId * 10 + 1,
+      documentType: 'clinical_notes',
+      textContent: new Date().toLocaleDateString(),
+      startIndex: 5,
+      endIndex: 15,
+      confidence: 0.94
     },
     scopeOfRegionalLymphNodeSurgery: {
       documentId: patientId * 10 + 2,
@@ -355,14 +363,7 @@ export const getFieldSourceMapping = (patientId: number): FieldSourceMapping => 
       endIndex: 19,
       confidence: 0.96
     },
-    dateOfDiagnosis: {
-      documentId: patientId * 10,
-      documentType: 'pathology',
-      textContent: 'Date of diagnosis: 2022-06-15',
-      startIndex: 19,
-      endIndex: 29,
-      confidence: 0.98
-    },
+
     ageAtDiagnosis: {
       documentId: patientId * 10 + 1,
       documentType: 'clinical_notes',
