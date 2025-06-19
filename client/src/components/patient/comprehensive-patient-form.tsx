@@ -403,7 +403,13 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                   <FormItem>
                     <FormLabel>Patient Name {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
                     <FormControl>
-                      <Input {...field} className={getFieldConfidence("patientName", form)} />
+                      <ClickableField
+                        fieldName="patientName"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        <Input {...field} className={getFieldConfidence("patientName", form)} />
+                      </ClickableField>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -417,7 +423,13 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                   <FormItem>
                     <FormLabel>Date of Birth {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <ClickableField
+                        fieldName="dateOfBirth"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        <Input type="date" {...field} />
+                      </ClickableField>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -553,7 +565,13 @@ export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSour
                   <FormItem>
                     <FormLabel>Primary Site (ICD-O-3) {showCodes && <Badge variant="outline">Required</Badge>}</FormLabel>
                     <FormControl>
-                      <Input {...field} className={getFieldConfidence("primarySite", form)} placeholder="e.g., Breast, Lung, Colon" />
+                      <ClickableField
+                        fieldName="primarySite"
+                        patientId={patient.id}
+                        onFieldSourceClick={onFieldSourceClick}
+                      >
+                        <Input {...field} className={getFieldConfidence("primarySite", form)} placeholder="e.g., Breast, Lung, Colon" />
+                      </ClickableField>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
