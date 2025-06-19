@@ -18,6 +18,11 @@ export default function PatientDetail() {
   const [showCodes, setShowCodes] = useState(false);
   const [documentPaneExpanded, setDocumentPaneExpanded] = useState(false);
   const [formPaneExpanded, setFormPaneExpanded] = useState(false);
+  const [highlightText, setHighlightText] = useState<{
+    documentId: number;
+    startIndex: number;
+    endIndex: number;
+  } | null>(null);
 
   const { data: patient, isLoading } = useQuery<Patient>({
     queryKey: [`/api/patients/${patientId}`],
@@ -57,6 +62,18 @@ export default function PatientDetail() {
       queryClient.invalidateQueries({ queryKey: [`/api/patients/${patientId}/documents`] });
     }
   });
+
+  const handleFieldSourceClick = (documentId: number, startIndex: number, endIndex: number) => {
+    setHighlightText({ documentId, startIndex, endIndex });
+    // Expand document pane if it's collapsed
+    if (formPaneExpanded) {
+      setFormPaneExpanded(false);
+    }
+  };
+
+  const handleHighlightClear = () => {
+    setHighlightText(null);
+  };
 
   if (isLoading) {
     return <PatientDetailSkeleton />;
@@ -108,7 +125,11 @@ export default function PatientDetail() {
           </div>
         </div>
         
-        <DocumentViewer documents={documents} />
+        <DocumentViewer 
+          documents={documents} 
+          highlightText={highlightText}
+          onHighlightClear={handleHighlightClear}
+        />
       </div>
 
       {/* Registry Form */}
@@ -150,6 +171,7 @@ export default function PatientDetail() {
           patient={patient} 
           form={form} 
           showCodes={showCodes}
+          onFieldSourceClick={handleFieldSourceClick}
         />
       </div>
     </div>

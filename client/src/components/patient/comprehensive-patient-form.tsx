@@ -150,9 +150,10 @@ interface ComprehensivePatientFormProps {
   patient: Patient;
   form?: TumorRegistryForm;
   showCodes: boolean;
+  onFieldSourceClick?: (documentId: number, startIndex: number, endIndex: number) => void;
 }
 
-export function ComprehensivePatientForm({ patient, form, showCodes }: ComprehensivePatientFormProps) {
+export function ComprehensivePatientForm({ patient, form, showCodes, onFieldSourceClick }: ComprehensivePatientFormProps) {
   const { toast } = useToast();
 
   const reactForm = useForm<FormData>({
