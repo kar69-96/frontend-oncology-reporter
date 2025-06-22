@@ -18,7 +18,13 @@ export interface IStorage {
   getDocumentsByPatientId(patientId: number): Promise<Document[]>;
   getDocument(id: number): Promise<Document | undefined>;
   createDocument(document: InsertDocument): Promise<Document>;
+  updateDocument(id: number, document: Partial<InsertDocument>): Promise<Document | undefined>;
   deleteDocument(id: number): Promise<boolean>;
+  
+  // Enhanced document methods for AI processing
+  updateDocumentProcessingStatus(id: number, status: string, extractedData?: any, errorMessage?: string): Promise<Document | undefined>;
+  getDocumentByBackendId(backendDocumentId: string): Promise<Document | undefined>;
+  updateDocumentExtractedData(id: number, extractedData: any, confidence?: number): Promise<Document | undefined>;
 
   // Tumor Registry Form methods
   getFormByPatientId(patientId: number): Promise<TumorRegistryForm | undefined>;
@@ -268,27 +274,11 @@ export class MemStorage implements IStorage {
       this.patients.set(patient.id, patient);
 
       // Generate comprehensive documents with all source data for field mapping
-      const documents = [
-        {
-          type: 'pathology' as const,
-          filename: `pathology_${patient.mrn}_primary.pdf`,
-          content: this.generateComprehensivePathologyContent(patient)
-        },
-        {
-          type: 'clinical_notes' as const, 
-          filename: `clinical_notes_${patient.mrn}_initial.pdf`,
-          content: this.generateComprehensiveClinicalContent(patient)
-        },
-        {
-          type: 'clinical_notes' as const,
-          filename: `clinical_notes_${patient.mrn}_treatment.pdf`, 
-          content: this.generateTreatmentClinicalContent(patient)
-        }
-      ];
+      const documents = this.generateSampleDocuments(patient);
 
       documents.forEach((docData, index) => {
         // Create the actual document file with .html extension for serving
-        const htmlFilename = docData.filename.replace('.pdf', '.html');
+        const htmlFilename = docData.filename.replace('.html', '.html');
         const documentContent = {
           patientName: patient.name,
           mrn: patient.mrn,
@@ -539,6 +529,60 @@ export class MemStorage implements IStorage {
     return statuses[Math.floor(Math.random() * statuses.length)];
   }
 
+  private generateSampleDocuments(patient: Patient): Document[] {
+    const documents: Document[] = [];
+    
+    // Generate pathology report
+    const pathologyContent = this.generateComprehensivePathologyContent(patient);
+    const pathologyDoc: Document = {
+      id: this.currentId++,
+      patientId: patient.id,
+      filename: `pathology_${patient.mrn}_primary.html`,
+      type: "pathology",
+      uploadDate: new Date(),
+      size: pathologyContent.length * 2, // Approximate size
+      content: pathologyContent,
+      // New AI processing fields
+      documentId: null,
+      processingStatus: "pending",
+      extractedData: null,
+      documentPath: null,
+      documentType: null,
+      processingDate: null,
+      confidence: null,
+      sourceText: null,
+      errorMessage: null,
+    };
+    documents.push(pathologyDoc);
+    this.documents.set(pathologyDoc.id, pathologyDoc);
+
+    // Generate clinical notes
+    const clinicalContent = this.generateComprehensiveClinicalContent(patient);
+    const clinicalDoc: Document = {
+      id: this.currentId++,
+      patientId: patient.id,
+      filename: `clinical_notes_${patient.mrn}_initial.html`,
+      type: "clinical_notes",
+      uploadDate: new Date(),
+      size: clinicalContent.length * 2,
+      content: clinicalContent,
+      // New AI processing fields
+      documentId: null,
+      processingStatus: "pending",
+      extractedData: null,
+      documentPath: null,
+      documentType: null,
+      processingDate: null,
+      confidence: null,
+      sourceText: null,
+      errorMessage: null,
+    };
+    documents.push(clinicalDoc);
+    this.documents.set(clinicalDoc.id, clinicalDoc);
+
+    return documents;
+  }
+
   async getUser(id: number): Promise<User | undefined> {
     return this.users.get(id);
   }
@@ -604,14 +648,39 @@ export class MemStorage implements IStorage {
   }
 
   async createDocument(insertDocument: InsertDocument): Promise<Document> {
-    const id = this.currentId++;
-    const document: Document = { 
-      ...insertDocument, 
-      id,
-      uploadDate: new Date()
+    const document: Document = {
+      id: this.currentId++,
+      patientId: insertDocument.patientId,
+      filename: insertDocument.filename,
+      type: insertDocument.type,
+      uploadDate: new Date(),
+      size: insertDocument.size,
+      content: insertDocument.content || null,
+      // New AI processing fields
+      documentId: null,
+      processingStatus: "pending",
+      extractedData: null,
+      documentPath: null,
+      documentType: null,
+      processingDate: null,
+      confidence: null,
+      sourceText: null,
+      errorMessage: null,
     };
-    this.documents.set(id, document);
+    this.documents.set(document.id, document);
     return document;
+  }
+
+  async updateDocument(id: number, updateData: Partial<InsertDocument>): Promise<Document | undefined> {
+    const existingDocument = this.documents.get(id);
+    if (!existingDocument) return undefined;
+    
+    const updatedDocument: Document = { 
+      ...existingDocument, 
+      ...updateData
+    };
+    this.documents.set(id, updatedDocument);
+    return updatedDocument;
   }
 
   async deleteDocument(id: number): Promise<boolean> {
@@ -835,6 +904,44 @@ Medical Oncology`;
       statusDistribution,
       monthlySubmissions
     };
+  }
+
+  async updateDocumentProcessingStatus(id: number, status: string, extractedData?: any, errorMessage?: string): Promise<Document | undefined> {
+    const existingDocument = this.documents.get(id);
+    if (!existingDocument) return undefined;
+    
+    const updatedDocument: Document = {
+      ...existingDocument,
+      processingStatus: status,
+      extractedData: extractedData ? JSON.stringify(extractedData) : null,
+      errorMessage: errorMessage || null,
+      processingDate: new Date()
+    };
+    this.documents.set(id, updatedDocument);
+    return updatedDocument;
+  }
+
+  async getDocumentByBackendId(backendDocumentId: string): Promise<Document | undefined> {
+    for (const document of Array.from(this.documents.values())) {
+      if (document.documentId === backendDocumentId) {
+        return document;
+      }
+    }
+    return undefined;
+  }
+
+  async updateDocumentExtractedData(id: number, extractedData: any, confidence?: number): Promise<Document | undefined> {
+    const existingDocument = this.documents.get(id);
+    if (!existingDocument) return undefined;
+    
+    const updatedDocument: Document = {
+      ...existingDocument,
+      extractedData: JSON.stringify(extractedData),
+      confidence: confidence?.toString() || null,
+      processingDate: new Date()
+    };
+    this.documents.set(id, updatedDocument);
+    return updatedDocument;
   }
 }
 

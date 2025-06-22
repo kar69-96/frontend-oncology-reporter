@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -7,9 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Download, Send, Search } from "lucide-react";
+import { Download, Send, Search, Trash2 } from "lucide-react";
 import { Link } from "wouter";
 import { PatientCard } from "@/components/patient/patient-card";
+import { NewPatientDialog } from "@/components/patient/new-patient-dialog";
+import { toast } from "@/hooks/use-toast";
 import type { Patient } from "@/lib/types";
 import { PATIENT_STATUSES } from "@/lib/constants";
 
@@ -19,8 +21,44 @@ export default function Patients() {
   const [selectedPatients, setSelectedPatients] = useState<Set<number>>(new Set());
   const [selectAll, setSelectAll] = useState(false);
 
+  const queryClient = useQueryClient();
+
   const { data: patients = [], isLoading } = useQuery<Patient[]>({
     queryKey: ["/api/patients"],
+  });
+
+  const deletePatientsMutation = useMutation({
+    mutationFn: async (patientIds: number[]) => {
+      const deletePromises = patientIds.map(id =>
+        fetch(`/api/patients/${id}`, {
+          method: "DELETE",
+        })
+      );
+      
+      const results = await Promise.all(deletePromises);
+      const failedDeletes = results.filter(result => !result.ok);
+      
+      if (failedDeletes.length > 0) {
+        throw new Error(`Failed to delete ${failedDeletes.length} patient(s)`);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/patients"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/metrics"] });
+      setSelectedPatients(new Set());
+      setSelectAll(false);
+      toast({
+        title: "Success",
+        description: `Successfully deleted ${selectedPatients.size} patient(s)`,
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
   });
 
   const filteredPatients = patients.filter((patient) => {
@@ -50,6 +88,18 @@ export default function Patients() {
     setSelectAll(newSelected.size === filteredPatients.length);
   };
 
+  const handleDeleteSelected = () => {
+    if (selectedPatients.size === 0) return;
+    
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${selectedPatients.size} selected patient(s)? This action cannot be undone.`
+    );
+    
+    if (confirmed) {
+      deletePatientsMutation.mutate(Array.from(selectedPatients));
+    }
+  };
+
   if (isLoading) {
     return <PatientsSkeleton />;
   }
@@ -65,6 +115,18 @@ export default function Patients() {
           </Badge>
         </div>
         <div className="flex items-center space-x-3">
+          {selectedPatients.size > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              disabled={deletePatientsMutation.isPending}
+              onClick={handleDeleteSelected}
+              className="inline-flex items-center text-red-600 hover:text-red-700 hover:bg-red-50 p-2"
+            >
+              <Trash2 className="w-7 h-7" />
+            </Button>
+          )}
+          <NewPatientDialog />
           <Button
             variant="outline"
             disabled={selectedPatients.size === 0}

@@ -27,6 +27,17 @@ export const documents = pgTable("documents", {
   uploadDate: timestamp("upload_date").defaultNow().notNull(),
   size: integer("size").notNull(),
   content: text("content"), // extracted text content
+  
+  // NEW FIELDS FOR AI PROCESSING
+  documentId: text("document_id"), // Backend document ID
+  processingStatus: text("processing_status").default("pending"), // pending, processing, completed, failed
+  extractedData: text("extracted_data"), // JSON string of extracted data
+  documentPath: text("document_path"), // Path to stored document
+  documentType: text("document_type"), // pdf, docx, txt, image
+  processingDate: timestamp("processing_date"),
+  confidence: decimal("confidence"), // Overall confidence score
+  sourceText: text("source_text"), // Source text snippets
+  errorMessage: text("error_message"), // Error message if processing failed
 });
 
 export const tumorRegistryForms = pgTable("tumor_registry_forms", {

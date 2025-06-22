@@ -1,0 +1,678 @@
+# ONCOLOGY REPORTER: AI BACKEND + FRONTEND INTEGRATION ROADMAP
+# ==============================================================
+
+## OVERVIEW
+This roadmap outlines the integration of the AI-powered document processing backend with the existing frontend, focusing on field mapping, source text highlighting, and document viewing capabilities.
+
+## CURRENT INTEGRATION STATUS ✅
+**Last Updated:** December 2024
+**Status:** Basic Integration Complete - Both servers running successfully
+
+### Running Services:
+- **Frontend Server:** http://localhost:8001 (Node.js/Express/Vite)
+- **API Server:** http://localhost:5001 (Python/FastAPI)
+- **API Documentation:** http://localhost:5001/docs
+- **Health Check:** http://localhost:5001/health
+
+### Current Functionality:
+✅ Both servers running on separate ports (8001 & 5001)  
+✅ CORS configured for cross-origin requests  
+✅ Document upload and processing working  
+✅ AI extraction with source text tracking  
+✅ Vector store with reference documents loaded  
+
+### Integration Notes:
+- **Process All Button:** The frontend "Process All" button should trigger the same functionality as the backend `/process/{document_id}` endpoint
+- **Field Mapping:** Backend uses different field names than frontend (see Phase 1.1 for mapping)
+- **Document Storage:** Backend stores documents temporarily, frontend needs persistent storage integration
+- **Source Highlighting:** Backend provides source text, frontend needs highlighting implementation
+
+### Next Integration Steps:
+1. **Field Name Alignment** - Map backend field names to frontend schema
+2. **Process All Integration** - Connect frontend button to backend processing
+3. **Document Viewer Enhancement** - Add source text highlighting
+4. **Persistent Storage** - Integrate document storage between systems
+
+## PROJECT STRUCTURE
+- Frontend: /Users/karthikreddy/Downloads/GitHub/frontend-oncology-reporter
+- Backend: /Users/karthikreddy/Downloads/GitHub/Oncology-reporter-API
+- Integration Target: Seamless AI document processing with source text highlighting
+
+## PHASE 1: FIELD MAPPING & SCHEMA ALIGNMENT
+### 1.1 Critical Field Name Mismatches
+
+BACKEND → FRONTEND FIELD MAPPING REQUIRED:
+| Backend Field        | Frontend Field      | Status    |
+|---------------------|---------------------|-----------|
+| full_name           | patientName         | ❌ MISMATCH |
+| date_of_birth       | dateOfBirth         | ❌ MISMATCH |
+| sex_gender          | sex                 | ❌ MISMATCH |
+| primary_site        | primarySite         | ❌ MISMATCH |
+| histology           | histologicType      | ❌ MISMATCH |
+| behavior            | behaviorCode        | ❌ MISMATCH |
+| grade               | gradeDifferentiation| ❌ MISMATCH |
+| date_of_diagnosis   | dateOfDiagnosis     | ❌ MISMATCH |
+| vital_status        | vitalStatus         | ❌ MISMATCH |
+| death_date          | dateOfDeath         | ❌ MISMATCH |
+| cause_of_death      | causeOfDeath        | ❌ MISMATCH |
+
+### 1.2 Missing Fields in Backend (30+ Fields)
+
+FRONTEND FIELDS NOT IN BACKEND:
+- addressAtDiagnosis - Address at diagnosis
+- countyAtDiagnosis - County at diagnosis  
+- socialSecurityNumber - SSN
+- diagnosticConfirmation - Diagnostic confirmation method
+- classOfCase - Class of case
+- sequenceNumber - Sequence number
+- clinicalT, clinicalN, clinicalM - Clinical TNM staging
+- pathologicT, pathologicN, pathologicM - Pathologic TNM staging
+- ajccStageGroupClinical - AJCC clinical stage group
+- ajccStageGroupPathologic - AJCC pathologic stage group
+- seerSummaryStage2018 - SEER summary stage
+- surgeryOfPrimarySite - Surgery of primary site
+- dateOfSurgery - Date of surgery
+- radiationTherapy - Radiation therapy
+- dateRadiationStarted - Date radiation started
+- chemotherapy - Chemotherapy
+- hormoneTherapy - Hormone therapy
+- immunotherapy - Immunotherapy
+- dateOfLastContact - Date of last contact
+- cancerStatus - Cancer status
+- accessionNumber - Accession number
+- reportingFacilityId - Reporting facility ID
+- abstractorId - Abstractor ID
+- dateCaseAbstracted - Date case abstracted
+- editChecksPassed - Edit checks passed
+- recordType - Record type
+- primarySiteConfidence - Primary site confidence score
+- histologyConfidence - Histology confidence score
+
+### 1.3 Backend Schema Adaptations Required
+
+FILES TO MODIFY:
+1. ../Oncology-reporter-API/app/api/models.py - Field definitions
+2. ../Oncology-reporter-API/app/services/document_processor.py - Extraction logic
+
+NEW FIELD LIST FOR BACKEND:
+```python
+CANCER_REGISTRY_FIELDS = {
+    # Patient & Demographic Information
+    "patientName": "Patient Name",
+    "dateOfBirth": "Date of Birth", 
+    "sex": "Sex",
+    "race": "Race",
+    "ethnicity": "Ethnicity",
+    "addressAtDiagnosis": "Address at Diagnosis",
+    "countyAtDiagnosis": "County at Diagnosis",
+    "socialSecurityNumber": "Social Security Number",
+    
+    # Tumor Identification
+    "primarySite": "Primary Site",
+    "histologicType": "Histologic Type",
+    "behaviorCode": "Behavior Code",
+    "laterality": "Laterality",
+    "gradeDifferentiation": "Grade/Differentiation",
+    "dateOfDiagnosis": "Date of Diagnosis",
+    "diagnosticConfirmation": "Diagnostic Confirmation",
+    "classOfCase": "Class of Case",
+    "sequenceNumber": "Sequence Number",
+    
+    # Staging
+    "clinicalT": "Clinical T",
+    "clinicalN": "Clinical N", 
+    "clinicalM": "Clinical M",
+    "pathologicT": "Pathologic T",
+    "pathologicN": "Pathologic N",
+    "pathologicM": "Pathologic M",
+    "ajccStageGroupClinical": "AJCC Stage Group Clinical",
+    "ajccStageGroupPathologic": "AJCC Stage Group Pathologic",
+    "seerSummaryStage2018": "SEER Summary Stage 2018",
+    
+    # Treatment
+    "surgeryOfPrimarySite": "Surgery of Primary Site",
+    "dateOfSurgery": "Date of Surgery",
+    "radiationTherapy": "Radiation Therapy",
+    "dateRadiationStarted": "Date Radiation Started",
+    "chemotherapy": "Chemotherapy",
+    "hormoneTherapy": "Hormone Therapy",
+    "immunotherapy": "Immunotherapy",
+    
+    # Follow-up & Outcome
+    "dateOfLastContact": "Date of Last Contact",
+    "vitalStatus": "Vital Status",
+    "dateOfDeath": "Date of Death",
+    "causeOfDeath": "Cause of Death",
+    "cancerStatus": "Cancer Status",
+    
+    # Administrative
+    "accessionNumber": "Accession Number",
+    "reportingFacilityId": "Reporting Facility ID",
+    "abstractorId": "Abstractor ID",
+    "dateCaseAbstracted": "Date Case Abstracted",
+    "editChecksPassed": "Edit Checks Passed",
+    "recordType": "Record Type"
+}
+```
+
+## PHASE 1.5: PROCESS ALL BUTTON INTEGRATION 🚨
+
+### Current State:
+- **Frontend:** Has "Process All" button in patient forms
+- **Backend:** Has `/process/{document_id}` endpoint working
+- **Gap:** No connection between frontend button and backend processing
+
+### Required Integration:
+
+#### 1. Frontend API Client Enhancement
+**File:** `client/src/lib/api-client.ts` (NEW FILE)
+
+```typescript
+export class OncologyAPIClient {
+  private baseUrl = 'http://localhost:5001';
+  
+  async uploadDocument(file: File, patientId: number): Promise<UploadResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('patient_id', patientId.toString());
+    
+    const response = await fetch(`${this.baseUrl}/upload`, {
+      method: 'POST',
+      body: formData
+    });
+    return response.json();
+  }
+  
+  async processDocument(documentId: string): Promise<ProcessingResponse> {
+    const response = await fetch(`${this.baseUrl}/process/${documentId}`, {
+      method: 'POST'
+    });
+    return response.json();
+  }
+  
+  async getProcessingStatus(documentId: string): Promise<StatusResponse> {
+    const response = await fetch(`${this.baseUrl}/status/${documentId}`);
+    return response.json();
+  }
+}
+```
+
+#### 2. Process All Button Implementation
+**File:** `client/src/components/patient/comprehensive-patient-form.tsx`
+
+```typescript
+// Add to component state
+const [processingStatus, setProcessingStatus] = useState<'idle' | 'processing' | 'completed' | 'error'>('idle');
+const [uploadedDocuments, setUploadedDocuments] = useState<UploadResponse[]>([]);
+
+// Process All function
+const handleProcessAll = async () => {
+  setProcessingStatus('processing');
+  
+  try {
+    const results = [];
+    
+    for (const doc of uploadedDocuments) {
+      const result = await apiClient.processDocument(doc.document_id);
+      results.push(result);
+      
+      // Update form with extracted data
+      if (result.extracted_data) {
+        updateFormWithExtractedData(result.extracted_data);
+      }
+    }
+    
+    setProcessingStatus('completed');
+    toast.success(`Processed ${results.length} documents successfully`);
+    
+  } catch (error) {
+    setProcessingStatus('error');
+    toast.error('Error processing documents');
+    console.error('Process All Error:', error);
+  }
+};
+
+// Update form with extracted data
+const updateFormWithExtractedData = (extractedData: any) => {
+  // Map backend field names to frontend field names
+  const fieldMapping = {
+    'full_name': 'patientName',
+    'date_of_birth': 'dateOfBirth',
+    'sex_gender': 'sex',
+    'primary_site': 'primarySite',
+    'histology': 'histologicType',
+    'behavior': 'behaviorCode',
+    'grade': 'gradeDifferentiation',
+    'date_of_diagnosis': 'dateOfDiagnosis',
+    'vital_status': 'vitalStatus',
+    'death_date': 'dateOfDeath',
+    'cause_of_death': 'causeOfDeath'
+  };
+  
+  Object.entries(extractedData).forEach(([backendField, data]: [string, any]) => {
+    const frontendField = fieldMapping[backendField];
+    if (frontendField && data.value) {
+      setValue(frontendField, data.value);
+    }
+  });
+};
+```
+
+#### 3. Enhanced Upload Workflow
+**File:** `client/src/components/patient/comprehensive-patient-form.tsx`
+
+```typescript
+// Enhanced file upload with processing
+const handleFileUpload = async (files: FileList) => {
+  const uploadPromises = Array.from(files).map(async (file) => {
+    try {
+      const uploadResult = await apiClient.uploadDocument(file, patientId);
+      setUploadedDocuments(prev => [...prev, uploadResult]);
+      
+      // Auto-process if user prefers
+      if (autoProcessDocuments) {
+        const processResult = await apiClient.processDocument(uploadResult.document_id);
+        updateFormWithExtractedData(processResult.extracted_data);
+      }
+      
+      return uploadResult;
+    } catch (error) {
+      console.error('Upload error:', error);
+      throw error;
+    }
+  });
+  
+  try {
+    await Promise.all(uploadPromises);
+    toast.success('Documents uploaded successfully');
+  } catch (error) {
+    toast.error('Some documents failed to upload');
+  }
+};
+```
+
+#### 4. Processing Status UI
+**File:** `client/src/components/patient/comprehensive-patient-form.tsx`
+
+```typescript
+// Add to JSX
+{processingStatus === 'processing' && (
+  <div className="flex items-center space-x-2 p-4 bg-blue-50 rounded-lg">
+    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+    <span className="text-blue-600">Processing documents...</span>
+  </div>
+)}
+
+{processingStatus === 'completed' && (
+  <div className="p-4 bg-green-50 rounded-lg">
+    <span className="text-green-600">✓ Documents processed successfully</span>
+  </div>
+)}
+
+{processingStatus === 'error' && (
+  <div className="p-4 bg-red-50 rounded-lg">
+    <span className="text-red-600">✗ Error processing documents</span>
+  </div>
+)}
+```
+
+### Integration Benefits:
+1. **Seamless Workflow:** Upload → Process → Auto-fill form
+2. **Batch Processing:** Handle multiple documents efficiently
+3. **Real-time Feedback:** Show processing status and progress
+4. **Error Handling:** Graceful failure with user feedback
+5. **Data Accuracy:** Source text tracking for verification
+
+### Testing Requirements:
+1. Test with single document upload and processing
+2. Test with multiple documents (Process All)
+3. Test error scenarios (network failure, invalid files)
+4. Test field mapping accuracy
+5. Test processing status updates
+
+## PHASE 2: DOCUMENT STORAGE & PROCESSING INTEGRATION
+
+### 2.1 Frontend Document Schema Enhancement
+
+CURRENT FRONTEND DOCUMENT SCHEMA:
+```typescript
+{
+  id: number,
+  patientId: number,
+  filename: string,
+  type: string,
+  uploadDate: Date,
+  size: number,
+  content: string
+}
+```
+
+ENHANCED SCHEMA REQUIRED:
+```typescript
+{
+  id: number,
+  patientId: number,
+  filename: string,
+  type: string,
+  uploadDate: Date,
+  size: number,
+  content: string,
+  // NEW FIELDS FOR AI PROCESSING
+  documentId: string, // Backend document ID
+  processingStatus: 'pending' | 'processing' | 'completed' | 'failed',
+  extractedData: {
+    [fieldName: string]: {
+      value: string,
+      confidence: number,
+      sourceSnippet: string,
+      sourceLocation: string,
+      reasoning: string,
+      timestamp: string
+    }
+  },
+  documentPath: string, // Path to stored document
+  documentType: 'pdf' | 'docx' | 'txt' | 'image'
+}
+```
+
+### 2.2 Backend API Endpoint Modifications
+
+FILES TO MODIFY:
+1. ../Oncology-reporter-API/app/main.py - API endpoints
+
+REQUIRED CHANGES:
+
+1. Enhanced Upload Endpoint:
+```python
+@app.post("/upload", response_model=UploadResponse)
+async def upload_file(
+    file: UploadFile = File(...),
+    patient_id: int = Form(...)  # NEW: Accept patient_id
+):
+```
+
+2. Enhanced Processing Endpoint:
+```python
+@app.post("/process/{document_id}", response_model=ProcessingResponse)
+async def process_document(
+    document_id: str, 
+    background_tasks: BackgroundTasks,
+    patient_id: int = None  # NEW: Accept patient_id
+):
+```
+
+3. New Document Storage Endpoint:
+```python
+@app.get("/documents/{document_id}/content")
+async def get_document_content(document_id: str):
+```
+
+## PHASE 3: SOURCE TEXT HIGHLIGHTING SYSTEM
+
+### 3.1 Enhanced Source Location Tracking
+
+BACKEND CHANGES REQUIRED:
+
+CURRENT SOURCE LOCATION FORMAT:
+```python
+"source_location": "Page 1"  # Too generic
+```
+
+ENHANCED SOURCE LOCATION REQUIRED:
+```python
+"source_location": {
+    "page": 1,
+    "line": 15,
+    "startChar": 45,
+    "endChar": 67,
+    "section": "Diagnosis",
+    "coordinates": {"x": 100, "y": 200, "width": 150, "height": 20}
+}
+```
+
+### 3.2 Document Viewer Integration
+
+FRONTEND REQUIREMENTS:
+1. PDF Viewer Component with text highlighting
+2. Image Viewer with OCR text overlay
+3. Text File Viewer with line highlighting
+4. Source Text Navigation system
+
+## PHASE 4: API INTEGRATION LAYER
+
+### 4.1 Frontend API Client Creation
+
+NEW FILE: client/src/lib/api-client.ts
+
+REQUIRED METHODS:
+```typescript
+interface OncologyAPI {
+  uploadDocument(file: File, patientId: number): Promise<UploadResponse>;
+  processDocument(documentId: string): Promise<ProcessingResponse>;
+  getProcessingStatus(documentId: string): Promise<StatusResponse>;
+  getDocumentContent(documentId: string): Promise<DocumentContent>;
+}
+```
+
+### 4.2 Backend CORS Configuration
+
+CURRENT CORS:
+```python
+allow_origins=["http://localhost:8000", "http://0.0.0.0:8000"]
+```
+
+REQUIRED UPDATE:
+```python
+allow_origins=["http://localhost:5001", "http://localhost:3000", "http://0.0.0.0:5001"]
+```
+
+## PHASE 5: DATA FLOW INTEGRATION
+
+### 5.1 Processing Workflow
+
+CURRENT BACKEND FLOW:
+```
+Upload → Process → Return JSON
+```
+
+REQUIRED ENHANCED FLOW:
+```
+Upload → Store Document → Process → Extract Fields → Map to Frontend Schema → Return Structured Data
+```
+
+### 5.2 Field Mapping Implementation
+
+NEW FILE: ../Oncology-reporter-API/app/utils/field_mapper.py
+
+REQUIRED FUNCTIONALITY:
+```python
+class FieldMapper:
+    def map_backend_to_frontend(self, backend_data: dict) -> dict:
+        # Map backend field names to frontend field names
+        pass
+    
+    def validate_field_completeness(self, extracted_data: dict) -> dict:
+        # Ensure all required frontend fields are present
+        pass
+```
+
+## 🚨 CRITICAL ERRORS & COMPATIBILITY ISSUES
+
+### Priority 1: Critical Field Mapping
+1. Update Backend Field Names to match frontend exactly
+2. Add All Missing Fields to extraction prompt
+3. Create Field Mapping Layer for response transformation
+
+### Priority 2: Document Storage
+1. Add Patient Association to upload endpoint
+2. Implement Document Storage with accessible paths
+3. Add Processing Status tracking
+
+### Priority 3: API Integration
+1. Fix CORS Configuration for frontend domain
+2. Update Response Format to match frontend expectations
+3. Add Error Handling for all failure scenarios
+
+### Priority 4: Source Text Highlighting
+1. Enhance Source Location tracking with coordinates
+2. Update Document Viewer for AI-processed documents
+3. Create Highlighting System for extracted text
+
+### Priority 5: User Experience
+1. Add Processing Status polling
+2. Implement Progress Indicators
+3. Create Error Recovery mechanisms
+
+## 🛠️ MITIGATION STRATEGIES
+
+### 1. Phased Integration Approach
+- Start with basic field mapping
+- Add document storage incrementally
+- Implement highlighting last
+
+### 2. Fallback Mechanisms
+- Mock data for missing fields
+- Basic text highlighting if coordinates fail
+- Graceful degradation for processing failures
+
+### 3. Comprehensive Testing
+- Unit tests for field mapping
+- Integration tests for document processing
+- End-to-end workflow testing
+
+### 4. Monitoring & Logging
+- Detailed error logging
+- Performance monitoring
+- User interaction tracking
+
+## IMPLEMENTATION PRIORITY
+
+### ✅ COMPLETED (Current Status)
+1. ✅ Server setup and configuration (ports 8001 & 5001)
+2. ✅ CORS configuration for cross-origin requests
+3. ✅ Basic API endpoints working (/upload, /process, /health)
+4. ✅ Document processing with AI extraction
+5. ✅ Vector store with reference documents
+
+### High Priority (Next Steps - Phase 1.5)
+1. 🚨 **Process All Button Integration** - Connect frontend to backend processing
+2. **Field mapping configuration** - Align backend and frontend field names
+3. **Frontend API client creation** - Create TypeScript client for backend
+4. **Basic form integration** - Auto-fill forms with extracted data
+
+### Medium Priority (Phase 2-3)
+1. **Document storage integration** - Persistent document storage
+2. **Document viewer component** - Enhanced viewer with source highlighting
+3. **Source text highlighting** - Visual highlighting of extracted text
+4. **Enhanced upload workflow** - Better user experience
+
+### Low Priority (Phase 4-5)
+1. **Batch processing optimization** - Performance improvements
+2. **Advanced UI features** - Confidence indicators, progress bars
+3. **Comprehensive testing** - End-to-end testing suite
+4. **Performance optimization** - Caching, compression
+
+## SUCCESS CRITERIA
+
+1. Functional Integration
+   - Documents upload and process successfully
+   - AI extraction works with real data
+   - Field mapping is accurate and complete
+
+2. User Experience
+   - Source text highlighting works correctly
+   - Document viewer is responsive and intuitive
+   - Confidence indicators are clear and helpful
+
+3. Data Quality
+   - Extracted data is accurate and reliable
+   - Source tracking is precise
+   - Manual corrections are preserved
+
+4. Performance
+   - Processing time is acceptable (< 30 seconds per document)
+   - UI remains responsive during processing
+   - Large documents handle gracefully
+
+## FILES REQUIRING MODIFICATIONS
+
+### Backend Files:
+1. ../Oncology-reporter-API/app/api/models.py - Field definitions
+2. ../Oncology-reporter-API/app/services/document_processor.py - Extraction logic
+3. ../Oncology-reporter-API/app/main.py - API endpoints
+4. ../Oncology-reporter-API/app/utils/field_mapper.py - NEW FILE
+5. ../Oncology-reporter-API/app/config/cors.py - NEW FILE
+
+### Frontend Files:
+1. client/src/lib/api-client.ts - NEW FILE
+2. client/src/components/document/document-viewer.tsx - NEW FILE
+3. client/src/components/patient/comprehensive-patient-form.tsx - Update
+4. client/src/lib/field-source-mapping.ts - Update
+5. shared/schema.ts - Update document schema
+
+## TESTING REQUIREMENTS
+
+1. Field Mapping Accuracy - Verify all fields map correctly
+2. Source Location Precision - Test highlighting accuracy
+3. Document Processing - End-to-end workflow testing
+4. Error Handling - Graceful failure scenarios
+5. Performance - Processing time optimization
+
+## NEXT STEPS
+
+### Immediate Actions (This Week)
+1. **Create Frontend API Client** - Implement `client/src/lib/api-client.ts`
+2. **Integrate Process All Button** - Connect frontend button to backend `/process` endpoint
+3. **Test Field Mapping** - Verify backend field names map correctly to frontend
+4. **Add Processing Status UI** - Show loading states and progress feedback
+
+### Short Term (Next 2 Weeks)
+1. **Enhance Document Upload** - Add patient association and auto-processing
+2. **Implement Form Auto-fill** - Use extracted data to populate patient forms
+3. **Add Error Handling** - Graceful failure scenarios and user feedback
+4. **Test End-to-End Workflow** - Complete document upload → process → form fill
+
+### Medium Term (Next Month)
+1. **Document Storage Integration** - Persistent storage between frontend and backend
+2. **Source Text Highlighting** - Visual highlighting in document viewer
+3. **Enhanced Document Viewer** - PDF/image viewer with AI annotations
+4. **Performance Optimization** - Caching and batch processing improvements
+
+### Long Term (Next Quarter)
+1. **Advanced Features** - Confidence scoring, manual corrections
+2. **Comprehensive Testing** - Unit, integration, and end-to-end tests
+3. **Production Deployment** - Environment setup and monitoring
+4. **User Training** - Documentation and training materials
+
+## CURRENT STATUS SUMMARY
+
+**✅ COMPLETED:**
+- Both servers running (Frontend: 8001, API: 5001)
+- Document upload and processing working
+- AI extraction with source text tracking
+- CORS configured for cross-origin requests
+
+**🚨 NEXT PRIORITY:**
+- Process All button integration
+- Frontend API client creation
+- Field mapping implementation
+
+**📊 PROGRESS:**
+- Basic Integration: 100% Complete
+- Process All Integration: 0% Complete
+- Field Mapping: 0% Complete
+- Document Viewer: 0% Complete
+
+## SUPPORT
+
+If you encounter issues:
+1. Check the server logs for error messages
+2. Verify environment variables are set correctly
+3. Test the health endpoint: GET /health
+4. Ensure all dependencies are installed
+
+---
+Last Updated: [Current Date]
+Status: Planning Phase
+Priority: High
+Estimated Timeline: 4-6 weeks 

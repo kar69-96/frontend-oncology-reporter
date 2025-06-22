@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Microscope, LayoutDashboard, Users, BriefcaseMedical, Bell } from "lucide-react";
+import { Microscope, LayoutDashboard, Users, BriefcaseMedical, Bell, TestTube } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
@@ -21,6 +21,11 @@ export function Navigation() {
       path: "/references",
       label: "References",
       icon: BriefcaseMedical,
+    },
+    {
+      path: "/api-test",
+      label: "API Test",
+      icon: TestTube,
     },
   ];
 

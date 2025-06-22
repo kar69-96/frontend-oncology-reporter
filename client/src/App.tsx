@@ -8,6 +8,7 @@ import Dashboard from "@/pages/dashboard";
 import Patients from "@/pages/patients";
 import PatientDetail from "@/pages/patient-detail";
 import References from "@/pages/references";
+import APITest from "@/pages/api-test";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -20,6 +21,7 @@ function Router() {
           <Route path="/patients" component={Patients} />
           <Route path="/patients/:id" component={PatientDetail} />
           <Route path="/references" component={References} />
+          <Route path="/api-test" component={APITest} />
           <Route component={NotFound} />
         </Switch>
       </div>

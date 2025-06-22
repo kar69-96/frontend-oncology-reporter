@@ -112,6 +112,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Enhanced document routes for AI processing
+  app.put("/api/documents/:id/processing-status", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { status, extractedData, errorMessage } = req.body;
+      
+      const document = await storage.updateDocumentProcessingStatus(id, status, extractedData, errorMessage);
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+      res.json(document);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update document processing status" });
+    }
+  });
+
+  app.put("/api/documents/:id/extracted-data", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { extractedData, confidence } = req.body;
+      
+      const document = await storage.updateDocumentExtractedData(id, extractedData, confidence);
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+      res.json(document);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update document extracted data" });
+    }
+  });
+
+  app.get("/api/documents/backend/:backendId", async (req, res) => {
+    try {
+      const backendId = req.params.backendId;
+      const document = await storage.getDocumentByBackendId(backendId);
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+      res.json(document);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch document" });
+    }
+  });
+
+  app.put("/api/documents/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertDocumentSchema.partial().parse(req.body);
+      const document = await storage.updateDocument(id, validatedData);
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+      res.json(document);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid document data", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Failed to update document" });
+      }
+    }
+  });
+
   // Tumor Registry Form routes
   app.get("/api/patients/:patientId/form", async (req, res) => {
     try {
