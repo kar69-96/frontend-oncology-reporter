@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robust Multi-Page PDF Viewer</title>
+    
+    <!-- PDF.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: white;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .btn:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+        
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .status {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #1976d2;
+        }
+        
+        .status.success {
+            background: #e8f5e8;
+            border-color: #4caf50;
+            color: #2e7d32;
+        }
+        
+        .status.error {
+            background: #ffebee;
+            border-color: #f44336;
+            color: #c62828;
+        }
+        
+        .main-container {
+            margin-top: 60px;
+            padding: 20px;
+            min-height: calc(100vh - 60px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 60px;
+            color: #666;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e3f2fd;
+            border-top: 5px solid #2196f3;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .pdf-container {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .page-wrapper {
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            overflow: hidden;
+            border: 1px solid #ddd;
+            display: block !important;
+            visibility: visible !important;
+        }
+        
+        .page-header {
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            padding: 12px 20px;
+            font-weight: 600;
+            color: #495057;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .page-content {
+            position: relative;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+            padding: 20px;
+        }
+        
+        .page-canvas {
+            display: block !important;
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .text-layer {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            right: 20px;
+            bottom: 20px;
+            overflow: hidden;
+            opacity: 0;
+            line-height: 1.0;
+            pointer-events: none;
+        }
+        
+        .text-layer > span {
+            color: transparent;
+            position: absolute;
+            white-space: pre;
+            cursor: text;
+            transform-origin: 0% 0%;
+        }
+        
+        .highlight-layer {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            right: 20px;
+            bottom: 20px;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .highlight {
+            position: absolute;
+            background-color: rgba(255, 255, 0, 0.3);
+            border: 1px solid rgba(255, 255, 0, 0.6);
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .highlight.primary {
+            background-color: rgba(0, 255, 0, 0.4);
+            border: 2px solid rgba(0, 255, 0, 0.8);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            animation: glow 2s infinite alternate;
+        }
+        
+        /* Different highlight styles for different match types */
+        .highlight-exact {
+            background-color: rgba(0, 255, 0, 0.3);
+            border: 2px solid rgba(0, 255, 0, 0.8);
+            box-shadow: 0 0 8px rgba(0, 255, 0, 0.4);
+        }
+        
+        .highlight-fuzzy-phrase {
+            background-color: rgba(0, 150, 255, 0.3);
+            border: 2px dotted rgba(0, 150, 255, 0.8);
+            box-shadow: 0 0 6px rgba(0, 150, 255, 0.3);
+        }
+        
+        .highlight-key-phrase {
+            background-color: rgba(255, 165, 0, 0.3);
+            border: 2px dashed rgba(255, 165, 0, 0.8);
+            box-shadow: 0 0 5px rgba(255, 165, 0, 0.3);
+        }
+        
+        .highlight-medical-pattern {
+            background-color: rgba(128, 0, 128, 0.3);
+            border: 2px solid rgba(128, 0, 128, 0.8);
+            box-shadow: 0 0 4px rgba(128, 0, 128, 0.3);
+        }
+        
+        .highlight-word {
+            background-color: rgba(255, 255, 0, 0.3);
+            border: 1px solid rgba(255, 255, 0, 0.6);
+        }
+        
+        .highlight-word-component {
+            background-color: rgba(255, 200, 0, 0.3);
+            border: 1px dashed rgba(255, 200, 0, 0.6);
+        }
+        
+        .highlight-synonym {
+            background-color: rgba(255, 100, 255, 0.3);
+            border: 1px dotted rgba(255, 100, 255, 0.6);
+        }
+        
+        .highlight-partial {
+            background-color: rgba(200, 200, 200, 0.3);
+            border: 1px solid rgba(200, 200, 200, 0.6);
+        }
+        
+        .debug-panel {
+            position: fixed;
+            top: 70px;
+            left: 20px;
+            width: 350px;
+            max-height: 400px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 999;
+            overflow: hidden;
+        }
+        
+        .debug-header {
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            padding: 10px 15px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #495057;
+        }
+        
+        .debug-content {
+            padding: 10px;
+            max-height: 350px;
+            overflow-y: auto;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            line-height: 1.4;
+        }
+        
+        .debug-line {
+            margin-bottom: 5px;
+            padding: 3px 6px;
+            border-radius: 3px;
+        }
+        
+        .debug-line.success {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .debug-line.error {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .debug-line.warning {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .match-info {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 999;
+            font-size: 14px;
+        }
+        
+        .error-message {
+            background: #ffebee;
+            border: 1px solid #f44336;
+            color: #c62828;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                height: auto;
+                padding: 10px;
+            }
+            
+            .controls {
+                margin-top: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .main-container {
+                margin-top: 80px;
+                padding: 10px;
+            }
+            
+            .debug-panel {
+                position: relative;
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">
+            📄 <span id="filename">Loading PDF...</span>
+        </div>
+        
+        <div class="controls">
+            <div id="status" class="status" style="display: none;">
+                Loading...
+            </div>
+            
+            <button id="zoom-out" class="btn">−</button>
+            <span id="zoom-level" style="min-width: 60px; text-align: center;">100%</span>
+            <button id="zoom-in" class="btn">+</button>
+            <button id="fit-width" class="btn">Fit Width</button>
+            <button id="search-again" class="btn" style="background: #28a745;">🔍 Search Again</button>
+            <button id="download" class="btn" style="display: none;">Download</button>
+        </div>
+    </div>
+    
+    <div id="debug-panel" class="debug-panel">
+        <div class="debug-header">Debug Information</div>
+        <div id="debug-content" class="debug-content"></div>
+    </div>
+    
+    <div id="match-info" class="match-info" style="display: none;">
+        <strong>Search Results:</strong><br>
+        <span id="match-count">0</span> matches found
+    </div>
+    
+    <div class="main-container">
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <div>Loading PDF document...</div>
+        </div>
+        
+        <div id="pdf-container" class="pdf-container" style="display: none;"></div>
+        
+        <div id="error-container" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Configure PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        
+        class RobustPDFViewer {
+            constructor() {
+                this.pdfDoc = null;
+                this.scale = 1.2;
+                this.totalPages = 0;
+                this.renderedPages = new Set();
+                this.searchText = '';
+                this.highlights = [];
+                
+                // Get URL parameters
+                const params = new URLSearchParams(window.location.search);
+                this.filename = params.get('filename') || 'document.pdf';
+                this.searchText = params.get('highlight') || '';
+                this.fieldName = params.get('field') || '';
+                this.confidence = parseFloat(params.get('confidence') || '0');
+                
+                // Debug search parameters
+                this.log(`Initialized with search params: filename="${this.filename}", highlight="${this.searchText}", field="${this.fieldName}", confidence=${this.confidence}`);
+                
+                this.initializeElements();
+                this.bindEvents();
+                this.loadPDF();
+            }
+            
+            initializeElements() {
+                this.elements = {
+                    filename: document.getElementById('filename'),
+                    status: document.getElementById('status'),
+                    loading: document.getElementById('loading'),
+                    pdfContainer: document.getElementById('pdf-container'),
+                    errorContainer: document.getElementById('error-container'),
+                    debugContent: document.getElementById('debug-content'),
+                    matchInfo: document.getElementById('match-info'),
+                    matchCount: document.getElementById('match-count'),
+                    zoomIn: document.getElementById('zoom-in'),
+                    zoomOut: document.getElementById('zoom-out'),
+                    zoomLevel: document.getElementById('zoom-level'),
+                    fitWidth: document.getElementById('fit-width'),
+                    download: document.getElementById('download')
+                };
+                
+                this.elements.filename.textContent = this.filename;
+                
+                if (this.searchText) {
+                    this.showStatus(`Searching for: "${this.fieldName}" (${Math.round(this.confidence * 100)}% confidence)`, 'info');
+                }
+            }
+            
+            bindEvents() {
+                this.elements.zoomIn.addEventListener('click', () => this.zoomIn());
+                this.elements.zoomOut.addEventListener('click', () => this.zoomOut());
+                this.elements.fitWidth.addEventListener('click', () => this.fitToWidth());
+                this.elements.download.addEventListener('click', () => this.downloadPDF());
+                
+                // Add search button event
+                const searchButton = document.getElementById('search-again');
+                if (searchButton) {
+                    searchButton.addEventListener('click', () => {
+                        this.log('Manual search triggered', 'info');
+                        if (this.searchText) {
+                            this.performSearch();
+                        } else {
+                            this.log('No search text available', 'warning');
+                        }
+                    });
+                }
+            }
+            
+            log(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const line = document.createElement('div');
+                line.className = `debug-line ${type}`;
+                line.textContent = `[${timestamp}] ${message}`;
+                this.elements.debugContent.appendChild(line);
+                this.elements.debugContent.scrollTop = this.elements.debugContent.scrollHeight;
+                console.log(`[PDF-VIEWER] ${message}`);
+            }
+            
+            showStatus(message, type = 'info') {
+                this.elements.status.textContent = message;
+                this.elements.status.className = `status ${type}`;
+                this.elements.status.style.display = 'block';
+            }
+            
+            showError(message) {
+                this.elements.errorContainer.innerHTML = `<div class="error-message">${message}</div>`;
+                this.elements.errorContainer.style.display = 'block';
+                this.elements.loading.style.display = 'none';
+                this.log(`ERROR: ${message}`, 'error');
+            }
+            
+            async loadPDF() {
+                try {
+                    this.log(`Starting PDF load: ${this.filename}`);
+                    this.showStatus('Loading PDF...', 'info');
+                    
+                    const pdfUrl = `/api/pdf/${encodeURIComponent(this.filename)}`;
+                    this.log(`PDF URL: ${pdfUrl}`);
+                    
+                    const loadingTask = pdfjsLib.getDocument({
+                        url: pdfUrl,
+                        cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+                        cMapPacked: true,
+                        verbosity: 0
+                    });
+                    
+                    this.pdfDoc = await loadingTask.promise;
+                    this.totalPages = this.pdfDoc.numPages;
+                    
+                    this.log(`PDF loaded successfully: ${this.totalPages} pages`, 'success');
+                    this.showStatus(`Loaded ${this.totalPages} pages`, 'success');
+                    
+                    // Show download button
+                    this.elements.download.style.display = 'block';
+                    
+                    // Render all pages
+                    await this.renderAllPages();
+                    
+                    // Perform search if needed
+                    if (this.searchText) {
+                        this.log(`Auto-triggering search for: "${this.searchText}"`, 'info');
+                        await this.performSearch();
+                        
+                        // Auto-scroll to first highlight after a short delay
+                        setTimeout(() => {
+                            if (this.highlights.length > 0) {
+                                this.log(`Auto-scrolling to first highlight (${this.highlights.length} total found)`, 'success');
+                                this.highlights[0].element.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'center'
+                                });
+                            } else {
+                                this.log(`No highlights found for search term: "${this.searchText}"`, 'warning');
+                            }
+                        }, 1500);
+                    } else {
+                        this.log('No search text provided - PDF loaded without highlighting');
+                    }
+                    
+                    // Hide loading, show PDF
+                    this.elements.loading.style.display = 'none';
+                    this.elements.pdfContainer.style.display = 'block';
+                    
+                    this.log(`PDF viewer ready: ${this.renderedPages.size}/${this.totalPages} pages rendered`, 'success');
+                    
+                } catch (error) {
+                    this.showError(`Failed to load PDF: ${error.message}`);
+                }
+            }
+            
+            async renderAllPages() {
+                this.log(`Starting to render ${this.totalPages} pages...`);
+                this.elements.pdfContainer.innerHTML = '';
+                this.renderedPages.clear();
+                
+                for (let pageNum = 1; pageNum <= this.totalPages; pageNum++) {
+                    try {
+                        this.log(`Rendering page ${pageNum}/${this.totalPages}...`);
+                        await this.renderPage(pageNum);
+                        this.renderedPages.add(pageNum);
+                        this.log(`✅ Page ${pageNum} rendered successfully`, 'success');
+                        
+                        // Small delay to prevent browser freeze
+                        if (pageNum % 3 === 0) {
+                            await new Promise(resolve => setTimeout(resolve, 50));
+                        }
+                        
+                    } catch (error) {
+                        this.log(`❌ Failed to render page ${pageNum}: ${error.message}`, 'error');
+                    }
+                }
+                
+                this.log(`Page rendering complete: ${this.renderedPages.size}/${this.totalPages} pages`, 'success');
+            }
+            
+            async renderPage(pageNum) {
+                const page = await this.pdfDoc.getPage(pageNum);
+                const viewport = page.getViewport({ scale: this.scale });
+                
+                // Create page wrapper
+                const pageWrapper = document.createElement('div');
+                pageWrapper.className = 'page-wrapper';
+                pageWrapper.id = `page-${pageNum}`;
+                
+                // Create page header
+                const pageHeader = document.createElement('div');
+                pageHeader.className = 'page-header';
+                pageHeader.textContent = `Page ${pageNum} of ${this.totalPages}`;
+                pageWrapper.appendChild(pageHeader);
+                
+                // Create page content container
+                const pageContent = document.createElement('div');
+                pageContent.className = 'page-content';
+                pageContent.style.width = viewport.width + 'px';
+                pageContent.style.height = viewport.height + 'px';
+                
+                // Create canvas
+                const canvas = document.createElement('canvas');
+                canvas.className = 'page-canvas';
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                const context = canvas.getContext('2d');
+                
+                // Create text layer
+                const textLayer = document.createElement('div');
+                textLayer.className = 'text-layer';
+                
+                // Create highlight layer
+                const highlightLayer = document.createElement('div');
+                highlightLayer.className = 'highlight-layer';
+                
+                // Assemble page structure
+                pageContent.appendChild(canvas);
+                pageContent.appendChild(textLayer);
+                pageContent.appendChild(highlightLayer);
+                pageWrapper.appendChild(pageContent);
+                this.elements.pdfContainer.appendChild(pageWrapper);
+                
+                // Render PDF content
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                
+                await page.render(renderContext).promise;
+                
+                // Render text layer
+                const textContent = await page.getTextContent();
+                pdfjsLib.renderTextLayer({
+                    textContent: textContent,
+                    container: textLayer,
+                    viewport: viewport,
+                    textDivs: []
+                });
+                
+                return { page, canvas, textLayer, highlightLayer, viewport, pageNum };
+            }
+            
+            async performSearch() {
+                if (!this.searchText) return;
+                
+                this.log(`Starting search for: "${this.searchText}"`);
+                this.highlights = [];
+                
+                for (let pageNum = 1; pageNum <= this.totalPages; pageNum++) {
+                    await this.searchInPage(pageNum);
+                }
+                
+                this.updateSearchResults();
+            }
+            
+            async searchInPage(pageNum) {
+                try {
+                    const page = await this.pdfDoc.getPage(pageNum);
+                    const textContent = await page.getTextContent();
+                    const viewport = page.getViewport({ scale: this.scale });
+                    
+                    const highlightLayer = document.querySelector(`#page-${pageNum} .highlight-layer`);
+                    if (!highlightLayer) {
+                        this.log(`WARNING: No highlight layer for page ${pageNum}`, 'warning');
+                        return;
+                    }
+                    
+                    highlightLayer.innerHTML = '';
+                    
+                    // Strategy 1: Build complete text with positions for phrase matching
+                    const textItems = textContent.items;
+                    let fullText = '';
+                    const itemPositions = [];
+                    
+                    for (let i = 0; i < textItems.length; i++) {
+                        const item = textItems[i];
+                        if (!item.str) continue;
+                        
+                        const startPos = fullText.length;
+                        fullText += item.str;
+                        const endPos = fullText.length;
+                        
+                        itemPositions.push({
+                            item: item,
+                            startPos: startPos,
+                            endPos: endPos,
+                            text: item.str
+                        });
+                        
+                        // Add space between items if they're not adjacent
+                        if (i < textItems.length - 1) {
+                            const nextItem = textItems[i + 1];
+                            if (nextItem && nextItem.str && !item.str.endsWith(' ') && !nextItem.str.startsWith(' ')) {
+                                fullText += ' ';
+                            }
+                        }
+                    }
+                    
+                    this.log(`Page ${pageNum}: Full text length: ${fullText.length}, Items: ${itemPositions.length}`);
+                    this.log(`Page ${pageNum}: Text preview: "${fullText.substring(0, 200)}..."`);
+                    
+                    // Strategy 2: Prioritized search approaches
+                    const searchTerms = this.getSearchTerms(this.searchText);
+                    this.log(`Page ${pageNum}: Search terms: ${JSON.stringify(searchTerms)}`);
+                    
+                    let foundMatches = false;
+                    
+                    // Priority 1: Exact phrase match (highest priority)
+                    const exactMatches = this.findExactPhraseMatches(fullText, this.searchText, itemPositions);
+                    if (exactMatches.length > 0) {
+                        this.log(`Page ${pageNum}: Found ${exactMatches.length} exact phrase matches`, 'success');
+                        for (const match of exactMatches) {
+                            const highlight = this.createHighlight(match, viewport);
+                            if (highlight) {
+                                highlight.classList.add('highlight-exact');
+                                highlightLayer.appendChild(highlight);
+                                this.highlights.push({ 
+                                    element: highlight, 
+                                    page: pageNum, 
+                                    text: match.text || match.str,
+                                    searchTerm: this.searchText,
+                                    matchType: 'exact'
+                                });
+                            }
+                        }
+                        foundMatches = true;
+                    }
+                    
+                    // Priority 2: If no exact match, try fuzzy phrase matching
+                    if (!foundMatches) {
+                        const fuzzyMatches = this.findFuzzyPhraseMatches(fullText, this.searchText, itemPositions);
+                        if (fuzzyMatches.length > 0) {
+                            this.log(`Page ${pageNum}: Found ${fuzzyMatches.length} fuzzy phrase matches`, 'success');
+                            for (const match of fuzzyMatches) {
+                                const highlight = this.createHighlight(match, viewport);
+                                if (highlight) {
+                                    highlight.classList.add('highlight-fuzzy-phrase');
+                                    highlightLayer.appendChild(highlight);
+                                    this.highlights.push({ 
+                                        element: highlight, 
+                                        page: pageNum, 
+                                        text: match.text || match.str,
+                                        searchTerm: this.searchText,
+                                        matchType: 'fuzzy-phrase'
+                                    });
+                                }
+                            }
+                            foundMatches = true;
+                        }
+                    }
+                    
+                    // Priority 3: Individual search terms
+                    if (!foundMatches) {
+                        for (const searchTerm of searchTerms) {
+                            // Phrase search in full text
+                            const matches = this.findPhraseMatches(fullText, searchTerm, itemPositions);
+                            
+                            // Individual word search
+                            const wordMatches = this.findWordMatches(textItems, searchTerm, viewport);
+                            
+                            // Combine and deduplicate matches
+                            const allMatches = [...matches, ...wordMatches];
+                            
+                            for (const match of allMatches) {
+                                const highlight = this.createHighlight(match, viewport);
+                                if (highlight) {
+                                    highlightLayer.appendChild(highlight);
+                                    this.highlights.push({ 
+                                        element: highlight, 
+                                        page: pageNum, 
+                                        text: match.text || match.str,
+                                        searchTerm: searchTerm,
+                                        matchType: match.matchType || 'term'
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    
+                    this.log(`Page ${pageNum}: Found ${this.highlights.filter(h => h.page === pageNum).length} highlights`);
+                    
+                } catch (error) {
+                    this.log(`Error searching page ${pageNum}: ${error.message}`, 'error');
+                }
+            }
+            
+            findExactPhraseMatches(fullText, searchPhrase, itemPositions) {
+                const matches = [];
+                const fullTextLower = fullText.toLowerCase();
+                const searchLower = searchPhrase.toLowerCase().trim();
+                
+                this.log(`Looking for exact phrase: "${searchPhrase}"`);
+                
+                let startIndex = 0;
+                while (true) {
+                    const index = fullTextLower.indexOf(searchLower, startIndex);
+                    if (index === -1) break;
+                    
+                    const endIndex = index + searchLower.length;
+                    this.log(`Found exact match at position ${index}-${endIndex}: "${fullText.substring(index, endIndex)}"`);
+                    
+                    // Find which text items contain this match
+                    const matchingItems = itemPositions.filter(pos => 
+                        (pos.startPos <= index && pos.endPos > index) ||
+                        (pos.startPos < endIndex && pos.endPos >= endIndex) ||
+                        (pos.startPos >= index && pos.endPos <= endIndex)
+                    );
+                    
+                    if (matchingItems.length > 0) {
+                        const firstItem = matchingItems[0];
+                        const lastItem = matchingItems[matchingItems.length - 1];
+                        
+                        matches.push({
+                            text: fullText.substring(index, endIndex),
+                            transform: firstItem.item.transform,
+                            width: this.calculateCombinedWidth(matchingItems),
+                            height: Math.max(...matchingItems.map(i => i.item.height || 12)),
+                            str: searchPhrase,
+                            matchType: 'exact-phrase',
+                            matchingItems: matchingItems
+                        });
+                        
+                        this.log(`Created exact match highlight for: "${fullText.substring(index, endIndex)}"`);
+                    }
+                    
+                    startIndex = index + 1;
+                }
+                
+                return matches;
+            }
+            
+            findFuzzyPhraseMatches(fullText, searchPhrase, itemPositions) {
+                const matches = [];
+                const words = searchPhrase.toLowerCase().trim().split(/\s+/);
+                
+                if (words.length < 2) return matches;
+                
+                this.log(`Looking for fuzzy phrase matches with ${words.length} words`);
+                
+                // Try to find sequences of words with some flexibility
+                const fullTextLower = fullText.toLowerCase();
+                
+                // Strategy 1: Allow some words to be missing (70% match threshold)
+                const minWordsRequired = Math.ceil(words.length * 0.7);
+                
+                for (let i = 0; i < words.length - minWordsRequired + 1; i++) {
+                    const wordSequence = words.slice(i, i + minWordsRequired);
+                    const pattern = wordSequence.join('\\s+[\\w\\s]{0,20}?\\s*');
+                    
+                    try {
+                        const regex = new RegExp(pattern, 'gi');
+                        const regexMatches = fullTextLower.match(regex);
+                        
+                        if (regexMatches) {
+                            for (const match of regexMatches) {
+                                const index = fullTextLower.indexOf(match.toLowerCase());
+                                if (index !== -1) {
+                                    const endIndex = index + match.length;
+                                    
+                                    const matchingItems = itemPositions.filter(pos => 
+                                        (pos.startPos <= index && pos.endPos > index) ||
+                                        (pos.startPos < endIndex && pos.endPos >= endIndex) ||
+                                        (pos.startPos >= index && pos.endPos <= endIndex)
+                                    );
+                                    
+                                    if (matchingItems.length > 0) {
+                                        const firstItem = matchingItems[0];
+                                        
+                                        matches.push({
+                                            text: fullText.substring(index, endIndex),
+                                            transform: firstItem.item.transform,
+                                            width: this.calculateCombinedWidth(matchingItems),
+                                            height: Math.max(...matchingItems.map(i => i.item.height || 12)),
+                                            str: match,
+                                            matchType: 'fuzzy-phrase',
+                                            matchingItems: matchingItems
+                                        });
+                                        
+                                        this.log(`Created fuzzy match highlight for: "${match}"`);
+                                    }
+                                }
+                            }
+                        }
+                    } catch (regexError) {
+                        this.log(`Regex error in fuzzy matching: ${regexError.message}`, 'warning');
+                    }
+                }
+                
+                // Strategy 2: Try key phrase components
+                if (matches.length === 0) {
+                    this.log('Trying key phrase component matching...');
+                    
+                    // Extract key medical terms and numbers
+                    const keyTerms = words.filter(word => 
+                        word.length > 3 && 
+                        !['the', 'and', 'of', 'in', 'to', 'for', 'with', 'by'].includes(word)
+                    );
+                    
+                    if (keyTerms.length >= 2) {
+                        // Try to find combinations of key terms
+                        for (let i = 0; i < keyTerms.length - 1; i++) {
+                            const term1 = keyTerms[i];
+                            const term2 = keyTerms[i + 1];
+                            
+                            // Look for these terms within a reasonable distance
+                            const pattern = `${term1}[\\s\\w:,.-]{0,50}${term2}`;
+                            
+                            try {
+                                const regex = new RegExp(pattern, 'gi');
+                                const keyMatches = fullTextLower.match(regex);
+                                
+                                if (keyMatches) {
+                                    for (const match of keyMatches) {
+                                        const index = fullTextLower.indexOf(match.toLowerCase());
+                                        if (index !== -1) {
+                                            const endIndex = index + match.length;
+                                            
+                                            const matchingItems = itemPositions.filter(pos => 
+                                                (pos.startPos <= index && pos.endPos > index) ||
+                                                (pos.startPos < endIndex && pos.endPos >= endIndex) ||
+                                                (pos.startPos >= index && pos.endPos <= endIndex)
+                                            );
+                                            
+                                            if (matchingItems.length > 0) {
+                                                const firstItem = matchingItems[0];
+                                                
+                                                matches.push({
+                                                    text: fullText.substring(index, endIndex),
+                                                    transform: firstItem.item.transform,
+                                                    width: this.calculateCombinedWidth(matchingItems),
+                                                    height: Math.max(...matchingItems.map(i => i.item.height || 12)),
+                                                    str: match,
+                                                    matchType: 'key-phrase',
+                                                    matchingItems: matchingItems
+                                                });
+                                                
+                                                this.log(`Created key phrase match highlight for: "${match}"`);
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch (regexError) {
+                                this.log(`Regex error in key phrase matching: ${regexError.message}`, 'warning');
+                            }
+                        }
+                    }
+                }
+                
+                // Strategy 3: Try medical pattern matching
+                if (matches.length === 0) {
+                    this.log('Trying medical pattern matching...');
+                    
+                    // Look for common medical patterns in the search phrase
+                    const medicalPatterns = [
+                        // Size measurements: "4.2 cm", "2.5 mm", etc.
+                        /(\d+\.?\d*\s*(cm|mm|inches?))/gi,
+                        // Anatomical locations: "right upper lobe", "left breast", etc.
+                        /(right|left)\s+(upper|lower|outer|inner)?\s*\w+/gi,
+                        // Medical terms: "tumor", "carcinoma", "lesion", etc.
+                        /(tumor|carcinoma|lesion|mass|nodule|cancer)/gi,
+                        // Stage information: "Stage IIA", "T2N0M0", etc.
+                        /(stage\s+[IV]+[A-C]?|[pct]\d+[nm]\d+m?\d*)/gi
+                    ];
+                    
+                    for (const pattern of medicalPatterns) {
+                        const patternMatches = searchPhrase.match(pattern);
+                        if (patternMatches) {
+                            for (const patternMatch of patternMatches) {
+                                const index = fullTextLower.indexOf(patternMatch.toLowerCase());
+                                if (index !== -1) {
+                                    const endIndex = index + patternMatch.length;
+                                    
+                                    const matchingItems = itemPositions.filter(pos => 
+                                        (pos.startPos <= index && pos.endPos > index) ||
+                                        (pos.startPos < endIndex && pos.endPos >= endIndex) ||
+                                        (pos.startPos >= index && pos.endPos <= endIndex)
+                                    );
+                                    
+                                    if (matchingItems.length > 0) {
+                                        const firstItem = matchingItems[0];
+                                        
+                                        matches.push({
+                                            text: fullText.substring(index, endIndex),
+                                            transform: firstItem.item.transform,
+                                            width: this.calculateCombinedWidth(matchingItems),
+                                            height: Math.max(...matchingItems.map(i => i.item.height || 12)),
+                                            str: patternMatch,
+                                            matchType: 'medical-pattern',
+                                            matchingItems: matchingItems
+                                        });
+                                        
+                                        this.log(`Created medical pattern match highlight for: "${patternMatch}"`);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                return matches;
+            }
+            
+            getSearchTerms(searchText) {
+                const terms = [];
+                
+                // Add the original search text
+                terms.push(searchText.toLowerCase());
+                
+                // Add individual words if it's a phrase
+                const words = searchText.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+                if (words.length > 1) {
+                    terms.push(...words);
+                }
+                
+                // Add common medical term variations
+                const medicalVariations = this.getMedicalVariations(searchText.toLowerCase());
+                terms.push(...medicalVariations);
+                
+                return [...new Set(terms)]; // Remove duplicates
+            }
+            
+            getMedicalVariations(term) {
+                const variations = [];
+                
+                // Common medical abbreviations and expansions
+                const medicalMap = {
+                    'diagnosis': ['dx', 'diagnoses', 'diagnostic'],
+                    'patient': ['pt', 'pts', 'patient'],
+                    'pathology': ['path', 'pathological', 'histology'],
+                    'treatment': ['tx', 'therapy', 'therapeutic'],
+                    'history': ['hx', 'hist'],
+                    'examination': ['exam', 'pe', 'physical'],
+                    'laboratory': ['lab', 'labs'],
+                    'medication': ['med', 'meds', 'drug'],
+                    'procedure': ['proc', 'surgery', 'operation'],
+                    'symptom': ['sx', 'symptoms', 'complaint']
+                };
+                
+                for (const [key, values] of Object.entries(medicalMap)) {
+                    if (term.includes(key)) {
+                        variations.push(...values);
+                    }
+                    if (values.includes(term)) {
+                        variations.push(key);
+                        variations.push(...values);
+                    }
+                }
+                
+                return variations;
+            }
+            
+            findPhraseMatches(fullText, searchTerm, itemPositions) {
+                const matches = [];
+                const fullTextLower = fullText.toLowerCase();
+                const searchLower = searchTerm.toLowerCase();
+                
+                let startIndex = 0;
+                while (true) {
+                    const index = fullTextLower.indexOf(searchLower, startIndex);
+                    if (index === -1) break;
+                    
+                    const endIndex = index + searchLower.length;
+                    
+                    // Find which text items contain this match
+                    const matchingItems = itemPositions.filter(pos => 
+                        (pos.startPos <= index && pos.endPos > index) ||
+                        (pos.startPos < endIndex && pos.endPos >= endIndex) ||
+                        (pos.startPos >= index && pos.endPos <= endIndex)
+                    );
+                    
+                    if (matchingItems.length > 0) {
+                        // Create a combined match from all overlapping items
+                        const firstItem = matchingItems[0];
+                        const lastItem = matchingItems[matchingItems.length - 1];
+                        
+                        matches.push({
+                            text: fullText.substring(index, endIndex),
+                            transform: firstItem.item.transform,
+                            width: this.calculateCombinedWidth(matchingItems),
+                            height: Math.max(...matchingItems.map(i => i.item.height || 12)),
+                            str: searchTerm,
+                            matchType: 'phrase'
+                        });
+                    }
+                    
+                    startIndex = index + 1;
+                }
+                
+                return matches;
+            }
+            
+            findWordMatches(textItems, searchTerm, viewport) {
+                const matches = [];
+                const searchLower = searchTerm.toLowerCase();
+                const searchWords = searchTerm.toLowerCase().split(/\s+/);
+                
+                this.log(`Looking for word matches for: "${searchTerm}"`);
+                
+                for (const item of textItems) {
+                    if (!item.str) continue;
+                    
+                    const itemText = item.str.toLowerCase();
+                    
+                    // Strategy 1: Exact match
+                    if (itemText.includes(searchLower)) {
+                        matches.push({
+                            ...item,
+                            matchType: 'word',
+                            matchedText: searchTerm
+                        });
+                        this.log(`Found exact word match: "${item.str}"`);
+                    }
+                    
+                    // Strategy 2: Individual word matching from phrase
+                    else {
+                        for (const word of searchWords) {
+                            if (word.length >= 3 && itemText.includes(word)) {
+                                matches.push({
+                                    ...item,
+                                    matchType: 'word-component',
+                                    matchedText: word,
+                                    originalSearch: searchTerm
+                                });
+                                this.log(`Found word component match: "${item.str}" for word "${word}"`);
+                                break; // Only match once per item
+                            }
+                        }
+                    }
+                    
+                    // Strategy 3: Medical synonym matching
+                    if (!matches.some(m => m === item)) {
+                        const synonymMatch = this.findMedicalSynonym(itemText, searchWords);
+                        if (synonymMatch) {
+                            matches.push({
+                                ...item,
+                                matchType: 'synonym',
+                                matchedText: synonymMatch.synonym,
+                                originalWord: synonymMatch.original
+                            });
+                            this.log(`Found synonym match: "${item.str}" for "${synonymMatch.original}" -> "${synonymMatch.synonym}"`);
+                        }
+                    }
+                    
+                    // Strategy 4: Partial word match for medical terms
+                    if (!matches.some(m => m === item) && this.isPartialMedicalMatch(itemText, searchLower)) {
+                        matches.push({
+                            ...item,
+                            matchType: 'partial',
+                            matchedText: searchTerm
+                        });
+                        this.log(`Found partial medical match: "${item.str}"`);
+                    }
+                }
+                
+                this.log(`Word matching found ${matches.length} matches`);
+                return matches;
+            }
+            
+            findMedicalSynonym(itemText, searchWords) {
+                // Medical term synonyms and variations
+                const medicalSynonyms = {
+                    'tumor': ['mass', 'lesion', 'neoplasm', 'growth', 'nodule'],
+                    'carcinoma': ['cancer', 'malignancy', 'tumor', 'neoplasm'],
+                    'primary': ['main', 'principal', 'initial', 'original'],
+                    'site': ['location', 'position', 'area', 'region'],
+                    'lobe': ['segment', 'section', 'part'],
+                    'upper': ['superior', 'top'],
+                    'lower': ['inferior', 'bottom'],
+                    'right': ['rt', 'r'],
+                    'left': ['lt', 'l'],
+                    'breast': ['mammary', 'chest'],
+                    'lung': ['pulmonary', 'respiratory']
+                };
+                
+                for (const searchWord of searchWords) {
+                    if (searchWord.length < 3) continue;
+                    
+                    // Check if any synonyms of the search word appear in the item text
+                    const synonyms = medicalSynonyms[searchWord] || [];
+                    for (const synonym of synonyms) {
+                        if (itemText.includes(synonym)) {
+                            return { original: searchWord, synonym: synonym };
+                        }
+                    }
+                    
+                    // Check if the item text contains a word that has the search word as a synonym
+                    for (const [key, synonymList] of Object.entries(medicalSynonyms)) {
+                        if (synonymList.includes(searchWord) && itemText.includes(key)) {
+                            return { original: searchWord, synonym: key };
+                        }
+                    }
+                }
+                
+                return null;
+            }
+            
+            isPartialMedicalMatch(text, searchTerm) {
+                // Check for common medical term patterns
+                const patterns = [
+                    // Abbreviation patterns
+                    new RegExp(`\\b${searchTerm}\\b`, 'i'),
+                    // Prefix/suffix patterns
+                    new RegExp(`${searchTerm}`, 'i'),
+                    // Word boundary patterns
+                    new RegExp(`\\b\\w*${searchTerm}\\w*\\b`, 'i')
+                ];
+                
+                return patterns.some(pattern => pattern.test(text));
+            }
+            
+            calculateCombinedWidth(items) {
+                if (items.length === 0) return 0;
+                if (items.length === 1) return items[0].item.width || (items[0].item.str.length * 8);
+                
+                // Calculate total width across multiple items
+                let totalWidth = 0;
+                for (const item of items) {
+                    totalWidth += item.item.width || (item.item.str.length * 8);
+                }
+                
+                return totalWidth;
+            }
+            
+            createHighlight(textItem, viewport) {
+                const highlight = document.createElement('div');
+                highlight.className = 'highlight';
+                
+                // Add match type class for different styling
+                if (textItem.matchType) {
+                    highlight.classList.add(`highlight-${textItem.matchType}`);
+                }
+                
+                const transform = textItem.transform;
+                if (!transform || transform.length < 6) {
+                    this.log(`WARNING: Invalid transform for highlight: ${JSON.stringify(transform)}`, 'warning');
+                    return null;
+                }
+                
+                // More accurate positioning calculation
+                const x = transform[4];
+                const y = viewport.height - transform[5] - (textItem.height || 12);
+                
+                // Better width calculation
+                let width = textItem.width;
+                if (!width) {
+                    const fontSize = Math.abs(transform[0]) || 12;
+                    width = (textItem.str?.length || 1) * (fontSize * 0.6);
+                }
+                
+                const height = textItem.height || Math.abs(transform[3]) || 12;
+                
+                // Ensure minimum dimensions
+                width = Math.max(width, 10);
+                const finalHeight = Math.max(height, 8);
+                
+                highlight.style.left = x + 'px';
+                highlight.style.top = y + 'px';
+                highlight.style.width = width + 'px';
+                highlight.style.height = finalHeight + 'px';
+                
+                // Add debug info as data attributes
+                highlight.setAttribute('data-text', textItem.str || textItem.text || '');
+                highlight.setAttribute('data-match-type', textItem.matchType || 'unknown');
+                
+                this.log(`Created highlight: "${textItem.str || textItem.text}" at (${x}, ${y}) ${width}x${finalHeight}px`);
+                
+                return highlight;
+            }
+            
+            updateSearchResults() {
+                const count = this.highlights.length;
+                
+                if (count > 0) {
+                    this.elements.matchCount.textContent = count;
+                    this.elements.matchInfo.style.display = 'block';
+                    this.showStatus(`Found ${count} matches`, 'success');
+                    
+                    // Mark first match as primary and scroll to it
+                    if (this.highlights[0]) {
+                        this.highlights[0].element.classList.add('primary');
+                        setTimeout(() => {
+                            this.highlights[0].element.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'center'
+                            });
+                        }, 1000);
+                    }
+                    
+                    this.log(`Search complete: ${count} matches found`, 'success');
+                } else {
+                    this.elements.matchInfo.style.display = 'none';
+                    this.showStatus('No matches found', 'error');
+                    this.log('Search complete: No matches found', 'warning');
+                }
+            }
+            
+            zoomIn() {
+                this.scale = Math.min(this.scale * 1.25, 4.0);
+                this.updateZoom();
+            }
+            
+            zoomOut() {
+                this.scale = Math.max(this.scale / 1.25, 0.5);
+                this.updateZoom();
+            }
+            
+            fitToWidth() {
+                const containerWidth = this.elements.pdfContainer.clientWidth - 100;
+                if (this.pdfDoc) {
+                    this.pdfDoc.getPage(1).then(page => {
+                        const viewport = page.getViewport({ scale: 1.0 });
+                        this.scale = containerWidth / viewport.width;
+                        this.updateZoom();
+                    });
+                }
+            }
+            
+            async updateZoom() {
+                this.elements.zoomLevel.textContent = Math.round(this.scale * 100) + '%';
+                this.log(`Zoom changed to ${Math.round(this.scale * 100)}%`);
+                
+                if (this.pdfDoc) {
+                    await this.renderAllPages();
+                    if (this.searchText) {
+                        await this.performSearch();
+                    }
+                }
+            }
+            
+            downloadPDF() {
+                const link = document.createElement('a');
+                link.href = `/api/pdf/${encodeURIComponent(this.filename)}`;
+                link.download = this.filename;
+                link.click();
+            }
+        }
+        
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            new RobustPDFViewer();
+        });
+        
+        // Also initialize immediately if DOM is already loaded
+        if (document.readyState !== 'loading') {
+            new RobustPDFViewer();
+        }
+    </script>
+</body>
+</html> 
