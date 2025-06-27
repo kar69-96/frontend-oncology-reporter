@@ -989,6 +989,139 @@ export async function registerRoutes(app: Express): Promise<Server> {
     return null;
   }
 
+  // Enhanced source text finding endpoint (Phase 2 of roadmap)
+  app.post('/api/documents/:id/find-source', async (req, res) => {
+    try {
+      const documentId = parseInt(req.params.id);
+      const { extractedText, fieldId } = req.body;
+      
+      console.log(`🔍 Finding exact source for document ${documentId}, field ${fieldId}`);
+      console.log(`📝 Extracted text: "${extractedText}"`);
+      
+      // Get document info
+      const document = await storage.getDocument(documentId);
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+      
+      // For PDFs, redirect to PDF viewer with highlighting
+      if (document.filename.toLowerCase().endsWith('.pdf')) {
+        return res.json({
+          sourceMatch: {
+            found: false,
+            exactMatch: false,
+            strategy: 'pdf_redirect',
+            confidence: 0.5,
+            message: 'PDF documents should be viewed using the PDF viewer for exact source highlighting',
+            pdfViewerUrl: `/api/pdf-viewer/${encodeURIComponent(document.filename)}?highlight=${encodeURIComponent(extractedText)}&field=${encodeURIComponent(fieldId)}`
+          },
+          fieldId,
+          documentId,
+          timestamp: new Date().toISOString()
+        });
+      }
+      
+      // For HTML/text documents, perform enhanced text matching
+      const fs = await import('fs/promises');
+      const documentPath = path.join(process.cwd(), 'public', 'documents', document.filename);
+      let documentContent = '';
+      
+      try {
+        documentContent = await fs.readFile(documentPath, 'utf-8');
+      } catch (fileError) {
+        console.warn(`⚠️ Could not read document file: ${fileError}`);
+        return res.status(404).json({ message: "Document content not accessible" });
+      }
+      
+      // Enhanced medical text matching strategies (following roadmap Phase 2)
+      const matchStrategies = [
+        {
+          name: 'exact',
+          search: (content: string, query: string) => {
+            const regex = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+            const matches = [...content.matchAll(regex)];
+            return matches.map(match => ({
+              text: match[0],
+              index: match.index || 0,
+              confidence: 1.0,
+              context: content.substring(Math.max(0, (match.index || 0) - 50), (match.index || 0) + match[0].length + 50)
+            }));
+          }
+        },
+        {
+          name: 'medical-contextual',
+          search: (content: string, query: string) => {
+            const medicalPatterns = [
+              query.replace(/([a-zA-Z\s]+):\s*([a-zA-Z0-9\s,.-]+)/g, '$1:\\s*$2'),
+              query.replace(/Stage\s+([IVX]+[ABC]?)\s*\(([T]\d[N]\d[M]\d)\)/gi, 'Stage\\s+$1\\s*\\($2\\)'),
+              query.replace(/(\d+\.?\d*)\s*(cm|mm|kg|%)/gi, '$1\\s*$2'),
+            ];
+            
+            const matches: any[] = [];
+            for (const pattern of medicalPatterns) {
+              if (pattern !== query) {
+                try {
+                  const regex = new RegExp(pattern, 'gi');
+                  const patternMatches = [...content.matchAll(regex)];
+                  matches.push(...patternMatches.map(match => ({
+                    text: match[0],
+                    index: match.index || 0,
+                    confidence: 0.9,
+                    context: content.substring(Math.max(0, (match.index || 0) - 50), (match.index || 0) + match[0].length + 50),
+                    strategy: 'medical-pattern'
+                  })));
+                } catch (regexError) {
+                  console.warn('Medical pattern regex error:', regexError);
+                }
+              }
+            }
+            return matches;
+          }
+        }
+      ];
+      
+      // Apply search strategies and find best match
+      let bestMatch = null;
+      let allMatches: any[] = [];
+      
+      for (const strategy of matchStrategies) {
+        const matches = strategy.search(documentContent, extractedText);
+        if (matches.length > 0) {
+          allMatches.push(...matches.map(match => ({ ...match, strategy: strategy.name })));
+          if (!bestMatch || matches[0].confidence > bestMatch.confidence) {
+            bestMatch = { ...matches[0], strategy: strategy.name };
+          }
+        }
+      }
+      
+      res.json({
+        sourceMatch: bestMatch ? {
+          found: true,
+          exactMatch: bestMatch.confidence >= 0.95,
+          text: bestMatch.text,
+          context: bestMatch.context,
+          position: bestMatch.index,
+          strategy: bestMatch.strategy,
+          confidence: bestMatch.confidence
+        } : {
+          found: false,
+          exactMatch: false,
+          strategy: 'none',
+          confidence: 0.0,
+          message: 'No matching text found using any strategy'
+        },
+        allMatches: allMatches.slice(0, 5),
+        fieldId,
+        documentId,
+        timestamp: new Date().toISOString()
+      });
+      
+    } catch (error) {
+      console.error('Error finding source text:', error);
+      res.status(500).json({ message: "Failed to find source text" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

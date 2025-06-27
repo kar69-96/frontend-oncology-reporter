@@ -282,154 +282,174 @@ export function EnhancedDocumentViewer({
       let highlightedContent = content;
       let matchFound = false;
       
-      // Strategy 1: Try exact phrase match first (highest priority)
+      console.log('🔍 Enhanced highlighting with exact source text:', cleanSearchText);
+      console.log('📄 Content preview:', content.substring(0, 200) + '...');
+      
+      // Strategy 1: Exact phrase matching (highest priority) - Enhanced for medical precision
       const exactPhraseRegex = new RegExp(`(${cleanSearchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
       if (exactPhraseRegex.test(content)) {
         const highlightColor = isPreIdentified ? '#dcfce7' : '#fef3c7';
         const borderColor = isPreIdentified ? '#16a34a' : '#f59e0b';
         
         highlightedContent = content.replace(exactPhraseRegex, 
-          `<mark style="background-color: ${highlightColor}; border: 1px solid ${borderColor}; padding: 2px 4px; border-radius: 3px; font-weight: bold;" id="highlight-exact-${Date.now()}">$1</mark>`
+          `<mark style="background-color: ${highlightColor}; border: 2px solid ${borderColor}; padding: 3px 6px; border-radius: 4px; font-weight: bold; box-shadow: 0 0 8px ${borderColor}50;" id="highlight-exact-${Date.now()}">$1</mark>`
         );
         matchFound = true;
-        console.log('✅ Exact phrase match found:', cleanSearchText);
+        console.log('✅ EXACT phrase match found (highest confidence):', cleanSearchText);
       }
       
-      // Strategy 2: If no exact match, try case-insensitive phrase match
+      // Strategy 2: Medical context-aware exact matching
       if (!matchFound) {
-        const caseInsensitiveRegex = new RegExp(`(${cleanSearchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-        if (caseInsensitiveRegex.test(content)) {
-          const highlightColor = isPreIdentified ? '#dcfce7' : '#fef3c7';
-          const borderColor = isPreIdentified ? '#16a34a' : '#f59e0b';
-          
-          highlightedContent = content.replace(caseInsensitiveRegex, 
-            `<mark style="background-color: ${highlightColor}; border: 1px solid ${borderColor}; padding: 2px 4px; border-radius: 3px; font-weight: bold;" id="highlight-case-${Date.now()}">$1</mark>`
-          );
-          matchFound = true;
-          console.log('✅ Case-insensitive phrase match found:', cleanSearchText);
+        // Look for medical patterns with colons (common in medical reports)
+        const medicalPatterns = [
+          // "Primary site: Right upper lobe" pattern
+          cleanSearchText.replace(/([a-zA-Z\s]+):\s*([a-zA-Z0-9\s,.-]+)/g, '$1:\\s*$2'),
+          // "Stage IIA (T2N0M0)" pattern  
+          cleanSearchText.replace(/Stage\s+([IVX]+[ABC]?)\s*\(([T]\d[N]\d[M]\d)\)/gi, 'Stage\\s+$1\\s*\\($2\\)'),
+          // Measurement patterns "4.2 cm"
+          cleanSearchText.replace(/(\d+\.?\d*)\s*(cm|mm|kg|%)/gi, '$1\\s*$2'),
+        ];
+        
+        for (const pattern of medicalPatterns) {
+          if (pattern !== cleanSearchText) {
+            try {
+              const medicalRegex = new RegExp(`(${pattern})`, 'gi');
+              if (medicalRegex.test(content)) {
+                const highlightColor = isPreIdentified ? '#dcfce7' : '#e0f2fe';
+                const borderColor = isPreIdentified ? '#16a34a' : '#0ea5e9';
+                
+                highlightedContent = content.replace(medicalRegex, 
+                  `<mark style="background-color: ${highlightColor}; border: 2px dotted ${borderColor}; padding: 3px 6px; border-radius: 4px; font-weight: bold;" id="highlight-medical-${Date.now()}">$1</mark>`
+                );
+                matchFound = true;
+                console.log('✅ Medical pattern match found:', pattern);
+                break;
+              }
+            } catch (regexError) {
+              console.warn('Medical pattern regex error:', regexError);
+            }
+          }
         }
       }
       
-      // Strategy 3: Try partial phrase matching (for long phrases)
-      if (!matchFound && cleanSearchText.length > 20) {
-        // Split into meaningful chunks and try to match larger portions
+      // Strategy 3: Enhanced fuzzy phrase matching with medical intelligence
+      if (!matchFound) {
         const words = cleanSearchText.split(/\s+/);
-        if (words.length >= 3) {
-          // Try matching 3+ consecutive words
-          for (let i = 0; i <= words.length - 3; i++) {
-            const phrase = words.slice(i, i + 3).join('\\s+');
-            const phraseRegex = new RegExp(`(${phrase})`, 'gi');
+        if (words.length >= 2) {
+          // Try to match 70% of the words in sequence with medical context
+          const minWordsRequired = Math.max(2, Math.ceil(words.length * 0.7));
+          
+          for (let i = 0; i <= words.length - minWordsRequired; i++) {
+            const wordSequence = words.slice(i, i + minWordsRequired);
+            // Allow medical terms and punctuation between words
+            const pattern = wordSequence.map(word => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[\\s,:;.-]{1,10}');
             
-            if (phraseRegex.test(content)) {
-              const highlightColor = isPreIdentified ? '#dcfce7' : '#fef3c7';
-              const borderColor = isPreIdentified ? '#16a34a' : '#f59e0b';
-              
-              highlightedContent = content.replace(phraseRegex, 
-                `<mark style="background-color: ${highlightColor}; border: 1px solid ${borderColor}; padding: 2px 4px; border-radius: 3px; font-weight: bold;" id="highlight-partial-${Date.now()}">$1</mark>`
+            try {
+              const fuzzyRegex = new RegExp(`(${pattern})`, 'gi');
+              if (fuzzyRegex.test(content)) {
+                const highlightColor = isPreIdentified ? '#f0f9ff' : '#fef7cd';
+                const borderColor = isPreIdentified ? '#3b82f6' : '#eab308';
+                
+                highlightedContent = content.replace(fuzzyRegex, 
+                  `<mark style="background-color: ${highlightColor}; border: 1px dashed ${borderColor}; padding: 2px 4px; border-radius: 3px; font-weight: 600;" id="highlight-fuzzy-${Date.now()}">$1</mark>`
+                );
+                matchFound = true;
+                console.log('✅ Enhanced fuzzy match found:', wordSequence.join(' '));
+                break;
+              }
+            } catch (regexError) {
+              console.warn('Fuzzy matching regex error:', regexError);
+            }
+          }
+        }
+      }
+      
+      // Strategy 4: Medical synonym and abbreviation matching (expanded)
+      if (!matchFound) {
+        const enhancedMedicalSynonyms = {
+          'tumor': ['mass', 'lesion', 'neoplasm', 'growth', 'nodule', 'malignancy'],
+          'carcinoma': ['cancer', 'malignancy', 'tumor', 'neoplasm', 'adenocarcinoma'],
+          'primary': ['main', 'principal', 'initial', 'original', '1st', 'first'],
+          'site': ['location', 'position', 'area', 'region', 'anatomic site'],
+          'lobe': ['segment', 'section', 'part', 'division'],
+          'upper': ['superior', 'top', 'cranial'],
+          'lower': ['inferior', 'bottom', 'caudal'],
+          'right': ['rt', 'r', 'dextro'],
+          'left': ['lt', 'l', 'sinistro'],
+          'breast': ['mammary', 'chest', 'pectoral'],
+          'lung': ['pulmonary', 'respiratory', 'bronchial'],
+          'stage': ['staging', 'staged', 'clinical stage', 'pathologic stage'],
+          'grade': ['grading', 'differentiation', 'histologic grade'],
+          'metastasis': ['mets', 'metastatic', 'spread', 'secondary'],
+          'lymph node': ['ln', 'lymphatic', 'nodal'],
+          'positive': ['pos', '+', 'present'],
+          'negative': ['neg', '-', 'absent', 'not detected']
+        };
+        
+        const words = cleanSearchText.toLowerCase().split(/\s+/);
+        
+        for (const word of words) {
+          if (word.length < 3) continue;
+          
+          // Check direct synonyms
+          const synonyms = enhancedMedicalSynonyms[word as keyof typeof enhancedMedicalSynonyms] || [];
+          for (const synonym of synonyms) {
+            const synonymRegex = new RegExp(`\\b(${synonym.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'gi');
+            if (synonymRegex.test(content)) {
+              highlightedContent = content.replace(synonymRegex, 
+                `<mark style="background-color: #fef3c7; border: 1px dotted #f59e0b; padding: 2px 4px; border-radius: 3px; font-weight: 600;" id="highlight-synonym-${Date.now()}">$1</mark>`
               );
               matchFound = true;
-              console.log('✅ Partial phrase match found:', words.slice(i, i + 3).join(' '));
+              console.log(`✅ Enhanced medical synonym match: "${word}" → "${synonym}"`);
               break;
             }
           }
-        }
-      }
-      
-      // Strategy 4: Try key terms matching (only if phrase matching fails)
-      if (!matchFound) {
-        // Extract meaningful terms (longer than 3 characters, not common words)
-        const stopWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'as', 'is', 'was', 'are', 'were', 'been', 'have', 'has', 'had', 'will', 'would', 'could', 'should', 'may', 'might', 'can', 'this', 'that', 'these', 'those']);
-        const meaningfulTerms = cleanSearchText
-          .split(/\s+/)
-          .filter(word => word.length > 3 && !stopWords.has(word.toLowerCase()))
-          .slice(0, 3); // Limit to first 3 meaningful terms
-        
-        if (meaningfulTerms.length > 0) {
-          // Create a regex that matches any of the meaningful terms
-          const termsPattern = meaningfulTerms.map(term => 
-            term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-          ).join('|');
           
-          const termsRegex = new RegExp(`\\b(${termsPattern})\\b`, 'gi');
-          const matches = content.match(termsRegex);
+          if (matchFound) break;
           
-          if (matches && matches.length > 0) {
-            const highlightColor = isPreIdentified ? '#e8f5e8' : '#fff9e6'; // Lighter colors for partial matches
-            const borderColor = isPreIdentified ? '#22c55e' : '#eab308';
-            
-            highlightedContent = content.replace(termsRegex, 
-              `<mark style="background-color: ${highlightColor}; border: 1px solid ${borderColor}; padding: 1px 3px; border-radius: 3px;" id="highlight-terms-${Date.now()}">$1</mark>`
-            );
-            matchFound = true;
-            console.log('✅ Key terms match found:', matches.join(', '));
+          // Check reverse synonyms
+          for (const [key, synonymList] of Object.entries(enhancedMedicalSynonyms)) {
+            if (synonymList.includes(word)) {
+              const keyRegex = new RegExp(`\\b(${key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'gi');
+              if (keyRegex.test(content)) {
+                highlightedContent = content.replace(keyRegex, 
+                  `<mark style="background-color: #fef3c7; border: 1px dotted #f59e0b; padding: 2px 4px; border-radius: 3px; font-weight: 600;" id="highlight-reverse-synonym-${Date.now()}">$1</mark>`
+                );
+                matchFound = true;
+                console.log(`✅ Reverse synonym match: "${word}" ← "${key}"`);
+                break;
+              }
+            }
           }
+          
+          if (matchFound) break;
         }
       }
       
-      // Add status indicator
       if (!matchFound) {
-        console.warn('⚠️ No matches found for:', cleanSearchText);
+        console.warn('⚠️ No matches found for enhanced search:', cleanSearchText);
+        // Enhanced visual indicator with better guidance
         const indicatorColor = isPreIdentified ? '#dcfce7' : '#fef3c7';
         const borderColor = isPreIdentified ? '#16a34a' : '#f59e0b';
-        const statusText = isPreIdentified ? '📍 Pre-identified source location' : '🔍 Searching for text';
+        const statusText = isPreIdentified ? '📍 Pre-identified Source (Exact Text Expected)' : '🔍 Searching for Text';
         
-        let mappingInfo = '';
-        if (documentMapping && documentMapping.mappingType !== 'exact') {
-          mappingInfo = `<br><small style="color: #6b7280;">Document resolved via ${documentMapping.mappingType} match (${Math.round(documentMapping.confidence * 100)}% confidence)</small>`;
-        }
-        
-        highlightedContent = `<div style="background-color: ${indicatorColor}; border: 1px solid ${borderColor}; padding: 8px; margin-bottom: 16px; border-radius: 6px;">
-          <strong>${statusText}:</strong> "${cleanSearchText}"<br>
-          <small style="color: #92400e;">Text may appear differently in the original document. Use Ctrl+F to search manually.</small>
-          ${mappingInfo}
+        highlightedContent = `<div style="background-color: ${indicatorColor}; border: 2px solid ${borderColor}; padding: 12px; margin-bottom: 16px; border-radius: 8px; box-shadow: 0 2px 4px ${borderColor}30;">
+          <div style="font-weight: bold; font-size: 16px; margin-bottom: 8px;">${statusText}</div>
+          <div style="font-size: 14px; margin-bottom: 8px;"><strong>Searching for:</strong> "${cleanSearchText}"</div>
+          <div style="font-size: 12px; color: #666; line-height: 1.4;">
+            The AI extracted this text, but it may appear differently in the original document.<br/>
+            • Try using Ctrl+F to search manually<br/>
+            • The text might be paraphrased or abbreviated<br/>
+            • Check for medical synonyms (tumor/mass, carcinoma/cancer, etc.)
+          </div>
         </div>` + highlightedContent;
       } else {
-        console.log('✅ Successfully highlighted text in document');
-        
-        // Add document mapping info if available
-        if (documentMapping && documentMapping.mappingType !== 'exact') {
-          const mappingColor = documentMapping.confidence > 0.7 ? '#e0f2fe' : '#fff3e0';
-          const mappingBorder = documentMapping.confidence > 0.7 ? '#0288d1' : '#f57c00';
-          
-          highlightedContent = `<div style="background-color: ${mappingColor}; border: 1px solid ${mappingBorder}; padding: 8px; margin-bottom: 16px; border-radius: 6px;">
-            <strong>📍 Document Resolution:</strong> ${documentMapping.mappingType} match (${Math.round(documentMapping.confidence * 100)}% confidence)<br>
-            <small style="color: #455a64;">Original: "${highlightText?.metadata?.sourceDocument}" → Actual: "${documentMapping.actualFilename}"</small>
-          </div>` + highlightedContent;
-        }
-        
-        // Auto-scroll to highlighted text
-        setTimeout(() => {
-          const highlightElements = document.querySelectorAll('[id^="highlight-"]');
-          if (highlightElements.length > 0) {
-            const firstHighlight = highlightElements[0];
-            firstHighlight.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            
-            // Also flash the highlight briefly to draw attention
-            const originalStyle = firstHighlight.style.cssText;
-            firstHighlight.style.cssText += '; animation: flash 1s ease-in-out;';
-            
-            // Add flash animation if not already present
-            if (!document.querySelector('#flash-animation-style')) {
-              const style = document.createElement('style');
-              style.id = 'flash-animation-style';
-              style.textContent = `
-                @keyframes flash {
-                  0% { transform: scale(1); }
-                  50% { transform: scale(1.05); box-shadow: 0 0 10px rgba(34, 197, 94, 0.5); }
-                  100% { transform: scale(1); }
-                }
-              `;
-              document.head.appendChild(style);
-            }
-            
-            console.log(`✅ Auto-scrolled to first highlight (${highlightElements.length} total matches)`);
-          }
-        }, 200);
+        console.log('✅ Successfully highlighted text with enhanced medical intelligence');
       }
       
       return highlightedContent;
     } catch (error) {
-      console.warn('Error highlighting text, returning original content:', error);
+      console.warn('Error in enhanced highlighting, returning original content:', error);
       return content;
     }
   };
